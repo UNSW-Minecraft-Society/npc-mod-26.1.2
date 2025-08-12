@@ -1,0 +1,213 @@
+package mcsoc.planetgame.StateManagement;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.UUID;
+
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import mcsoc.planetgame.PlanetGame;
+import net.minecraft.datafixer.DataFixTypes;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Uuids;
+import net.minecraft.world.PersistentState;
+import net.minecraft.world.PersistentStateManager;
+import net.minecraft.world.World;
+ 
+public class GameState extends PersistentState {
+    
+    private Map<UUID, PlayerState> player_state_map = new HashMap<>();
+
+    private GameState() {/* delete */}
+
+    private GameState(Map<UUID, PlayerState> data) {
+        player_state_map = data;
+    }
+
+    private Map<UUID, PlayerState> getStates() {
+        return player_state_map;
+    }
+    
+    private static final Codec<GameState> CODEC = Codec.unboundedMap(Uuids.CODEC, PlayerState.CODEC).xmap(GameState::new, GameState::getStates);
+
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+
+        DataResult<NbtElement> encodeResult = GameState.CODEC.encodeStart(NbtOps.INSTANCE, this);
+        PlanetGame.LOGGER.info("Flag8A");
+        NbtElement element;
+        try {
+            element = encodeResult.result().orElseThrow();
+        } catch (Exception e) {
+            //nbt.putBoolean("is_flipped", Boolean.FALSE);
+            PlanetGame.LOGGER.info("Flag8C");
+            return nbt;
+        }
+        PlanetGame.LOGGER.info("Flag8B");
+        
+        NbtCompound compound;
+        if (element instanceof NbtCompound element_compound) {
+            compound = element_compound;
+        } else {
+            compound = ((NbtList) element).getCompound(0);
+        }
+
+        nbt.copyFrom(compound);
+        return nbt;
+    }
+ 
+    public static GameState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+        DataResult<Pair<GameState, NbtElement>> state_packed = GameState.CODEC.decode(NbtOps.INSTANCE, tag);
+        return state_packed.getOrThrow().getFirst();
+    }
+
+
+    private static GameState createNewGameState() {
+        GameState state = new GameState();
+
+        // assign other stuff here
+
+        return state;
+    }
+
+
+    private static Type<GameState> type = new Type<>(
+            GameState::createNewGameState, // If there's no 'StateSaverAndLoader' yet create one and refresh variables
+            GameState::createFromNbt, // If there is a 'StateSaverAndLoader' NBT, parse it with 'createFromNbt'
+            DataFixTypes.LEVEL // Supposed to be an 'DataFixTypes' enum, but we can just pass null
+    );
+ 
+    public static GameState getServerState(MinecraftServer server) {
+        // (Note: arbitrary choice to use 'World.OVERWORLD' instead of 'World.END' or 'World.NETHER'.  Any work)
+        PersistentStateManager persistentStateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
+ 
+        // The first time the following 'getOrCreate' function is called, it creates a brand new 'StateSaverAndLoader' and
+        // stores it inside the 'PersistentStateManager'. The subsequent calls to 'getOrCreate' pass in the saved
+        // 'StateSaverAndLoader' NBT on disk to our function 'StateSaverAndLoader::createFromNbt'.
+        GameState state = persistentStateManager.getOrCreate(type, PlanetGame.MOD_ID);
+ 
+        // If state is not marked dirty, when Minecraft closes, 'writeNbt' won't be called and therefore nothing will be saved.
+        // Technically it's 'cleaner' if you only mark state as dirty when there was actually a change, but the vast majority
+        // of mod writers are just going to be confused when their data isn't being saved, and so it's best just to 'markDirty' for them.
+        // Besides, it's literally just setting a bool to true, and the only time there's a 'cost' is when the file is written to disk when
+        // there were no actual change to any of the mods state (INCREDIBLY RARE).
+        state.markDirty();
+ 
+        return state;
+    }
+
+
+    private PlayerState getPlayerState(UUID uuid) throws NoSuchElementException {
+        PlayerState player_state = this.player_state_map.get(uuid);
+        if (Objects.isNull(player_state)) {
+            throw new NoSuchElementException("No player state entry associated with uuid!");
+        }
+        return player_state;
+    }
+
+    private PlayerState getOrCreatePlayerState(UUID uuid) throws NoSuchElementException {
+        PlayerState player_state;
+        try {
+            player_state = getPlayerState(uuid);
+        } catch (NoSuchElementException e) {
+            player_state = PlayerState.getDefaultPlayerState();
+        }
+        return player_state;
+    }
+
+    private void setPlayerState(UUID uuid, PlayerState player_state) {
+        this.player_state_map.put(uuid, player_state);
+    }
+
+    public static PlayerState getPlayerState(UUID uuid, MinecraftServer server) {
+        PlanetGame.LOGGER.info("flag5A");
+        GameState state = getServerState(server);
+        PlanetGame.LOGGER.info("flag5B");
+        return state.getOrCreatePlayerState(uuid);
+    }
+
+    public static PlayerState getPlayerState(ServerPlayerEntity player, MinecraftServer server) {
+        return getPlayerState(player.getUuid(), server);
+    }
+
+    public static PlayerState getOrCreatePlayerState(UUID uuid, MinecraftServer server) {
+        GameState state = getServerState(server);
+        return state.getOrCreatePlayerState(uuid);
+    }
+
+    public static PlayerState getOrCreatePlayerState(ServerPlayerEntity player, MinecraftServer server) {
+        return getOrCreatePlayerState(player.getUuid(), server);
+    }
+
+    protected static void setPlayerState(UUID uuid, MinecraftServer server, PlayerState player_state) {
+        GameState state = getServerState(server);
+        state.setPlayerState(uuid, player_state);
+    }
+
+
+    public static Boolean getIsPlayerFlipped(UUID uuid, MinecraftServer server) {
+        PlanetGame.LOGGER.info("flag3A");
+        PlayerState state = getPlayerState(uuid, server);
+        PlanetGame.LOGGER.info("flag3B");
+        return state.getIsPlayerFlipped();
+    }
+
+    public static Boolean getIsPlayerFlipped(ServerPlayerEntity player, MinecraftServer server) {
+        return getIsPlayerFlipped(player.getUuid(), server);
+    }
+
+    protected static void setIsPlayerFlipped(UUID uuid, MinecraftServer server, Boolean flipped_state) {
+        PlanetGame.LOGGER.info("flag4A");
+        PlayerState player_state = getPlayerState(uuid, server);
+        player_state = player_state.setIsPlayerFlipped(flipped_state);
+        setPlayerState(uuid, server, player_state);
+        PlanetGame.LOGGER.info("flag4B");
+    }
+
+    protected static void setIsPlayerFlipped(ServerPlayerEntity player, MinecraftServer server, Boolean flipped_state) {
+        setIsPlayerFlipped(player.getUuid(), server, flipped_state);
+    }
+
+    protected static void toggleIsPlayerFlipped(UUID uuid, MinecraftServer server) {
+        PlanetGame.LOGGER.info("flag2A");
+        setIsPlayerFlipped(uuid, server, !GameState.getIsPlayerFlipped(uuid, server));
+        PlanetGame.LOGGER.info("flag2B");
+    }
+
+    protected static void toggleIsPlayerFlipped(ServerPlayerEntity player, MinecraftServer server) {
+        PlanetGame.LOGGER.info("flag1A");
+        toggleIsPlayerFlipped(player.getUuid(), server);
+        PlanetGame.LOGGER.info("flag1B");
+    }
+
+
+    public static Double getPlayerGravStrengthModifier(UUID uuid, MinecraftServer server) {
+        PlayerState state = getPlayerState(uuid, server);
+        return state.getPlayerGravStrengthModifier();
+    }
+
+    public static Double getPlayerGravStrengthModifier(ServerPlayerEntity player, MinecraftServer server) {
+        return getPlayerGravStrengthModifier(player.getUuid(), server);
+    }
+
+    protected static void setPlayerGravStrengthModifier(UUID uuid, MinecraftServer server, Double grav_strength_mod) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        player_state = player_state.setPlayerGravStrengthModifier(grav_strength_mod);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerGravStrengthModifier(ServerPlayerEntity player, MinecraftServer server, Double grav_strength_mod) {
+        setPlayerGravStrengthModifier(player, server, grav_strength_mod);
+    }
+
+}
