@@ -5,6 +5,9 @@ import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import mcsoc.planetgame.EventHandlers.CommandRegistrationHandler;
+import mcsoc.planetgame.EventHandlers.PlayerJoinServerEvent;
+
 
 public class PlanetGame implements ModInitializer {
 	public static final String MOD_ID = "planet-game";
@@ -21,5 +24,8 @@ public class PlanetGame implements ModInitializer {
 		// Proceed with mild caution.
 
 		LOGGER.info("Hello Fabric world!");
+
+		PlayerJoinServerEvent.Register();
+		CommandRegistrationHandler.Register();
 	}
 }
