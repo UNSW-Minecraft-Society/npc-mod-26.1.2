@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public abstract class ReceivePacketEvent {
 
+    private ReceivePacketEvent() { /* delete */}
+
     public static void Register() {
 
         PayloadTypeRegistry.playS2C().register(SyncPlayerDataS2CPayload.ID, SyncPlayerDataS2CPayload.CODEC);    

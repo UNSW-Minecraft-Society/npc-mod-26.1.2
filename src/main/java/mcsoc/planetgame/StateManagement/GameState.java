@@ -1,6 +1,8 @@
 package mcsoc.planetgame.StateManagement;
+
+import mcsoc.planetgame.PlanetGame;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -9,7 +11,7 @@ import java.util.UUID;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import mcsoc.planetgame.PlanetGame;
+
 import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -44,16 +46,13 @@ public class GameState extends PersistentState {
     public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
 
         DataResult<NbtElement> encodeResult = GameState.CODEC.encodeStart(NbtOps.INSTANCE, this);
-        PlanetGame.LOGGER.info("Flag8A");
         NbtElement element;
+        
         try {
             element = encodeResult.result().orElseThrow();
         } catch (Exception e) {
-            //nbt.putBoolean("is_flipped", Boolean.FALSE);
-            PlanetGame.LOGGER.info("Flag8C");
             return nbt;
         }
-        PlanetGame.LOGGER.info("Flag8B");
         
         NbtCompound compound;
         if (element instanceof NbtCompound element_compound) {
@@ -66,7 +65,7 @@ public class GameState extends PersistentState {
         return nbt;
     }
  
-    public static GameState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+    protected static GameState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
         DataResult<Pair<GameState, NbtElement>> state_packed = GameState.CODEC.decode(NbtOps.INSTANCE, tag);
         return state_packed.getOrThrow().getFirst();
     }
@@ -87,7 +86,7 @@ public class GameState extends PersistentState {
             DataFixTypes.LEVEL // Supposed to be an 'DataFixTypes' enum, but we can just pass null
     );
  
-    public static GameState getServerState(MinecraftServer server) {
+    protected static GameState getServerState(MinecraftServer server) {
         // (Note: arbitrary choice to use 'World.OVERWORLD' instead of 'World.END' or 'World.NETHER'.  Any work)
         PersistentStateManager persistentStateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
  
@@ -129,23 +128,23 @@ public class GameState extends PersistentState {
         this.player_state_map.put(uuid, player_state);
     }
 
-    public static PlayerState getPlayerState(UUID uuid, MinecraftServer server) {
+    protected static PlayerState getPlayerState(UUID uuid, MinecraftServer server) {
         PlanetGame.LOGGER.info("flag5A");
         GameState state = getServerState(server);
         PlanetGame.LOGGER.info("flag5B");
         return state.getOrCreatePlayerState(uuid);
     }
 
-    public static PlayerState getPlayerState(ServerPlayerEntity player, MinecraftServer server) {
+    protected static PlayerState getPlayerState(ServerPlayerEntity player, MinecraftServer server) {
         return getPlayerState(player.getUuid(), server);
     }
 
-    public static PlayerState getOrCreatePlayerState(UUID uuid, MinecraftServer server) {
+    protected static PlayerState getOrCreatePlayerState(UUID uuid, MinecraftServer server) {
         GameState state = getServerState(server);
         return state.getOrCreatePlayerState(uuid);
     }
 
-    public static PlayerState getOrCreatePlayerState(ServerPlayerEntity player, MinecraftServer server) {
+    protected static PlayerState getOrCreatePlayerState(ServerPlayerEntity player, MinecraftServer server) {
         return getOrCreatePlayerState(player.getUuid(), server);
     }
 
@@ -191,12 +190,12 @@ public class GameState extends PersistentState {
     }
 
 
-    public static Double getPlayerGravStrengthModifier(UUID uuid, MinecraftServer server) {
+    protected static Double getPlayerGravStrengthModifier(UUID uuid, MinecraftServer server) {
         PlayerState state = getPlayerState(uuid, server);
         return state.getPlayerGravStrengthModifier();
     }
 
-    public static Double getPlayerGravStrengthModifier(ServerPlayerEntity player, MinecraftServer server) {
+    protected static Double getPlayerGravStrengthModifier(ServerPlayerEntity player, MinecraftServer server) {
         return getPlayerGravStrengthModifier(player.getUuid(), server);
     }
 
