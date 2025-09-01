@@ -11,6 +11,7 @@ import java.util.UUID;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
@@ -21,6 +22,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Uuids;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
@@ -29,17 +31,21 @@ public class GameState extends PersistentState {
     
     private Map<UUID, PlayerState> player_state_map = new HashMap<>();
 
+
+
     private GameState() {/* delete */}
 
     private GameState(Map<UUID, PlayerState> data) {
-        player_state_map = data;
+        player_state_map.putAll(data);
     }
 
     private Map<UUID, PlayerState> getStates() {
         return player_state_map;
     }
     
-    private static final Codec<GameState> CODEC = Codec.unboundedMap(Uuids.CODEC, PlayerState.CODEC).xmap(GameState::new, GameState::getStates);
+    public static final Codec<GameState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+            Codec.unboundedMap(Uuids.CODEC, PlayerState.CODEC).fieldOf("player_states_map").forGetter(GameState::getStates)
+        ).apply(inst, GameState::new));
 
 
     @Override
@@ -125,13 +131,13 @@ public class GameState extends PersistentState {
     }
 
     private void setPlayerState(UUID uuid, PlayerState player_state) {
+        PlanetGame.LOGGER.info("Flag4A");
         this.player_state_map.put(uuid, player_state);
+        PlanetGame.LOGGER.info("Flag4B");
     }
 
     protected static PlayerState getPlayerState(UUID uuid, MinecraftServer server) {
-        PlanetGame.LOGGER.info("flag5A");
         GameState state = getServerState(server);
-        PlanetGame.LOGGER.info("flag5B");
         return state.getOrCreatePlayerState(uuid);
     }
 
@@ -139,54 +145,38 @@ public class GameState extends PersistentState {
         return getPlayerState(player.getUuid(), server);
     }
 
-    protected static PlayerState getOrCreatePlayerState(UUID uuid, MinecraftServer server) {
-        GameState state = getServerState(server);
-        return state.getOrCreatePlayerState(uuid);
-    }
-
-    protected static PlayerState getOrCreatePlayerState(ServerPlayerEntity player, MinecraftServer server) {
-        return getOrCreatePlayerState(player.getUuid(), server);
-    }
-
     protected static void setPlayerState(UUID uuid, MinecraftServer server, PlayerState player_state) {
+        PlanetGame.LOGGER.info("Flag3A");
         GameState state = getServerState(server);
+        PlanetGame.LOGGER.info("Flag3B");
         state.setPlayerState(uuid, player_state);
+        PlanetGame.LOGGER.info("Flag3C");
     }
 
 
-    public static Boolean getIsPlayerFlipped(UUID uuid, MinecraftServer server) {
-        PlanetGame.LOGGER.info("flag3A");
+    public static Direction getPlayerGravityDirection(UUID uuid, MinecraftServer server) {
+        PlanetGame.LOGGER.info("Flag1A");
         PlayerState state = getPlayerState(uuid, server);
-        PlanetGame.LOGGER.info("flag3B");
-        return state.getIsPlayerFlipped();
+        PlanetGame.LOGGER.info("Flag1B");
+        return state.getCurrentPlayerGravityDirection();
     }
 
-    public static Boolean getIsPlayerFlipped(ServerPlayerEntity player, MinecraftServer server) {
-        return getIsPlayerFlipped(player.getUuid(), server);
+    public static Direction getPlayerGravityDirection(ServerPlayerEntity player, MinecraftServer server) {
+        return getPlayerGravityDirection(player.getUuid(), server);
     }
 
-    protected static void setIsPlayerFlipped(UUID uuid, MinecraftServer server, Boolean flipped_state) {
-        PlanetGame.LOGGER.info("flag4A");
-        PlayerState player_state = getPlayerState(uuid, server);
-        player_state = player_state.setIsPlayerFlipped(flipped_state);
-        setPlayerState(uuid, server, player_state);
-        PlanetGame.LOGGER.info("flag4B");
-    }
-
-    protected static void setIsPlayerFlipped(ServerPlayerEntity player, MinecraftServer server, Boolean flipped_state) {
-        setIsPlayerFlipped(player.getUuid(), server, flipped_state);
-    }
-
-    protected static void toggleIsPlayerFlipped(UUID uuid, MinecraftServer server) {
+    protected static void setPlayerGravityDirection(UUID uuid, MinecraftServer server, Direction grav_dir) {
         PlanetGame.LOGGER.info("flag2A");
-        setIsPlayerFlipped(uuid, server, !GameState.getIsPlayerFlipped(uuid, server));
+        PlayerState player_state = getPlayerState(uuid, server);
         PlanetGame.LOGGER.info("flag2B");
+        player_state = player_state.setCurrentPlayerGravityDirection(grav_dir);
+        PlanetGame.LOGGER.info("flag2C");
+        setPlayerState(uuid, server, player_state);
+        PlanetGame.LOGGER.info("flag2D");
     }
 
-    protected static void toggleIsPlayerFlipped(ServerPlayerEntity player, MinecraftServer server) {
-        PlanetGame.LOGGER.info("flag1A");
-        toggleIsPlayerFlipped(player.getUuid(), server);
-        PlanetGame.LOGGER.info("flag1B");
+    protected static void setPlayerGravityDirection(ServerPlayerEntity player, MinecraftServer server, Direction grav_dir) {
+        setPlayerGravityDirection(player.getUuid(), server, grav_dir);
     }
 
 

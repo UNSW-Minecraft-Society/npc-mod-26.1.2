@@ -6,19 +6,20 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.util.math.Direction;
 
-public record PlayerState(Boolean flipped, Double grav_mod) {
+public record PlayerState(Direction grav_dir, Double grav_mod) {
 
-        public PlayerState setIsPlayerFlipped(Boolean flipped_state) {
-            return new PlayerState(flipped_state, this.grav_mod);
+        public PlayerState setCurrentPlayerGravityDirection(Direction new_grav_dir) {
+            return new PlayerState(new_grav_dir, this.grav_mod);
         }
 
-        public Boolean getIsPlayerFlipped() {
-            return flipped;
+        public Direction getCurrentPlayerGravityDirection() {
+            return grav_dir;
         }
 
         public PlayerState setPlayerGravStrengthModifier(Double grav_strength_mod) {
-            return new PlayerState(this.flipped, grav_strength_mod);
+            return new PlayerState(this.grav_dir, grav_strength_mod);
         }
 
         public Double getPlayerGravStrengthModifier() {
@@ -27,16 +28,16 @@ public record PlayerState(Boolean flipped, Double grav_mod) {
 
 
         public static PlayerState getDefaultPlayerState() {
-            return new PlayerState(Boolean.FALSE, Double.valueOf(1));
+            return new PlayerState(Direction.DOWN, Double.valueOf(1));
         }
         
         public static final Codec<PlayerState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            Codec.BOOL.fieldOf("is_flipped").forGetter(PlayerState::flipped),
+            Direction.CODEC.fieldOf("gravity_direction").forGetter(PlayerState::grav_dir),
             Codec.DOUBLE.fieldOf("gravity_strength_modifier").forGetter(PlayerState::grav_mod)
         ).apply(inst, PlayerState::new));
 
         public static final PacketCodec<RegistryByteBuf, PlayerState> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.BOOL, PlayerState::flipped,
+            Direction.PACKET_CODEC, PlayerState::grav_dir,
             PacketCodecs.DOUBLE, PlayerState::grav_mod,
             PlayerState::new
         );

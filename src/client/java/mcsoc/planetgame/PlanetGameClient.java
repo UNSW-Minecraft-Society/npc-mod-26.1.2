@@ -4,20 +4,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcsoc.planetgame.EventHandlers.ReceivePacketEvent;
-import mcsoc.planetgame.StateManagement.PlayerState;
 import net.fabricmc.api.ClientModInitializer;
 
 public class PlanetGameClient implements ClientModInitializer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(PlanetGame.MOD_ID);
 
-	private static PlayerState player_state = PlayerState.getDefaultPlayerState();
+	private static ClientPlayerState player_state = ClientPlayerState.getDefaultPlayerState();
 
-	public static PlayerState getPlayerState() {
+	public static ClientPlayerState getPlayerState() {
 		return PlanetGameClient.player_state;
 	}
 
-	public static void setPlayerState(PlayerState player_state) {
+	public static void setPlayerState(ClientPlayerState player_state) {
 		PlanetGameClient.player_state = player_state;
 	}
 
