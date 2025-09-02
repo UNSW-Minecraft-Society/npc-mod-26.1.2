@@ -26,9 +26,8 @@ public abstract class GameEffects {
 
         public static int flipCallingPlayerCommand(CommandContext<ServerCommandSource> cxt) {
 
-            MinecraftServer server = cxt.getSource().getServer();
             ServerPlayerEntity player = cxt.getSource().getPlayer();
-            GameEffects.toggleIsPlayerFlipped(player, server);
+            GameEffects.toggleIsPlayerFlipped(player);
             return 1;
         }
 
@@ -42,19 +41,19 @@ public abstract class GameEffects {
                 throw COULD_NOT_FIND_PLAYER.create(target_player_name);
             }
 
-            GameEffects.toggleIsPlayerFlipped(player, server);
+            GameEffects.toggleIsPlayerFlipped(player);
             return 1;
         }
     }
 
 
-    public static void toggleIsPlayerFlipped(ServerPlayerEntity player, MinecraftServer server) {
+    public static void toggleIsPlayerFlipped(ServerPlayerEntity player) {
 
         PlanetGame.LOGGER.info("GE: toggled flip");
 
-        GameStateManager.flipPlayerGravity(player, server);
+        GameStateManager.flipPlayerGravity(player);
 
-        ServerPlayNetworking.send(player, GameStateManager.getPlayerStatePacket(player, server));
+        ServerPlayNetworking.send(player, GameStateManager.getPlayerStatePacket(player));
 
         PlanetGame.LOGGER.info("GE: sent packet");
     }

@@ -141,8 +141,8 @@ public class GameState extends PersistentState {
         return state.getOrCreatePlayerState(uuid);
     }
 
-    protected static PlayerState getPlayerState(ServerPlayerEntity player, MinecraftServer server) {
-        return getPlayerState(player.getUuid(), server);
+    protected static PlayerState getPlayerState(ServerPlayerEntity player) {
+        return getPlayerState(player.getUuid(), player.getServer());
     }
 
     protected static void setPlayerState(UUID uuid, MinecraftServer server, PlayerState player_state) {
@@ -153,6 +153,10 @@ public class GameState extends PersistentState {
         PlanetGame.LOGGER.info("Flag3C");
     }
 
+    protected static void setPlayerState(ServerPlayerEntity player, PlayerState player_state) {
+        setPlayerState(player.getUuid(), player.getServer(), player_state);
+    }
+
 
     public static Direction getPlayerGravityDirection(UUID uuid, MinecraftServer server) {
         PlanetGame.LOGGER.info("Flag1A");
@@ -161,8 +165,8 @@ public class GameState extends PersistentState {
         return state.getCurrentPlayerGravityDirection();
     }
 
-    public static Direction getPlayerGravityDirection(ServerPlayerEntity player, MinecraftServer server) {
-        return getPlayerGravityDirection(player.getUuid(), server);
+    public static Direction getPlayerGravityDirection(ServerPlayerEntity player) {
+        return getPlayerGravityDirection(player.getUuid(), player.getServer());
     }
 
     protected static void setPlayerGravityDirection(UUID uuid, MinecraftServer server, Direction grav_dir) {
@@ -175,8 +179,8 @@ public class GameState extends PersistentState {
         PlanetGame.LOGGER.info("flag2D");
     }
 
-    protected static void setPlayerGravityDirection(ServerPlayerEntity player, MinecraftServer server, Direction grav_dir) {
-        setPlayerGravityDirection(player.getUuid(), server, grav_dir);
+    protected static void setPlayerGravityDirection(ServerPlayerEntity player, Direction grav_dir) {
+        setPlayerGravityDirection(player.getUuid(), player.getServer(), grav_dir);
     }
 
 
@@ -185,8 +189,8 @@ public class GameState extends PersistentState {
         return state.getPlayerGravStrengthModifier();
     }
 
-    protected static Double getPlayerGravStrengthModifier(ServerPlayerEntity player, MinecraftServer server) {
-        return getPlayerGravStrengthModifier(player.getUuid(), server);
+    protected static Double getPlayerGravStrengthModifier(ServerPlayerEntity player) {
+        return getPlayerGravStrengthModifier(player.getUuid(), player.getServer());
     }
 
     protected static void setPlayerGravStrengthModifier(UUID uuid, MinecraftServer server, Double grav_strength_mod) {
@@ -195,8 +199,8 @@ public class GameState extends PersistentState {
         setPlayerState(uuid, server, player_state);
     }
 
-    protected static void setPlayerGravStrengthModifier(ServerPlayerEntity player, MinecraftServer server, Double grav_strength_mod) {
-        setPlayerGravStrengthModifier(player, server, grav_strength_mod);
+    protected static void setPlayerGravStrengthModifier(ServerPlayerEntity player, Double grav_strength_mod) {
+        setPlayerGravStrengthModifier(player.getUuid(), player.getServer(), grav_strength_mod);
     }
 
 }

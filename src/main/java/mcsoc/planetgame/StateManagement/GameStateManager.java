@@ -11,9 +11,9 @@ public abstract class GameStateManager {
 
     private GameStateManager() { /* delete */ }
 
-    public static SyncPlayerDataS2CPayload getPlayerStatePacket(ServerPlayerEntity player, MinecraftServer server) {
+    public static SyncPlayerDataS2CPayload getPlayerStatePacket(ServerPlayerEntity player) {
         return new SyncPlayerDataS2CPayload(
-            GameState.getPlayerState(player, server)
+            GameState.getPlayerState(player)
         );
     }
 
@@ -30,7 +30,7 @@ public abstract class GameStateManager {
         );
     }
 
-    protected static void flipPlayerGravity(ServerPlayerEntity player, MinecraftServer server) {
-        flipPlayerGravity(player.getUuid(), server);
+    protected static void flipPlayerGravity(ServerPlayerEntity player) {
+        flipPlayerGravity(player.getUuid(), player.getServer());
     }
 }
