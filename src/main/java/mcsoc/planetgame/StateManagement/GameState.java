@@ -131,9 +131,7 @@ public class GameState extends PersistentState {
     }
 
     private void setPlayerState(UUID uuid, PlayerState player_state) {
-        PlanetGame.LOGGER.info("Flag4A");
         this.player_state_map.put(uuid, player_state);
-        PlanetGame.LOGGER.info("Flag4B");
     }
 
     protected static PlayerState getPlayerState(UUID uuid, MinecraftServer server) {
@@ -146,11 +144,8 @@ public class GameState extends PersistentState {
     }
 
     protected static void setPlayerState(UUID uuid, MinecraftServer server, PlayerState player_state) {
-        PlanetGame.LOGGER.info("Flag3A");
         GameState state = getServerState(server);
-        PlanetGame.LOGGER.info("Flag3B");
         state.setPlayerState(uuid, player_state);
-        PlanetGame.LOGGER.info("Flag3C");
     }
 
     protected static void setPlayerState(ServerPlayerEntity player, PlayerState player_state) {
@@ -158,25 +153,19 @@ public class GameState extends PersistentState {
     }
 
 
-    public static Direction getPlayerGravityDirection(UUID uuid, MinecraftServer server) {
-        PlanetGame.LOGGER.info("Flag1A");
+    protected static Direction getPlayerGravityDirection(UUID uuid, MinecraftServer server) {
         PlayerState state = getPlayerState(uuid, server);
-        PlanetGame.LOGGER.info("Flag1B");
         return state.getCurrentPlayerGravityDirection();
     }
 
-    public static Direction getPlayerGravityDirection(ServerPlayerEntity player) {
+    protected static Direction getPlayerGravityDirection(ServerPlayerEntity player) {
         return getPlayerGravityDirection(player.getUuid(), player.getServer());
     }
 
     protected static void setPlayerGravityDirection(UUID uuid, MinecraftServer server, Direction grav_dir) {
-        PlanetGame.LOGGER.info("flag2A");
         PlayerState player_state = getPlayerState(uuid, server);
-        PlanetGame.LOGGER.info("flag2B");
         player_state = player_state.setCurrentPlayerGravityDirection(grav_dir);
-        PlanetGame.LOGGER.info("flag2C");
         setPlayerState(uuid, server, player_state);
-        PlanetGame.LOGGER.info("flag2D");
     }
 
     protected static void setPlayerGravityDirection(ServerPlayerEntity player, Direction grav_dir) {

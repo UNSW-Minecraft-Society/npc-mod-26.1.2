@@ -17,20 +17,19 @@ public abstract class GameStateManager {
         );
     }
 
-    protected static void flipPlayerGravity(UUID uuid, MinecraftServer server) {
-        GameState.setPlayerGravityDirection(uuid, server, 
-            switch (GameState.getPlayerGravityDirection(uuid, server)) {
-                case DOWN -> Direction.UP;
-                case EAST -> Direction.WEST;
-                case NORTH -> Direction.SOUTH;
-                case SOUTH -> Direction.NORTH;
-                case UP -> Direction.DOWN;
-                case WEST -> Direction.EAST;
-            }
-        );
+    public static void flipPlayerGravity(UUID uuid, MinecraftServer server) {
+        Direction new_grav = switch (GameState.getPlayerGravityDirection(uuid, server)) {
+            case DOWN -> Direction.UP;
+            case EAST -> Direction.WEST;
+            case NORTH -> Direction.SOUTH;
+            case SOUTH -> Direction.NORTH;
+            case UP -> Direction.DOWN;
+            case WEST -> Direction.EAST;
+        };
+        GameState.setPlayerGravityDirection(uuid, server, new_grav);
     }
 
-    protected static void flipPlayerGravity(ServerPlayerEntity player) {
+    public static void flipPlayerGravity(ServerPlayerEntity player) {
         flipPlayerGravity(player.getUuid(), player.getServer());
     }
 }
