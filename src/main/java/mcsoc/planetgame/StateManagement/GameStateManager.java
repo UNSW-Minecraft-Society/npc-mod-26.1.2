@@ -32,4 +32,40 @@ public abstract class GameStateManager {
     public static void flipPlayerGravity(ServerPlayerEntity player) {
         flipPlayerGravity(player.getUuid(), player.getServer());
     }
+
+
+    public static Direction getPlayerGravityDirection(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerGravityDirection(uuid, server);
+    }
+
+    public static Direction getPlayerGravityDirection(ServerPlayerEntity player) {
+        return getPlayerGravityDirection(player.getUuid(), player.getServer());
+    }
+
+
+    public static void setPlayerGravityDirection(UUID uuid, MinecraftServer server, Direction grav_dir) {
+        GameState.setPlayerGravityDirection(uuid, server, grav_dir);
+    }
+
+    public static void setPlayerGravityDirection(ServerPlayerEntity player, Direction grav_dir) {
+        setPlayerGravityDirection(player.getUuid(), player.getServer(), grav_dir);
+    }
+
+
+    public static Double getPlayerGravityStrength(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerGravStrengthModifier(uuid, server);
+    }
+
+    public static Double getPlayerGravityStrength(ServerPlayerEntity player) {
+        return getPlayerGravityStrength(player.getUuid(), player.getServer());
+    }
+
+
+    public static void setPlayerGravityStrength(UUID uuid, MinecraftServer server, Double grav_dir) {
+        GameState.setPlayerGravStrengthModifier(uuid, server, grav_dir);
+    }
+
+    public static void setPlayerGravityStrength(ServerPlayerEntity player, Double grav_dir) {
+        setPlayerGravityStrength(player.getUuid(), player.getServer(), grav_dir);
+    }
 }

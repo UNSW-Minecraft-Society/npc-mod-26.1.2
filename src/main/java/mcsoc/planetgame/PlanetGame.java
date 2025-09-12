@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcsoc.planetgame.EventHandlers.CommandRegistrationHandler;
+import mcsoc.planetgame.EventHandlers.PerTickServerEvent;
 import mcsoc.planetgame.EventHandlers.PlayerJoinServerEvent;
 
 
@@ -27,5 +28,6 @@ public class PlanetGame implements ModInitializer {
 
 		PlayerJoinServerEvent.Register();
 		CommandRegistrationHandler.Register();
+		PerTickServerEvent.Register();
 	}
 }

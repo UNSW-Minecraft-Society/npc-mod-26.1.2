@@ -3,9 +3,6 @@
 	"package": "mcsoc.planetgame.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ExampleClientMixin",
-		"CameraRotationMixin",
-		"MouseInversionMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
