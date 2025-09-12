@@ -9,8 +9,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
 import mcsoc.planetgame.EventHandlers.CommandRegistrationHandler;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -68,6 +66,5 @@ public abstract class GameEffects {
 
     public static void toggleIsPlayerFlipped(ServerPlayerEntity player) {
         GameStateManager.flipPlayerGravity(player);
-        ServerPlayNetworking.send(player, GameStateManager.getPlayerStatePacket(player));
     }
 }

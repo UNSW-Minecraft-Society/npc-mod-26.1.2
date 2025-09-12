@@ -3,6 +3,11 @@
 	"package": "mcsoc.planetgame.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
+		"EntityInvoker",
+		"EntityMixin",
+		"LivingEntityInvoker",
+		"LivingEntityMixin",
+		"ServerPlayerEntityMixin"
 	],
 	"refmap": "planet-game-refmap.json",
 	"injectors": {

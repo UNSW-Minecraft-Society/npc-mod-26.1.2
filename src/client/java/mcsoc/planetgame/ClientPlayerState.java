@@ -1,33 +1,24 @@
 package mcsoc.planetgame;
 
-import mcsoc.planetgame.StateManagement.PlayerState;
+import mcsoc.planetgame.Networking.SyncPlayerGravityDataS2CPayload;
 import net.minecraft.util.math.Direction;
 
-public record ClientPlayerState(Double grav_mod, Direction grav_dir) {
-
-    public static ClientPlayerState fromPlayerState(PlayerState ps) {
-        return new ClientPlayerState(ps.grav_mod(), ps.grav_dir());
-    }
-
-    public ClientPlayerState setPlayerGravStrengthModifier(Double new_grav_mod) {
-        return new ClientPlayerState(new_grav_mod, grav_dir);
-    }
-
-    public Double getPlayerGravStrengthModifier() {
-        return grav_mod;
-    }
+public record ClientPlayerState(Direction grav_dir) {
 
     public ClientPlayerState setPlayerGravDirection(Direction new_grav_dir) {
-        return new ClientPlayerState(grav_mod, new_grav_dir);
+        return new ClientPlayerState(new_grav_dir);
     }
 
     public Direction getPlayerGravDirection() {
-        return grav_dir;
+        return this.grav_dir;
     }
 
-
     public static ClientPlayerState getDefaultPlayerState() {
-        return new ClientPlayerState(Double.valueOf(1), Direction.DOWN);
+        return new ClientPlayerState(Direction.DOWN);
+    }
+
+    public ClientPlayerState updateGravityFromPayload(SyncPlayerGravityDataS2CPayload payload) {
+        return new ClientPlayerState(payload.gravity_direction());
     }
     
 }

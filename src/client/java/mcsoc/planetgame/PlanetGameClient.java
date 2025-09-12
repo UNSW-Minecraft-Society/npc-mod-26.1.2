@@ -3,7 +3,8 @@ package mcsoc.planetgame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcsoc.planetgame.EventHandlers.ReceivePacketEvent;
+import mcsoc.planetgame.EventHandlers.ReceiveGravityPacketEvent;
+import mcsoc.planetgame.Networking.SyncPlayerGravityDataS2CPayload;
 import net.fabricmc.api.ClientModInitializer;
 
 public class PlanetGameClient implements ClientModInitializer {
@@ -20,10 +21,15 @@ public class PlanetGameClient implements ClientModInitializer {
 		PlanetGameClient.player_state = player_state;
 	}
 
+	public static void updateGravityState(SyncPlayerGravityDataS2CPayload payload) {
+		setPlayerState(getPlayerState().updateGravityFromPayload(payload));
+	}
+
+
 	@Override
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
-		ReceivePacketEvent.Register();
+		ReceiveGravityPacketEvent.Register();
 	}
 }

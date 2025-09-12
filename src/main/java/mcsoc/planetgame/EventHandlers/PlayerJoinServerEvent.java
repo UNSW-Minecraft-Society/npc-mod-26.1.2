@@ -12,8 +12,7 @@ public abstract class PlayerJoinServerEvent {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             
             PlanetGame.LOGGER.info("{} joined the server, sending packet.", handler.getPlayer().getUuidAsString());
-
-            sender.sendPacket(GameStateManager.getPlayerStatePacket(handler.getPlayer()));
+            sender.sendPacket(GameStateManager.getPlayerGravityStatePacket(handler.getPlayer()));
         });
     }
 }

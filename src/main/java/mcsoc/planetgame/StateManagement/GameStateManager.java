@@ -2,18 +2,19 @@ package mcsoc.planetgame.StateManagement;
 
 import java.util.UUID;
 
-import mcsoc.planetgame.Networking.SyncPlayerDataS2CPayload;
+import mcsoc.planetgame.Networking.SyncPlayerGravityDataS2CPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
 
 public abstract class GameStateManager {
-
     private GameStateManager() { /* delete */ }
 
-    public static SyncPlayerDataS2CPayload getPlayerStatePacket(ServerPlayerEntity player) {
-        return new SyncPlayerDataS2CPayload(
-            GameState.getPlayerState(player)
+    public static SyncPlayerGravityDataS2CPayload getPlayerGravityStatePacket(ServerPlayerEntity player) {
+        PlayerState state = GameState.getPlayerState(player);
+        return new SyncPlayerGravityDataS2CPayload(
+            state.grav_dir(),
+            state.grav_mod()
         );
     }
 

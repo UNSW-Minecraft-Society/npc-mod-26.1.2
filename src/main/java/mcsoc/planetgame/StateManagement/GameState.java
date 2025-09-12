@@ -44,8 +44,8 @@ public class GameState extends PersistentState {
     }
     
     public static final Codec<GameState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            Codec.unboundedMap(Uuids.CODEC, PlayerState.CODEC).fieldOf("player_states_map").forGetter(GameState::getStates)
-        ).apply(inst, GameState::new));
+        Codec.unboundedMap(Uuids.CODEC, PlayerState.CODEC).fieldOf("player_states_map").forGetter(GameState::getStates)
+    ).apply(inst, GameState::new));
 
 
     @Override
