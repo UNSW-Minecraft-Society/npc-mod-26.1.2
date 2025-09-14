@@ -1,4 +1,4 @@
-package mcsoc.planetgame.Networking;
+package mcsoc.planetgame.networking;
 
 import net.minecraft.util.Identifier;
 

@@ -1,4 +1,4 @@
-package mcsoc.planetgame.EventHandlers;
+package mcsoc.planetgame.eventhandlers;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -9,8 +9,8 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import mcsoc.planetgame.EventHandlers.CommandRegistrationHandler.CommandSuggestionProviders.OnlinePlayerSuggestionProvider;
-import mcsoc.planetgame.StateManagement.GameEffects;
+import mcsoc.planetgame.statemanagement.GameEffects;
+import mcsoc.planetgame.eventhandlers.CommandRegistrationHandler.CommandSuggestionProviders.OnlinePlayerSuggestionProvider;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
@@ -37,7 +37,6 @@ public abstract class CommandRegistrationHandler {
     
     public static void Register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            
             dispatcher.register(CommandManager.literal("gravity_control")
                 .then(CommandManager.literal("flip")
                 // no player given, flip self

@@ -1,4 +1,4 @@
-package mcsoc.planetgame.Blocks;
+package mcsoc.planetgame.blocks;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

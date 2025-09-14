@@ -1,7 +1,7 @@
-package mcsoc.planetgame.EventHandlers;
+package mcsoc.planetgame.eventhandlers;
 
 import gravity_changer.api.GravityChangerAPI;
-import mcsoc.planetgame.StateManagement.GameStateManager;
+import mcsoc.planetgame.statemanagement.GameStateManager;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.LivingEntity;

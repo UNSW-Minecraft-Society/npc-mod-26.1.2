@@ -1,4 +1,4 @@
-package mcsoc.planetgame.Blocks;
+package mcsoc.planetgame.blocks;
 
 import mcsoc.planetgame.PlanetGame;
 

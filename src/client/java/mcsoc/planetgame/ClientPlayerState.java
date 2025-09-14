@@ -1,6 +1,6 @@
 package mcsoc.planetgame;
 
-import mcsoc.planetgame.Networking.SyncPlayerGravityDataS2CPayload;
+import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import net.minecraft.util.math.Direction;
 
 public record ClientPlayerState(Direction grav_dir) {

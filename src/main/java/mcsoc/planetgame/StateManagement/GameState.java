@@ -1,6 +1,7 @@
-package mcsoc.planetgame.StateManagement;
+package mcsoc.planetgame.statemanagement;
 
 import mcsoc.planetgame.PlanetGame;
+import mcsoc.planetgame.statemanagement.PlayerState.GravityStrength;
 
 import java.util.HashMap;
 import java.util.Map;

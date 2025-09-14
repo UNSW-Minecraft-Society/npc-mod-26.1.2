@@ -1,6 +1,7 @@
-package mcsoc.planetgame.StateManagement;
+package mcsoc.planetgame.statemanagement;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -8,7 +9,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
-import mcsoc.planetgame.EventHandlers.CommandRegistrationHandler;
+import mcsoc.planetgame.eventhandlers.CommandRegistrationHandler;
+import mcsoc.planetgame.statemanagement.PlayerState.GravityStrength;
+import mcsoc.planetgame.statemanagement.PlayerState.PlayerAbilities1;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;

@@ -3,8 +3,8 @@ package mcsoc.planetgame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcsoc.planetgame.EventHandlers.ReceiveGravityPacketEvent;
-import mcsoc.planetgame.Networking.SyncPlayerGravityDataS2CPayload;
+import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
+import mcsoc.planetgame.packethandlers.GravitySyncPacketEvent;
 import net.fabricmc.api.ClientModInitializer;
 
 public class PlanetGameClient implements ClientModInitializer {

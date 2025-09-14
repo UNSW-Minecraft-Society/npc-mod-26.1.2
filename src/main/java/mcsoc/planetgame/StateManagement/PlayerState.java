@@ -1,4 +1,4 @@
-package mcsoc.planetgame.StateManagement;
+package mcsoc.planetgame.statemanagement;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
