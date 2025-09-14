@@ -9,6 +9,7 @@ import mcsoc.planetgame.blocks.BlockRegistration;
 import mcsoc.planetgame.eventhandlers.CommandRegistrationHandler;
 import mcsoc.planetgame.eventhandlers.PerTickServerEvent;
 import mcsoc.planetgame.eventhandlers.PlayerJoinServerEvent;
+import mcsoc.planetgame.networking.packethandlers.GravityAbilityTriggerPacketEvent;
 
 
 public class PlanetGame implements ModInitializer {
@@ -27,10 +28,15 @@ public class PlanetGame implements ModInitializer {
 
 		LOGGER.info("Hello Fabric world!");
 
+		// event handlers
 		PlayerJoinServerEvent.Register();
 		CommandRegistrationHandler.Register();
 		PerTickServerEvent.Register();
 
+		// blocks, items, potions ect
 		BlockRegistration.Register();
+		
+		// network packet handlers
+		GravityAbilityTriggerPacketEvent.Register();
 	}
 }

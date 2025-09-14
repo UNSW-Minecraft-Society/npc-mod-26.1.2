@@ -1,4 +1,4 @@
-package mcsoc.planetgame.packethandlers;
+package mcsoc.planetgame.networking.packethandlers;
 
 import mcsoc.planetgame.PlanetGameClient;
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;

@@ -195,22 +195,24 @@ public class GameState extends PersistentState {
     }
 
 
-    public static PlayerFirstAbilities getPlayerFirstAbility(UUID uuid, MinecraftServer server) {
+    protected static PlayerFirstAbilities getPlayerFirstAbility(UUID uuid, MinecraftServer server) {
         PlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerFirstAbility();
     }
 
-    public static PlayerFirstAbilities getPlayerFirstAbility(ServerPlayerEntity player) {
+    protected static PlayerFirstAbilities getPlayerFirstAbility(ServerPlayerEntity player) {
         return getPlayerFirstAbility(player.getUuid(), player.getServer());
     }
 
-    public static void setPlayerFirstAbility(UUID uuid, MinecraftServer server, PlayerFirstAbilities first_ability) {
+    protected static void setPlayerFirstAbility(UUID uuid, MinecraftServer server, PlayerFirstAbilities first_ability) {
         PlayerState player_state = getPlayerState(uuid, server);
+        PlanetGame.LOGGER.info("setting ability to {}", first_ability);
         player_state = player_state.setPlayerFirstAbility(first_ability);
+        PlanetGame.LOGGER.info("set ability to {}", player_state.getPlayerFirstAbility());
         setPlayerState(uuid, server, player_state);
     }
 
-    public static void setPlayerFirstAbility(ServerPlayerEntity player, PlayerFirstAbilities first_ability) {
+    protected static void setPlayerFirstAbility(ServerPlayerEntity player, PlayerFirstAbilities first_ability) {
         setPlayerFirstAbility(player.getUuid(), player.getServer(), first_ability);
     }
 

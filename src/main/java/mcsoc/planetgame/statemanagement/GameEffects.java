@@ -9,6 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
+import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.eventhandlers.CommandRegistrationHandler;
 import mcsoc.planetgame.statemanagement.PlayerState.GravityStrength;
 import mcsoc.planetgame.statemanagement.PlayerState.PlayerFirstAbilities;
@@ -106,9 +107,9 @@ public abstract class GameEffects {
 
     public static void toggleNextGravityStrength(UUID uuid, MinecraftServer server) {
         GravityStrength new_grav_strength = switch (GameStateManager.getPlayerGravityStrength(uuid, server)) {
-            case GRAV_STRENGTH_HIGH -> GravityStrength.GRAV_STRENGTH_LOW;
-            case GRAV_STRENGTH_LOW -> GravityStrength.GRAV_STRENGTH_NORMAL;
-            case GRAV_STRENGTH_NORMAL -> GravityStrength.GRAV_STRENGTH_HIGH;
+            case GRAV_STRENGTH_HIGH -> GravityStrength.GRAV_STRENGTH_NORMAL;
+            case GRAV_STRENGTH_LOW -> GravityStrength.GRAV_STRENGTH_HIGH;
+            case GRAV_STRENGTH_NORMAL -> GravityStrength.GRAV_STRENGTH_LOW;
             default -> GravityStrength.GRAV_STRENGTH_NONE;
         };
 
@@ -130,14 +131,26 @@ public abstract class GameEffects {
 
 
     public static void triggerGravAbility(UUID uuid, MinecraftServer server) {
-        if (GameStateManager.getPlayerFirstAbility(uuid, server) == PlayerFirstAbilities.FLIP) {
+        PlayerFirstAbilities first_ability = GameStateManager.getPlayerFirstAbility(uuid, server);
+        if (first_ability == PlayerFirstAbilities.FLIP) {
             GameEffects.toggleIsPlayerFlipped(uuid, server);
-        } else if (GameStateManager.getPlayerFirstAbility(uuid, server) == PlayerFirstAbilities.CONTROL) {
+        } else if (first_ability == PlayerFirstAbilities.CONTROL) {
             GameEffects.toggleNextGravityStrength(uuid, server);
         }
     }
 
     public static void triggerGravAbility(ServerPlayerEntity player) {
         triggerGravAbility(player.getUuid(), player.getServer());
+    }
+    
+
+    public static Text getFirstAbilityActionbarResponse(ServerPlayerEntity player) {
+        PlayerFirstAbilities first_ability = GameStateManager.getPlayerFirstAbility(player);
+        if (first_ability == PlayerFirstAbilities.FLIP) {
+            return Text.of(String.format("gravity direction: %s", GameStateManager.getPlayerGravityDirection(player)));
+        } else if (first_ability == PlayerFirstAbilities.CONTROL) {
+            return Text.of(String.format("gravity strength: %.1f", GameStateManager.getPlayerGravityStrength(player).getDouble()));
+        }
+        return Text.literal("No ability to trigger.");
     }
 }

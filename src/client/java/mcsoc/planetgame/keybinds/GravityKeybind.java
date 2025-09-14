@@ -8,9 +8,10 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
 
-public class Gravity {
+public class GravityKeybind {
+    private GravityKeybind() { /* delete */ }
+
     private static KeyBinding grav_keybind;
 
     public static void registerBindings() {
@@ -25,13 +26,13 @@ public class Gravity {
     public static void registerBindEvents() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (grav_keybind.wasPressed()) {
-                client.player.sendMessage(Text.literal("Key 1 was pressed!"), false);
                 ClientPlayNetworking.send(new TriggerFirstAbilityC2SPayload());
             }
         });
     }
 
     public static void Register() {
-        
+        registerBindings();
+        registerBindEvents();
     }
 }

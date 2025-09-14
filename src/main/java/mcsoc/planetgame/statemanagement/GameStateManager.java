@@ -74,7 +74,7 @@ public abstract class GameStateManager {
 
     
     public static PlayerFirstAbilities getPlayerFirstAbility(UUID uuid, MinecraftServer server) {
-        return PlayerFirstAbilities.NONE;
+        return GameState.getPlayerFirstAbility(uuid, server);
     }
 
     public static PlayerFirstAbilities getPlayerFirstAbility(ServerPlayerEntity player) {
@@ -83,6 +83,8 @@ public abstract class GameStateManager {
 
     public static void setPlayerFirstAbility(UUID uuid, MinecraftServer server, PlayerFirstAbilities ability) {
         GameState.setPlayerFirstAbility(uuid, server, ability);
+        setPlayerGravityDirection(uuid, server, Direction.DOWN);
+        setPlayerGravityStrength(uuid, server, GravityStrength.getDefault());
     }
 
     public static void setPlayerFirstAbility(ServerPlayerEntity player, PlayerFirstAbilities ability) {

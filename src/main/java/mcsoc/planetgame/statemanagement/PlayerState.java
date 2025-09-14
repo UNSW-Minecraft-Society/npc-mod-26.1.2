@@ -10,7 +10,7 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.math.Direction;
 
 public record PlayerState(Direction grav_dir, GravityStrength grav_strength, PlayerFirstAbilities first_ability) {
-    public static enum PlayerFirstAbilities {
+    public enum PlayerFirstAbilities {
         NONE(0),
         FLIP(1),
         CONTROL(2);
@@ -37,13 +37,13 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
         }
     }
 
-    public static enum PlayerSecondAbilities {
+    public enum PlayerSecondAbilities {
         NONE,
         XRAY,
         DIGGER
     }
 
-    public static enum GravityStrength {
+    public enum GravityStrength {
         GRAV_STRENGTH_NONE(0D),
         GRAV_STRENGTH_LOW(0.1D),
         GRAV_STRENGTH_NORMAL(1D),
@@ -58,10 +58,15 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
         public Double getDouble() {
             return val;
         }
+        
+
+        public static GravityStrength getDefault() {
+            return GravityStrength.GRAV_STRENGTH_NORMAL;
+        }
 
         public static GravityStrength fromDouble(Double d) {
             for (GravityStrength s : GravityStrength.values()) {
-                if (s.getDouble() == d) {
+                if (s.getDouble().equals(d)) {
                     return s;
                 }
             }
