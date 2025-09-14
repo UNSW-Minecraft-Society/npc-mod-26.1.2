@@ -71,7 +71,7 @@ public class GameState extends PersistentState {
         nbt.copyFrom(compound);
         return nbt;
     }
- 
+    
     protected static GameState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
         DataResult<Pair<GameState, NbtElement>> state_packed = GameState.CODEC.decode(NbtOps.INSTANCE, tag);
         return state_packed.getOrThrow().getFirst();
@@ -174,22 +174,22 @@ public class GameState extends PersistentState {
     }
 
 
-    protected static Double getPlayerGravStrengthModifier(UUID uuid, MinecraftServer server) {
+    protected static GravityStrength getPlayerGravStrengthModifier(UUID uuid, MinecraftServer server) {
         PlayerState state = getPlayerState(uuid, server);
         return state.getPlayerGravStrengthModifier();
     }
 
-    protected static Double getPlayerGravStrengthModifier(ServerPlayerEntity player) {
+    protected static GravityStrength getPlayerGravStrengthModifier(ServerPlayerEntity player) {
         return getPlayerGravStrengthModifier(player.getUuid(), player.getServer());
     }
 
-    protected static void setPlayerGravStrengthModifier(UUID uuid, MinecraftServer server, Double grav_strength_mod) {
+    protected static void setPlayerGravStrengthModifier(UUID uuid, MinecraftServer server, GravityStrength grav_strength_mod) {
         PlayerState player_state = getPlayerState(uuid, server);
         player_state = player_state.setPlayerGravStrengthModifier(grav_strength_mod);
         setPlayerState(uuid, server, player_state);
     }
 
-    protected static void setPlayerGravStrengthModifier(ServerPlayerEntity player, Double grav_strength_mod) {
+    protected static void setPlayerGravStrengthModifier(ServerPlayerEntity player, GravityStrength grav_strength_mod) {
         setPlayerGravStrengthModifier(player.getUuid(), player.getServer(), grav_strength_mod);
     }
 

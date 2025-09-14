@@ -13,8 +13,8 @@ public abstract class PerTickServerEvent {
 
     private static void updateClientGravityState(ServerPlayerEntity player) {
         GravityChangerAPI.setBaseGravityDirection(player, GameStateManager.getPlayerGravityDirection(player));
-        GravityChangerAPI.setBaseGravityStrength(player, GameStateManager.getPlayerGravityStrength(player));
-        player.getAttributeInstance(EntityAttributes.GENERIC_GRAVITY).setBaseValue(LivingEntity.GRAVITY * GameStateManager.getPlayerGravityStrength(player));
+        GravityChangerAPI.setBaseGravityStrength(player, GameStateManager.getPlayerGravityStrength(player).getDouble());
+        player.getAttributeInstance(EntityAttributes.GENERIC_GRAVITY).setBaseValue(LivingEntity.GRAVITY * GameStateManager.getPlayerGravityStrength(player).getDouble());
         
         ServerPlayNetworking.send(player, GameStateManager.getPlayerGravityStatePacket(player));
     }

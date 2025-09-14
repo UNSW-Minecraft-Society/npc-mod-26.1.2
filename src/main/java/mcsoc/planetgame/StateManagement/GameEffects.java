@@ -17,7 +17,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-public abstract class GameEffects {
+public abstract class GameEffects {    
+
     private GameEffects() { /* delete */ }
 
     public abstract static class CommandActions {
@@ -51,24 +52,56 @@ public abstract class GameEffects {
         public static int setCallingPlayerGravStrengthCommand(CommandContext<ServerCommandSource> cxt) {
             ServerPlayerEntity player = cxt.getSource().getPlayer();
             Double new_grav_strength = DoubleArgumentType.getDouble(cxt, CommandRegistrationHandler.GRAVITY_STRENGTH_ARGUMENT);
-            setPlayerGravStrength(player, new_grav_strength);
+            setPlayerGravStrength(player, GravityStrength.fromDouble(new_grav_strength));
             return 1;
         }
 
         public static int setTargetPlayerGravStrengthCommand(CommandContext<ServerCommandSource> cxt) throws CommandSyntaxException {
             ServerPlayerEntity player = getPlayerFromName(cxt);
             Double new_grav_strength = DoubleArgumentType.getDouble(cxt, CommandRegistrationHandler.GRAVITY_STRENGTH_ARGUMENT);
-            setPlayerGravStrength(player, new_grav_strength);
+            setPlayerGravStrength(player, GravityStrength.fromDouble(new_grav_strength));
             return 1;
         }
     }
 
-    public static void setPlayerGravStrength(ServerPlayerEntity player, Double grav_strength) {
+    public static void setPlayerGravStrength(ServerPlayerEntity player, GravityStrength grav_strength) {
         GameStateManager.setPlayerGravityStrength(player, grav_strength);
     }
 
+    public static void toggleNextGravityStrength(UUID uuid, MinecraftServer server) {
+        GravityStrength new_grav_strength = switch (GameStateManager.getPlayerGravityStrength(uuid, server)) {
+            case GRAV_STRENGTH_HIGH -> GravityStrength.GRAV_STRENGTH_LOW;
+            case GRAV_STRENGTH_LOW -> GravityStrength.GRAV_STRENGTH_NORMAL;
+            case GRAV_STRENGTH_NORMAL -> GravityStrength.GRAV_STRENGTH_HIGH;
+            default -> GravityStrength.GRAV_STRENGTH_NONE;
+        };
+
+        GameStateManager.setPlayerGravityStrength(uuid, server, new_grav_strength);
+    }
+
+    public static void toggleNextGravityStrength(ServerPlayerEntity player) {
+        toggleNextGravityStrength(player.getUuid(), player.getServer());
+    }
+
+
+    public static void toggleIsPlayerFlipped(UUID uuid, MinecraftServer server) {
+        GameStateManager.flipPlayerGravity(uuid, server);
+    }
 
     public static void toggleIsPlayerFlipped(ServerPlayerEntity player) {
-        GameStateManager.flipPlayerGravity(player);
+        toggleIsPlayerFlipped(player.getUuid(), player.getServer());
+    }
+
+
+    public static void triggerGravAbility(UUID uuid, MinecraftServer server) {
+        if (GameStateManager.getPlayerAbility1(uuid, server) == PlayerAbilities1.FLIP) {
+            GameEffects.toggleIsPlayerFlipped(uuid, server);
+        } else if (GameStateManager.getPlayerAbility1(uuid, server) == PlayerAbilities1.CONTROL) {
+            GameEffects.toggleNextGravityStrength(uuid, server);
+        }
+    }
+
+    public static void triggerGravAbility(ServerPlayerEntity player) {
+        triggerGravAbility(player.getUuid(), player.getServer());
     }
 }

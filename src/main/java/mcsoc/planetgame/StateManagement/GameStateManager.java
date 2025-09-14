@@ -55,20 +55,29 @@ public abstract class GameStateManager {
     }
 
 
-    public static Double getPlayerGravityStrength(UUID uuid, MinecraftServer server) {
+    public static GravityStrength getPlayerGravityStrength(UUID uuid, MinecraftServer server) {
         return GameState.getPlayerGravStrengthModifier(uuid, server);
     }
 
-    public static Double getPlayerGravityStrength(ServerPlayerEntity player) {
+    public static GravityStrength getPlayerGravityStrength(ServerPlayerEntity player) {
         return getPlayerGravityStrength(player.getUuid(), player.getServer());
     }
 
 
-    public static void setPlayerGravityStrength(UUID uuid, MinecraftServer server, Double grav_dir) {
-        GameState.setPlayerGravStrengthModifier(uuid, server, grav_dir);
+    public static void setPlayerGravityStrength(UUID uuid, MinecraftServer server, GravityStrength grav_strength) {
+        GameState.setPlayerGravStrengthModifier(uuid, server, grav_strength);
     }
 
-    public static void setPlayerGravityStrength(ServerPlayerEntity player, Double grav_dir) {
-        setPlayerGravityStrength(player.getUuid(), player.getServer(), grav_dir);
+    public static void setPlayerGravityStrength(ServerPlayerEntity player, GravityStrength grav_strength) {
+        setPlayerGravityStrength(player.getUuid(), player.getServer(), grav_strength);
+    }
+
+    
+    public static PlayerAbilities1 getPlayerAbility1(UUID uuid, MinecraftServer server) {
+        return PlayerAbilities1.NONE;
+    }
+
+    public static PlayerAbilities1 gPlayerAbilities1(ServerPlayerEntity player) {
+        return getPlayerAbility1(player.getUuid(), player.getServer());
     }
 }
