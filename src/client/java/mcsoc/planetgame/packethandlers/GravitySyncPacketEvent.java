@@ -1,13 +1,13 @@
-package mcsoc.planetgame.EventHandlers;
+package mcsoc.planetgame.packethandlers;
 
 import mcsoc.planetgame.PlanetGameClient;
-import mcsoc.planetgame.Networking.SyncPlayerGravityDataS2CPayload;
+import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
-public abstract class ReceiveGravityPacketEvent {
+public abstract class GravitySyncPacketEvent {
 
-    private ReceiveGravityPacketEvent() { /* delete */}
+    private GravitySyncPacketEvent() { /* delete */}
 
     public static void Register() {
 
