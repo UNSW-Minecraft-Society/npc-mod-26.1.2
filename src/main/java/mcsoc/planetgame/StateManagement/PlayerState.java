@@ -3,16 +3,44 @@ package mcsoc.planetgame.statemanagement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.math.Direction;
 
-public record PlayerState(Direction grav_dir, GravityStrength grav_mod) {
-    public static enum PlayerAbilities1 {
+public record PlayerState(Direction grav_dir, GravityStrength grav_strength, PlayerFirstAbilities first_ability) {
+    public static enum PlayerFirstAbilities {
+        NONE(0),
+        FLIP(1),
+        CONTROL(2);
+
+        private final int identifier;
+
+        private PlayerFirstAbilities(int id) {
+            this.identifier = id;
+        }
+
+        public static final Codec<PlayerFirstAbilities> CODEC = Codec.INT.xmap(PlayerFirstAbilities::fromInt, PlayerFirstAbilities::asInt);
+
+        public static final PacketCodec<ByteBuf, PlayerFirstAbilities> PACKET_CODEC = PacketCodecs.INTEGER.xmap(PlayerFirstAbilities::fromInt, PlayerFirstAbilities::asInt);
+
+        public int asInt() {
+            return this.identifier;
+        }
+
+        public static PlayerFirstAbilities fromInt(int i) {
+            for (PlayerFirstAbilities a : PlayerFirstAbilities.values()) {
+                if (a.asInt() == i) return a;
+            }
+            return PlayerFirstAbilities.NONE; 
+        }
+    }
+
+    public static enum PlayerSecondAbilities {
         NONE,
-        FLIP,
-        CONTROL
+        XRAY,
+        DIGGER
     }
 
     public static enum GravityStrength {
@@ -56,35 +84,45 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_mod) {
 
 
 
-    public PlayerState setCurrentPlayerGravityDirection(Direction new_grav_dir) {
-        return new PlayerState(new_grav_dir, this.grav_mod);
-    }
-
     public Direction getCurrentPlayerGravityDirection() {
         return grav_dir;
     }
 
-    public PlayerState setPlayerGravStrengthModifier(GravityStrength grav_strength_mod) {
-        return new PlayerState(this.grav_dir, grav_strength_mod);
-    }
-
     public GravityStrength getPlayerGravStrengthModifier() {
-        return grav_mod;
+        return grav_strength;
     }
 
+    public PlayerFirstAbilities getPlayerFirstAbility() {
+        return first_ability;
+    }
+
+
+    public PlayerState setPlayerGravStrengthModifier(GravityStrength new_grav_strength) {
+        return new PlayerState(this.grav_dir, new_grav_strength, this.first_ability);
+    }
+
+    public PlayerState setPlayerGravityDirection(Direction new_grav_dir) {
+        return new PlayerState(new_grav_dir, this.grav_strength, this.first_ability);
+    }
+
+    public PlayerState setPlayerFirstAbility(PlayerFirstAbilities new_first_ability) {
+        return new PlayerState(this.grav_dir, this.grav_strength, new_first_ability);
+    }
 
     public static PlayerState getDefaultPlayerState() {
-        return new PlayerState(Direction.DOWN, GravityStrength.GRAV_STRENGTH_NORMAL);
+        return new PlayerState(Direction.DOWN, GravityStrength.GRAV_STRENGTH_NORMAL, PlayerFirstAbilities.NONE);
     }
     
     public static final Codec<PlayerState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
         Direction.CODEC.fieldOf("gravity_direction").forGetter(PlayerState::grav_dir),
-        GravityStrength.CODEC.fieldOf("gravity_strength_modifier").forGetter(PlayerState::grav_mod)
+        GravityStrength.CODEC.fieldOf("gravity_strength_modifier").forGetter(PlayerState::grav_strength),
+        PlayerFirstAbilities.CODEC.fieldOf("player_first_ability").forGetter(PlayerState::first_ability)
     ).apply(inst, PlayerState::new));
 
     public static final PacketCodec<RegistryByteBuf, PlayerState> PACKET_CODEC = PacketCodec.tuple(
         Direction.PACKET_CODEC, PlayerState::grav_dir,
-        GravityStrength.PACKET_CODEC, PlayerState::grav_mod,
+        GravityStrength.PACKET_CODEC, PlayerState::grav_strength,
+        PlayerFirstAbilities.PACKET_CODEC, PlayerState::first_ability,
         PlayerState::new
     );
 }

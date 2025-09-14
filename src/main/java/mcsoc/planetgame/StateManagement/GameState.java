@@ -2,6 +2,7 @@ package mcsoc.planetgame.statemanagement;
 
 import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.statemanagement.PlayerState.GravityStrength;
+import mcsoc.planetgame.statemanagement.PlayerState.PlayerFirstAbilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -155,8 +156,8 @@ public class GameState extends PersistentState {
 
 
     protected static Direction getPlayerGravityDirection(UUID uuid, MinecraftServer server) {
-        PlayerState state = getPlayerState(uuid, server);
-        return state.getCurrentPlayerGravityDirection();
+        PlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getCurrentPlayerGravityDirection();
     }
 
     protected static Direction getPlayerGravityDirection(ServerPlayerEntity player) {
@@ -165,7 +166,7 @@ public class GameState extends PersistentState {
 
     protected static void setPlayerGravityDirection(UUID uuid, MinecraftServer server, Direction grav_dir) {
         PlayerState player_state = getPlayerState(uuid, server);
-        player_state = player_state.setCurrentPlayerGravityDirection(grav_dir);
+        player_state = player_state.setPlayerGravityDirection(grav_dir);
         setPlayerState(uuid, server, player_state);
     }
 
@@ -175,8 +176,8 @@ public class GameState extends PersistentState {
 
 
     protected static GravityStrength getPlayerGravStrengthModifier(UUID uuid, MinecraftServer server) {
-        PlayerState state = getPlayerState(uuid, server);
-        return state.getPlayerGravStrengthModifier();
+        PlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerGravStrengthModifier();
     }
 
     protected static GravityStrength getPlayerGravStrengthModifier(ServerPlayerEntity player) {
@@ -191,6 +192,26 @@ public class GameState extends PersistentState {
 
     protected static void setPlayerGravStrengthModifier(ServerPlayerEntity player, GravityStrength grav_strength_mod) {
         setPlayerGravStrengthModifier(player.getUuid(), player.getServer(), grav_strength_mod);
+    }
+
+
+    public static PlayerFirstAbilities getPlayerFirstAbility(UUID uuid, MinecraftServer server) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerFirstAbility();
+    }
+
+    public static PlayerFirstAbilities getPlayerFirstAbility(ServerPlayerEntity player) {
+        return getPlayerFirstAbility(player.getUuid(), player.getServer());
+    }
+
+    public static void setPlayerFirstAbility(UUID uuid, MinecraftServer server, PlayerFirstAbilities first_ability) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        player_state = player_state.setPlayerFirstAbility(first_ability);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    public static void setPlayerFirstAbility(ServerPlayerEntity player, PlayerFirstAbilities first_ability) {
+        setPlayerFirstAbility(player.getUuid(), player.getServer(), first_ability);
     }
 
 }

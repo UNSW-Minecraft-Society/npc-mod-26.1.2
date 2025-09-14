@@ -2,7 +2,7 @@ package mcsoc.planetgame.keybinds;
 
 import org.lwjgl.glfw.GLFW;
 
-import mcsoc.planetgame.networking.TriggerAbility1C2SPayload;
+import mcsoc.planetgame.networking.TriggerFirstAbilityC2SPayload;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -26,7 +26,7 @@ public class Gravity {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (grav_keybind.wasPressed()) {
                 client.player.sendMessage(Text.literal("Key 1 was pressed!"), false);
-                ClientPlayNetworking.send(new TriggerAbility1C2SPayload());
+                ClientPlayNetworking.send(new TriggerFirstAbilityC2SPayload());
             }
         });
     }

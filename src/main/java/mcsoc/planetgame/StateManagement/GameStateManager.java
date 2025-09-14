@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import mcsoc.planetgame.statemanagement.PlayerState.GravityStrength;
-import mcsoc.planetgame.statemanagement.PlayerState.PlayerAbilities1;
+import mcsoc.planetgame.statemanagement.PlayerState.PlayerFirstAbilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
@@ -16,7 +16,7 @@ public abstract class GameStateManager {
         PlayerState state = GameState.getPlayerState(player);
         return new SyncPlayerGravityDataS2CPayload(
             state.grav_dir(),
-            state.grav_mod()
+            state.grav_strength()
         );
     }
 
@@ -73,11 +73,19 @@ public abstract class GameStateManager {
     }
 
     
-    public static PlayerAbilities1 getPlayerAbility1(UUID uuid, MinecraftServer server) {
-        return PlayerAbilities1.NONE;
+    public static PlayerFirstAbilities getPlayerFirstAbility(UUID uuid, MinecraftServer server) {
+        return PlayerFirstAbilities.NONE;
     }
 
-    public static PlayerAbilities1 gPlayerAbilities1(ServerPlayerEntity player) {
-        return getPlayerAbility1(player.getUuid(), player.getServer());
+    public static PlayerFirstAbilities getPlayerFirstAbility(ServerPlayerEntity player) {
+        return getPlayerFirstAbility(player.getUuid(), player.getServer());
+    }
+
+    public static void setPlayerFirstAbility(UUID uuid, MinecraftServer server, PlayerFirstAbilities ability) {
+        GameState.setPlayerFirstAbility(uuid, server, ability);
+    }
+
+    public static void setPlayerFirstAbility(ServerPlayerEntity player, PlayerFirstAbilities ability) {
+        setPlayerFirstAbility(player.getUuid(), player.getServer(), ability);
     }
 }

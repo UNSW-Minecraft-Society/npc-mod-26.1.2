@@ -11,7 +11,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
 import mcsoc.planetgame.eventhandlers.CommandRegistrationHandler;
 import mcsoc.planetgame.statemanagement.PlayerState.GravityStrength;
-import mcsoc.planetgame.statemanagement.PlayerState.PlayerAbilities1;
+import mcsoc.planetgame.statemanagement.PlayerState.PlayerFirstAbilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -62,6 +62,42 @@ public abstract class GameEffects {
             setPlayerGravStrength(player, GravityStrength.fromDouble(new_grav_strength));
             return 1;
         }
+
+        public static int setCallingPlayerFirstAbilityNone(CommandContext<ServerCommandSource> cxt) {
+            ServerPlayerEntity player = cxt.getSource().getPlayer();
+            GameStateManager.setPlayerFirstAbility(player, PlayerFirstAbilities.NONE);
+            return 1;
+        }
+
+        public static int setTargetPlayerFirstAbilityNone(CommandContext<ServerCommandSource> cxt) throws CommandSyntaxException {
+            ServerPlayerEntity player = getPlayerFromName(cxt);
+            GameStateManager.setPlayerFirstAbility(player, PlayerFirstAbilities.NONE);
+            return 1;
+        }
+
+        public static int setCallingPlayerFirstAbilityFlip(CommandContext<ServerCommandSource> cxt) {
+            ServerPlayerEntity player = cxt.getSource().getPlayer();
+            GameStateManager.setPlayerFirstAbility(player, PlayerFirstAbilities.FLIP);
+            return 1;
+        }
+
+        public static int setTargetPlayerFirstAbilityFlip(CommandContext<ServerCommandSource> cxt) throws CommandSyntaxException {
+            ServerPlayerEntity player = getPlayerFromName(cxt);
+            GameStateManager.setPlayerFirstAbility(player, PlayerFirstAbilities.FLIP);
+            return 1;
+        }
+
+        public static int setCallingPlayerFirstAbilityControl(CommandContext<ServerCommandSource> cxt) {
+            ServerPlayerEntity player = cxt.getSource().getPlayer();
+            GameStateManager.setPlayerFirstAbility(player, PlayerFirstAbilities.CONTROL);
+            return 1;
+        }
+
+        public static int setTargetPlayerFirstAbilityControl(CommandContext<ServerCommandSource> cxt) throws CommandSyntaxException {
+            ServerPlayerEntity player = getPlayerFromName(cxt);
+            GameStateManager.setPlayerFirstAbility(player, PlayerFirstAbilities.CONTROL);
+            return 1;
+        }
     }
 
     public static void setPlayerGravStrength(ServerPlayerEntity player, GravityStrength grav_strength) {
@@ -94,9 +130,9 @@ public abstract class GameEffects {
 
 
     public static void triggerGravAbility(UUID uuid, MinecraftServer server) {
-        if (GameStateManager.getPlayerAbility1(uuid, server) == PlayerAbilities1.FLIP) {
+        if (GameStateManager.getPlayerFirstAbility(uuid, server) == PlayerFirstAbilities.FLIP) {
             GameEffects.toggleIsPlayerFlipped(uuid, server);
-        } else if (GameStateManager.getPlayerAbility1(uuid, server) == PlayerAbilities1.CONTROL) {
+        } else if (GameStateManager.getPlayerFirstAbility(uuid, server) == PlayerFirstAbilities.CONTROL) {
             GameEffects.toggleNextGravityStrength(uuid, server);
         }
     }
