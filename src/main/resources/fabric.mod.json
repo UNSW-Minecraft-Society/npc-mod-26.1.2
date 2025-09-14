@@ -34,6 +34,7 @@
 		"minecraft": "~1.21.1",
 		"java": ">=21",
 		"fabric-api": "*",
+		"fabric-key-binding-api-v1": "*",
 		"gravity_changer": ">=1.4.1-beta+mc1.21.1"
 	},
 	"suggests": {
