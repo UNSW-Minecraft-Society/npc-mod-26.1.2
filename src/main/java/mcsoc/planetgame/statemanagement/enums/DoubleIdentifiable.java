@@ -1,4 +1,4 @@
-package mcsoc.planetgame.statemanagement.enumcodecinterfaces;
+package mcsoc.planetgame.statemanagement.enums;
 
 import com.mojang.serialization.Codec;
 

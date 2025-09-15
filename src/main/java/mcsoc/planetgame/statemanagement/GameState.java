@@ -1,8 +1,8 @@
 package mcsoc.planetgame.statemanagement;
 
 import mcsoc.planetgame.PlanetGame;
-import mcsoc.planetgame.statemanagement.PlayerState.GravityStrength;
-import mcsoc.planetgame.statemanagement.PlayerState.PlayerFirstAbilities;
+import mcsoc.planetgame.statemanagement.enums.GravityStrength;
+import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 
 import java.util.HashMap;
 import java.util.Map;

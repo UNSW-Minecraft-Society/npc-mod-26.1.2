@@ -22,6 +22,7 @@ public abstract class PerTickServerEvent {
     public static void Register() {
         ServerTickEvents.START_WORLD_TICK.register(world -> {
             // if update necessary (TODO: IMPLEMENT THIS)
+            // maybe add field to ServerPlayerEntity like gravDirty?
             world.getPlayers().forEach(PerTickServerEvent::updateClientGravityState);
         });
         

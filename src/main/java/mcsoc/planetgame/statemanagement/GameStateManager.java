@@ -3,8 +3,8 @@ package mcsoc.planetgame.statemanagement;
 import java.util.UUID;
 
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
-import mcsoc.planetgame.statemanagement.PlayerState.GravityStrength;
-import mcsoc.planetgame.statemanagement.PlayerState.PlayerFirstAbilities;
+import mcsoc.planetgame.statemanagement.enums.GravityStrength;
+import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;

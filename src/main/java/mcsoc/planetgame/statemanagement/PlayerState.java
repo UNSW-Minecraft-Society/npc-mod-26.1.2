@@ -3,122 +3,17 @@ package mcsoc.planetgame.statemanagement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import io.netty.buffer.ByteBuf;
-import mcsoc.planetgame.statemanagement.enumcodecinterfaces.DoubleIdentifiable;
-import mcsoc.planetgame.statemanagement.enumcodecinterfaces.IntIdentifiable;
+import mcsoc.planetgame.statemanagement.enums.GravityStrength;
+import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
+import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
+import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
+
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.util.math.Direction;
 
 public record PlayerState(Direction grav_dir, GravityStrength grav_strength, PlayerFirstAbilities first_ability, PlayerSecondAbilities second_ability, PlayerThirdAbilities third_ability) {
     
-    public static enum PlayerFirstAbilities implements IntIdentifiable {
-        NONE(IntIdentifiable.DEFAULT_ID),
-        FLIP(1),
-        CONTROL(2);
-
-        private final int identifier;
-
-        private PlayerFirstAbilities(int id) {
-            this.identifier = id;
-        }
-
-        @Override
-        public int getIdentifier() {
-            return identifier;
-        }
-
-        public static PlayerFirstAbilities getDefault() {
-            return IntIdentifiable.getDefault(PlayerFirstAbilities.class);
-        }
-
-        public static final Codec<PlayerFirstAbilities> CODEC = IntIdentifiable.getCodec(PlayerFirstAbilities.class);
-        public static final PacketCodec<ByteBuf, PlayerFirstAbilities> PACKET_CODEC = IntIdentifiable.getPacketCodec(PlayerFirstAbilities.class);
-    }
-
-    public static enum PlayerSecondAbilities implements IntIdentifiable {
-        NONE(IntIdentifiable.DEFAULT_ID),
-        XRAY(1),
-        DRILLING(2);
-
-        private final int identifier;
-
-        private PlayerSecondAbilities(int id) {
-            this.identifier = id;
-        }
-
-        @Override
-        public int getIdentifier() {
-            return identifier;
-        }
-
-        public static PlayerSecondAbilities getDefault() {
-            return IntIdentifiable.getDefault(PlayerSecondAbilities.class);
-        }
-
-        public static final Codec<PlayerSecondAbilities> CODEC = IntIdentifiable.getCodec(PlayerSecondAbilities.class);
-        public static final PacketCodec<ByteBuf, PlayerSecondAbilities> PACKET_CODEC = IntIdentifiable.getPacketCodec(PlayerSecondAbilities.class);
-    }
-
-    public static enum PlayerThirdAbilities implements IntIdentifiable {
-        NONE(IntIdentifiable.DEFAULT_ID),
-        DASH(1),
-        THROW(2);
-
-        private final int identifier;
-
-        private PlayerThirdAbilities(int id) {
-            this.identifier = id;
-        }
-
-        @Override
-        public int getIdentifier() {
-            return identifier;
-        }
-
-        public static PlayerThirdAbilities getDefault() {
-            return IntIdentifiable.getDefault(PlayerThirdAbilities.class);
-        }
-
-        public static final Codec<PlayerThirdAbilities> CODEC = IntIdentifiable.getCodec(PlayerThirdAbilities.class);
-        public static final PacketCodec<ByteBuf, PlayerThirdAbilities> PACKET_CODEC = IntIdentifiable.getPacketCodec(PlayerThirdAbilities.class);
-    }
-
-
-    public enum GravityStrength implements DoubleIdentifiable {
-
-        GRAV_STRENGTH_NONE(DoubleIdentifiable.DEFAULT_ID),
-        GRAV_STRENGTH_LOW(0.1D),
-        GRAV_STRENGTH_NORMAL(1D),
-        GRAV_STRENGTH_HIGH(3D);
-
-        private Double val;
-
-        private GravityStrength(Double d) {
-            val = d;
-        }
-
-        public double getIdentifier() {
-            return val;
-        }
-
-        public double getDouble() {
-            return getIdentifier();
-        }
-
-        public static GravityStrength getDefault() {
-            return DoubleIdentifiable.getDefault(GravityStrength.class);
-        }
-
-        public static GravityStrength fromDouble(Double d) {
-            return DoubleIdentifiable.fromIdentifier(d, GravityStrength.class);
-        }
-
-        public static final Codec<GravityStrength> CODEC = DoubleIdentifiable.getCodec(GravityStrength.class);
-        public static final PacketCodec<ByteBuf, GravityStrength> PACKET_CODEC = DoubleIdentifiable.getPacketCodec(GravityStrength.class);
-    };
-
-
     public Direction getCurrentPlayerGravityDirection() {
         return grav_dir;
     }

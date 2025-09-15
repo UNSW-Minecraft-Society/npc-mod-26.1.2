@@ -1,6 +1,7 @@
 package mcsoc.planetgame.networking;
 
-import mcsoc.planetgame.statemanagement.PlayerState.GravityStrength;
+import mcsoc.planetgame.statemanagement.enums.GravityStrength;
+
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
