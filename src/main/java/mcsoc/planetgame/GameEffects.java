@@ -26,9 +26,9 @@ import net.minecraft.util.math.Vec3d;
 public abstract class GameEffects {    
     private GameEffects() { /* delete */ }
 
-    private static final double DASH_STRENGTH = 5;
-    public static final int DASH_COOLDOWN_TICKS = 20 * 3;
-    public static final int THROW_COOLDOWN_TICKS = 20 * 5;
+    private static final double DASH_STRENGTH = 0.8;
+    public static final int DASH_COOLDOWN_TICKS = 20 * 2;
+    public static final int THROW_COOLDOWN_TICKS = 20 * 3;
 
     public abstract static class CommandActions {
         private CommandActions() { /* delete */ }
@@ -232,8 +232,9 @@ public abstract class GameEffects {
 
 
     public static void triggerPlayerDashAdditive(ServerPlayerEntity player) {
-        Vec3d unitRotVecHorizontal = player.getRotationVector().multiply(1, 0, 1).normalize();
-        player.addVelocity(unitRotVecHorizontal.multiply(DASH_STRENGTH));
+        Vec3d unitRotVecHorizontal = player.getRotationVector().multiply(1, 0, 1).normalize().multiply(DASH_STRENGTH);
+        player.addVelocity(unitRotVecHorizontal);
+        player.setVelocity(player.getVelocity().multiply(1, 0, 1));
         player.velocityModified = true;
         GameStateManager.setPlayerGravModified(player);
     }
@@ -245,8 +246,8 @@ public abstract class GameEffects {
     }
 
     public static void triggerPlayerDashAbsolute(ServerPlayerEntity player) {
-        Vec3d unitRotVecHorizontal = player.getRotationVector().multiply(1, 0, 1).normalize();
-        player.setVelocity(unitRotVecHorizontal.multiply(DASH_STRENGTH));
+        Vec3d unitRotVecHorizontal = player.getRotationVector().multiply(1, 0, 1).normalize().multiply(DASH_STRENGTH);
+        player.setVelocity(unitRotVecHorizontal);
         player.velocityModified = true;
     }
 
