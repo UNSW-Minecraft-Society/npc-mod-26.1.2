@@ -3,12 +3,16 @@ package mcsoc.planetgame.statemanagement;
 import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.statemanagement.PlayerState.GravityStrength;
 import mcsoc.planetgame.statemanagement.PlayerState.PlayerFirstAbilities;
+import mcsoc.planetgame.statemanagement.PlayerState.PlayerSecondAbilities;
+import mcsoc.planetgame.statemanagement.PlayerState.PlayerThirdAbilities;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -28,7 +32,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
- 
+
 public class GameState extends PersistentState {
     
     private Map<UUID, PlayerState> player_state_map = new HashMap<>();
@@ -93,26 +97,34 @@ public class GameState extends PersistentState {
             GameState::createFromNbt, // If there is a 'StateSaverAndLoader' NBT, parse it with 'createFromNbt'
             DataFixTypes.LEVEL // Supposed to be an 'DataFixTypes' enum, but we can just pass null
     );
- 
+
     protected static GameState getServerState(MinecraftServer server) {
         // (Note: arbitrary choice to use 'World.OVERWORLD' instead of 'World.END' or 'World.NETHER'.  Any work)
         PersistentStateManager persistentStateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
- 
+        
         // The first time the following 'getOrCreate' function is called, it creates a brand new 'StateSaverAndLoader' and
         // stores it inside the 'PersistentStateManager'. The subsequent calls to 'getOrCreate' pass in the saved
         // 'StateSaverAndLoader' NBT on disk to our function 'StateSaverAndLoader::createFromNbt'.
         GameState state = persistentStateManager.getOrCreate(type, PlanetGame.MOD_ID);
- 
+        
         // If state is not marked dirty, when Minecraft closes, 'writeNbt' won't be called and therefore nothing will be saved.
         // Technically it's 'cleaner' if you only mark state as dirty when there was actually a change, but the vast majority
         // of mod writers are just going to be confused when their data isn't being saved, and so it's best just to 'markDirty' for them.
         // Besides, it's literally just setting a bool to true, and the only time there's a 'cost' is when the file is written to disk when
         // there were no actual change to any of the mods state (INCREDIBLY RARE).
         state.markDirty();
- 
+
         return state;
     }
 
+
+    protected Stream<PlayerState> getPlayerStateStream() {
+        return this.player_state_map.values().stream();
+    }
+
+    protected Stream<Entry<UUID, PlayerState>> getPlayerEntryStream() {
+        return this.player_state_map.entrySet().stream();
+    }
 
     private PlayerState getPlayerState(UUID uuid) throws NoSuchElementException {
         PlayerState player_state = this.player_state_map.get(uuid);
@@ -175,23 +187,43 @@ public class GameState extends PersistentState {
     }
 
 
-    protected static GravityStrength getPlayerGravStrengthModifier(UUID uuid, MinecraftServer server) {
+    protected static GravityStrength getPlayerGravityStrengthModifier(UUID uuid, MinecraftServer server) {
         PlayerState player_state = getPlayerState(uuid, server);
-        return player_state.getPlayerGravStrengthModifier();
+        return player_state.getPlayerGravityStrengthModifier();
     }
 
-    protected static GravityStrength getPlayerGravStrengthModifier(ServerPlayerEntity player) {
-        return getPlayerGravStrengthModifier(player.getUuid(), player.getServer());
+    protected static GravityStrength getPlayerGravityStrengthModifier(ServerPlayerEntity player) {
+        return getPlayerGravityStrengthModifier(player.getUuid(), player.getServer());
     }
 
-    protected static void setPlayerGravStrengthModifier(UUID uuid, MinecraftServer server, GravityStrength grav_strength_mod) {
+    protected static void setPlayerGravityStrengthModifier(UUID uuid, MinecraftServer server, GravityStrength grav_strength_mod) {
         PlayerState player_state = getPlayerState(uuid, server);
-        player_state = player_state.setPlayerGravStrengthModifier(grav_strength_mod);
+        player_state = player_state.setPlayerGravityStrengthModifier(grav_strength_mod);
         setPlayerState(uuid, server, player_state);
     }
 
-    protected static void setPlayerGravStrengthModifier(ServerPlayerEntity player, GravityStrength grav_strength_mod) {
-        setPlayerGravStrengthModifier(player.getUuid(), player.getServer(), grav_strength_mod);
+    protected static void setPlayerGravityStrengthModifier(ServerPlayerEntity player, GravityStrength grav_strength_mod) {
+        setPlayerGravityStrengthModifier(player.getUuid(), player.getServer(), grav_strength_mod);
+    }
+
+
+    protected static Boolean getPlayerGravityModified(UUID uuid, MinecraftServer server) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerGravityModified();
+    }
+
+    protected static Boolean getPlayerGravityModified(ServerPlayerEntity player) {
+        return getPlayerGravityModified(player.getUuid(), player.getServer());
+    }
+
+    protected static void setPlayerGravityModified(UUID uuid, MinecraftServer server) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        player_state = player_state.setPlayerGravityModified();
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerGravityModified(ServerPlayerEntity player) {
+        setPlayerGravityModified(player.getUuid(), player.getServer());
     }
 
 
@@ -206,14 +238,72 @@ public class GameState extends PersistentState {
 
     protected static void setPlayerFirstAbility(UUID uuid, MinecraftServer server, PlayerFirstAbilities first_ability) {
         PlayerState player_state = getPlayerState(uuid, server);
-        PlanetGame.LOGGER.info("setting ability to {}", first_ability);
         player_state = player_state.setPlayerFirstAbility(first_ability);
-        PlanetGame.LOGGER.info("set ability to {}", player_state.getPlayerFirstAbility());
         setPlayerState(uuid, server, player_state);
     }
 
     protected static void setPlayerFirstAbility(ServerPlayerEntity player, PlayerFirstAbilities first_ability) {
         setPlayerFirstAbility(player.getUuid(), player.getServer(), first_ability);
     }
+
+
+    protected static PlayerSecondAbilities getPlayerSecondAbility(UUID uuid, MinecraftServer server) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerSecondAbility();
+    }
+
+    protected static PlayerSecondAbilities getPlayerSecondAbility(ServerPlayerEntity player) {
+        return getPlayerSecondAbility(player.getUuid(), player.getServer());
+    }
+
+    protected static void setPlayerSecondAbility(UUID uuid, MinecraftServer server, PlayerSecondAbilities second_ability) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        player_state = player_state.setPlayerSecondAbility(second_ability);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerSecondAbility(ServerPlayerEntity player, PlayerSecondAbilities second_ability) {
+        setPlayerSecondAbility(player.getUuid(), player.getServer(), second_ability);
+    }
+
+
+    protected static PlayerThirdAbilities getPlayerThirdAbility(UUID uuid, MinecraftServer server) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerThirdAbility();
+    }
+
+    protected static PlayerThirdAbilities getPlayerThirdAbility(ServerPlayerEntity player) {
+        return getPlayerThirdAbility(player.getUuid(), player.getServer());
+    }
+
+    protected static void setPlayerThirdAbility(UUID uuid, MinecraftServer server, PlayerThirdAbilities third_ability) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        player_state = player_state.setPlayerThirdAbility(third_ability);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerThirdAbility(ServerPlayerEntity player, PlayerThirdAbilities third_ability) {
+        setPlayerThirdAbility(player.getUuid(), player.getServer(), third_ability);
+    }
+
+    protected static int getPlayerThirdAbilityCooldownTicks(UUID uuid, MinecraftServer server) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerThirdAbilityCooldownTicks();
+    }
+
+    protected static int getPlayerThirdAbilityCooldownTicks(ServerPlayerEntity player) {
+        return getPlayerThirdAbilityCooldownTicks(player.getUuid(), player.getServer());
+    }
+
+    protected static void setPlayerThirdAbilityCooldownTicks(UUID uuid, MinecraftServer server, int cooldown_ticks) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        player_state = player_state.setPlayerThirdAbilityCooldownTicks(cooldown_ticks);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerThirdAbilityCooldownTicks(ServerPlayerEntity player, int cooldown_ticks) {
+        setPlayerThirdAbilityCooldownTicks(player.getUuid(), player.getServer(), cooldown_ticks);
+    }
+
 
 }

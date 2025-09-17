@@ -2,15 +2,18 @@ package mcsoc.planetgame.statemanagement;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import io.netty.buffer.ByteBuf;
-import mcsoc.planetgame.statemanagement.enumcodecinterfaces.DoubleIdentifiable;
-import mcsoc.planetgame.statemanagement.enumcodecinterfaces.IntIdentifiable;
-import net.minecraft.network.RegistryByteBuf;
+import mcsoc.planetgame.GameEffects;
+import mcsoc.planetgame.networking.enumcodecinterfaces.*;
+
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.Direction;
 
-public record PlayerState(Direction grav_dir, GravityStrength grav_strength, PlayerFirstAbilities first_ability, PlayerSecondAbilities second_ability, PlayerThirdAbilities third_ability) {
+public record PlayerState(
+    PlayerFirstAbilities first_ability, Direction grav_dir, GravityStrength grav_strength, Boolean gravity_modified,
+    PlayerSecondAbilities second_ability, 
+    PlayerThirdAbilities third_ability, int third_ability_cooldown) {
     
     public static enum PlayerFirstAbilities implements IntIdentifiable {
         NONE(IntIdentifiable.DEFAULT_ID),
@@ -18,7 +21,6 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
         CONTROL(2);
 
         private final int identifier;
-
         private PlayerFirstAbilities(int id) {
             this.identifier = id;
         }
@@ -29,7 +31,7 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
         }
 
         public static PlayerFirstAbilities getDefault() {
-            return IntIdentifiable.getDefault(PlayerFirstAbilities.class);
+            return NONE;
         }
 
         public static final Codec<PlayerFirstAbilities> CODEC = IntIdentifiable.getCodec(PlayerFirstAbilities.class);
@@ -42,7 +44,6 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
         DRILLING(2);
 
         private final int identifier;
-
         private PlayerSecondAbilities(int id) {
             this.identifier = id;
         }
@@ -53,7 +54,7 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
         }
 
         public static PlayerSecondAbilities getDefault() {
-            return IntIdentifiable.getDefault(PlayerSecondAbilities.class);
+            return NONE;
         }
 
         public static final Codec<PlayerSecondAbilities> CODEC = IntIdentifiable.getCodec(PlayerSecondAbilities.class);
@@ -62,7 +63,8 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
 
     public static enum PlayerThirdAbilities implements IntIdentifiable {
         NONE(IntIdentifiable.DEFAULT_ID),
-        DASH(1),
+        DASH_ADDITIVE(1),
+        DASH_SET(3),
         THROW(2);
 
         private final int identifier;
@@ -77,7 +79,7 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
         }
 
         public static PlayerThirdAbilities getDefault() {
-            return IntIdentifiable.getDefault(PlayerThirdAbilities.class);
+            return NONE;
         }
 
         public static final Codec<PlayerThirdAbilities> CODEC = IntIdentifiable.getCodec(PlayerThirdAbilities.class);
@@ -107,7 +109,7 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
         }
 
         public static GravityStrength getDefault() {
-            return DoubleIdentifiable.getDefault(GravityStrength.class);
+            return GRAV_STRENGTH_NORMAL;
         }
 
         public static GravityStrength fromDouble(Double d) {
@@ -119,16 +121,20 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
     };
 
 
+    public PlayerFirstAbilities getPlayerFirstAbility() {
+        return first_ability;
+    }
+
     public Direction getCurrentPlayerGravityDirection() {
         return grav_dir;
     }
 
-    public GravityStrength getPlayerGravStrengthModifier() {
+    public GravityStrength getPlayerGravityStrengthModifier() {
         return grav_strength;
     }
 
-    public PlayerFirstAbilities getPlayerFirstAbility() {
-        return first_ability;
+    public Boolean getPlayerGravityModified() {
+        return gravity_modified;
     }
 
     public PlayerSecondAbilities getPlayerSecondAbility() {
@@ -139,45 +145,60 @@ public record PlayerState(Direction grav_dir, GravityStrength grav_strength, Pla
         return third_ability;
     }
 
-
-    public PlayerState setPlayerGravityDirection(Direction new_grav_dir) {
-        return new PlayerState(new_grav_dir, this.grav_strength, this.first_ability, this.second_ability, this.third_ability);
+    public int getPlayerThirdAbilityCooldownTicks() {
+        return third_ability_cooldown;
     }
 
-    public PlayerState setPlayerGravStrengthModifier(GravityStrength new_grav_strength) {
-        return new PlayerState(this.grav_dir, new_grav_strength, this.first_ability, this.second_ability, this.third_ability);
-    }
 
     public PlayerState setPlayerFirstAbility(PlayerFirstAbilities new_first_ability) {
-        return new PlayerState(this.grav_dir, this.grav_strength, new_first_ability, this.second_ability, this.third_ability);
+        return new PlayerState(new_first_ability, this.grav_dir, this.grav_strength, this.gravity_modified, this.second_ability, this.third_ability, this.third_ability_cooldown);
+    }
+
+    public PlayerState setPlayerGravityDirection(Direction new_grav_dir) {
+        return new PlayerState(this.first_ability, new_grav_dir, this.grav_strength, this.gravity_modified, this.second_ability, this.third_ability, this.third_ability_cooldown);
+    }
+
+    public PlayerState setPlayerGravityStrengthModifier(GravityStrength new_grav_strength) {
+        return new PlayerState(this.first_ability, this.grav_dir, new_grav_strength, this.gravity_modified, this.second_ability, this.third_ability, this.third_ability_cooldown);
+    }
+
+    public PlayerState setPlayerGravityModified() {
+        return new PlayerState(this.first_ability, this.grav_dir, this.grav_strength, Boolean.TRUE, this.second_ability, this.third_ability, this.third_ability_cooldown);
     }
 
     public PlayerState setPlayerSecondAbility(PlayerSecondAbilities new_second_ability) {
-        return new PlayerState(this.grav_dir, this.grav_strength, this.first_ability, new_second_ability, this.third_ability);
+        return new PlayerState(this.first_ability, this.grav_dir, this.grav_strength, this.gravity_modified, new_second_ability, this.third_ability, this.third_ability_cooldown);
     }
 
     public PlayerState setPlayerThirdAbility(PlayerThirdAbilities new_third_ability) {
-        return new PlayerState(this.grav_dir, this.grav_strength, this.first_ability, this.second_ability, new_third_ability);
+        return new PlayerState(this.first_ability, this.grav_dir, this.grav_strength, this.gravity_modified, this.second_ability, new_third_ability, this.third_ability_cooldown);
+    }
+
+    public PlayerState setPlayerThirdAbilityCooldownTicks(int new_third_ability_cooldown) {
+        return new PlayerState(this.first_ability, this.grav_dir, this.grav_strength, this.gravity_modified, this.second_ability, this.third_ability, new_third_ability_cooldown);
+    }
+
+    public PlayerState decrementPlayerThirdAbilityCooldown() {
+        return new PlayerState(this.first_ability, this.grav_dir, this.grav_strength, this.gravity_modified, this.second_ability, this.third_ability, this.third_ability_cooldown - 1);
     }
 
     public static PlayerState getDefaultPlayerState() {
+        return new PlayerState(PlayerFirstAbilities.getDefault(), Direction.DOWN, GravityStrength.getDefault(), Boolean.FALSE, PlayerSecondAbilities.getDefault(), PlayerThirdAbilities.getDefault(), 0);
+    }
+
         return new PlayerState(Direction.DOWN, GravityStrength.getDefault(), PlayerFirstAbilities.getDefault(), PlayerSecondAbilities.getDefault(), PlayerThirdAbilities.getDefault());
     }
-    
+
+
     public static final Codec<PlayerState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+        PlayerFirstAbilities.CODEC.fieldOf("player_first_ability").forGetter(PlayerState::first_ability),
         Direction.CODEC.fieldOf("gravity_direction").forGetter(PlayerState::grav_dir),
         GravityStrength.CODEC.fieldOf("gravity_strength_modifier").forGetter(PlayerState::grav_strength),
-        PlayerFirstAbilities.CODEC.fieldOf("player_first_ability").forGetter(PlayerState::first_ability),
+        Codec.BOOL.fieldOf("gravity_modified").forGetter(PlayerState::gravity_modified),
         PlayerSecondAbilities.CODEC.fieldOf("player_second_ability").forGetter(PlayerState::second_ability),
-        PlayerThirdAbilities.CODEC.fieldOf("player_third_ability").forGetter(PlayerState::third_ability)
+        PlayerThirdAbilities.CODEC.fieldOf("player_third_ability").forGetter(PlayerState::third_ability),
+        Codec.INT.fieldOf("third_ability_cooldown").forGetter(PlayerState::third_ability_cooldown)
     ).apply(inst, PlayerState::new));
 
-    public static final PacketCodec<RegistryByteBuf, PlayerState> PACKET_CODEC = PacketCodec.tuple(
-        Direction.PACKET_CODEC, PlayerState::grav_dir,
-        GravityStrength.PACKET_CODEC, PlayerState::grav_strength,
-        PlayerFirstAbilities.PACKET_CODEC, PlayerState::first_ability,
-        PlayerSecondAbilities.PACKET_CODEC, PlayerState::second_ability,
-        PlayerThirdAbilities.PACKET_CODEC, PlayerState::third_ability,
-        PlayerState::new
-    );
+    // public static final PacketCodec<ByteBuf, PlayerState> PACKET_CODEC = PacketCodecs.codec(CODEC);
 }
