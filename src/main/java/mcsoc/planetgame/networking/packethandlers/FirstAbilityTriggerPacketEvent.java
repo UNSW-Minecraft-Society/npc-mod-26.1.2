@@ -1,14 +1,14 @@
 package mcsoc.planetgame.networking.packethandlers;
 
+import mcsoc.planetgame.GameEffects;
 import mcsoc.planetgame.networking.TriggerFirstAbilityC2SPayload;
-import mcsoc.planetgame.statemanagement.GameEffects;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class GravityAbilityTriggerPacketEvent {
-    private GravityAbilityTriggerPacketEvent() { /* delete */}
+public class FirstAbilityTriggerPacketEvent {
+    private FirstAbilityTriggerPacketEvent() { /* delete */}
 
     public static void Register() {
 
@@ -16,7 +16,7 @@ public class GravityAbilityTriggerPacketEvent {
 
         ServerPlayNetworking.registerGlobalReceiver(TriggerFirstAbilityC2SPayload.ID, (payload, context) -> {
             ServerPlayerEntity player = context.player();
-            GameEffects.triggerGravAbility(player);
+            GameEffects.triggerFirstAbility(player);
             player.networkHandler.sendPacket(new OverlayMessageS2CPacket(GameEffects.getFirstAbilityActionbarResponse(player)));
         });
     }

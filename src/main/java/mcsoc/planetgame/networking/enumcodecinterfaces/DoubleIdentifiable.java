@@ -1,4 +1,4 @@
-package mcsoc.planetgame.statemanagement.enumcodecinterfaces;
+package mcsoc.planetgame.networking.enumcodecinterfaces;
 
 import com.mojang.serialization.Codec;
 
@@ -27,14 +27,14 @@ public interface DoubleIdentifiable {
         if (i == DEFAULT_ID) {
             throw new UnsupportedOperationException("Enum with default ID not defined!");
         }
-        return DoubleIdentifiable.getDefault(t_class);
+        return getDefault(t_class);
     }
 
     public static <T extends Enum<T> & DoubleIdentifiable> Codec<T> getCodec(Class<T> t_class) {
-        return Codec.DOUBLE.xmap(d -> DoubleIdentifiable.fromIdentifier(d, t_class), T::getIdentifier);
+        return Codec.DOUBLE.xmap(d -> fromIdentifier(d, t_class), T::getIdentifier);
     }
 
     public static <T extends Enum<T> & DoubleIdentifiable> PacketCodec<ByteBuf, T> getPacketCodec(Class<T> t_class) {
-        return PacketCodecs.DOUBLE.xmap(d -> DoubleIdentifiable.fromIdentifier(d, t_class), T::getIdentifier);
+        return PacketCodecs.DOUBLE.xmap(d -> fromIdentifier(d, t_class), T::getIdentifier);
     }
 }
