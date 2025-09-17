@@ -6,6 +6,8 @@ import mcsoc.planetgame.statemanagement.PlayerState.PlayerFirstAbilities;
 import mcsoc.planetgame.statemanagement.PlayerState.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.PlayerState.PlayerThirdAbilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,13 +38,15 @@ import net.minecraft.world.World;
 public class GameState extends PersistentState {
     
     private Map<UUID, PlayerState> player_state_map = new HashMap<>();
-
-
+    private Instant prev_tick_time;
+    private long pending_ticks = 0;
+    private long pending_ticks_partial = 0;
 
     private GameState() {/* delete */}
 
     private GameState(Map<UUID, PlayerState> data) {
         player_state_map.putAll(data);
+        this.prev_tick_time = Instant.now();
     }
 
     private Map<UUID, PlayerState> getStates() {
@@ -87,6 +91,7 @@ public class GameState extends PersistentState {
         GameState state = new GameState();
 
         // assign other stuff here
+        state.prev_tick_time = Instant.now();
 
         return state;
     }
@@ -306,4 +311,37 @@ public class GameState extends PersistentState {
     }
 
 
+    protected static void updateTickTimings(MinecraftServer server) {
+        GameState state = getServerState(server);
+        
+        long tick_delta_millis = Duration.between(state.prev_tick_time, Instant.now()).toMillis();
+        // PlanetGame.LOGGER.info("tick delta: {}", tick_delta_nanos);
+        long ticks_to_millis = 50;
+
+        tick_delta_millis += state.pending_ticks_partial;
+        state.pending_ticks_partial = tick_delta_millis % ticks_to_millis;
+        state.pending_ticks = tick_delta_millis / ticks_to_millis;
+        // PlanetGame.LOGGER.info("pending: {}, partial: {}", state.pending_ticks, state.pending_ticks_partial);
+
+        state.prev_tick_time = Instant.now();
+    }
+
+    protected static void tickPlayerState(UUID uuid, MinecraftServer server) {
+        GameState state = getServerState(server);
+        PlayerState player_state = getPlayerState(uuid, server);
+        for (int i = 0; i < state.pending_ticks; i++) {
+            player_state = player_state.tick();
+        }
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void tickPlayerState(ServerPlayerEntity player) {
+        tickPlayerState(player.getUuid(), player.getServer());
+    }
+
+
+    protected static Instant getTimer(MinecraftServer server) {
+        GameState state = getServerState(server);
+        return state.prev_tick_time;
+    }
 }

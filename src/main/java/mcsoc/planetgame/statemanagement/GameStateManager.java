@@ -169,10 +169,27 @@ public abstract class GameStateManager {
     }
 
 
+    public static void tickPlayerState(UUID uuid, MinecraftServer server) {
+
+        GameState.tickPlayerState(uuid, server);
+    }
+
+    public static void tickPlayerState(ServerPlayerEntity player) {
+        GameState.tickPlayerState(player.getUuid(), player.getServer());
+    }
+
+
     public static void forEachPlayer(MinecraftServer server, Consumer<Entry<UUID, PlayerState>> action) {
         GameState state = GameState.getServerState(server);
         state.getPlayerEntryStream().forEach(action);
     }
 
 
+    public static Instant getTimer(MinecraftServer server) {
+        return GameState.getTimer(server);
+    }
+
+    public static void updateTickTimings(MinecraftServer server) {
+        GameState.updateTickTimings(server);
+    }
 }

@@ -3,11 +3,10 @@ package mcsoc.planetgame.statemanagement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import mcsoc.planetgame.GameEffects;
+
 import mcsoc.planetgame.networking.enumcodecinterfaces.*;
 
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.Direction;
 
 public record PlayerState(
@@ -186,7 +185,10 @@ public record PlayerState(
         return new PlayerState(PlayerFirstAbilities.getDefault(), Direction.DOWN, GravityStrength.getDefault(), Boolean.FALSE, PlayerSecondAbilities.getDefault(), PlayerThirdAbilities.getDefault(), 0);
     }
 
-        return new PlayerState(Direction.DOWN, GravityStrength.getDefault(), PlayerFirstAbilities.getDefault(), PlayerSecondAbilities.getDefault(), PlayerThirdAbilities.getDefault());
+    public PlayerState tick() {
+        if (this.third_ability_cooldown > 0) {
+            return decrementPlayerThirdAbilityCooldown();
+        } return this;
     }
 
 

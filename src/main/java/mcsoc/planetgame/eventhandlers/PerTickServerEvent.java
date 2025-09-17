@@ -30,7 +30,12 @@ public abstract class PerTickServerEvent {
             world.getPlayers().stream().filter(GameStateManager::getPlayerGravityModified)
             .forEach(PerTickServerEvent::updateClientGravityState);
 
-            world.getPlayers().forEach(PerTickServerEvent::updateClientGravityState);
+            MinecraftServer server = world.getServer();
+            GameStateManager.forEachPlayer(
+                server, 
+                e -> GameEffects.tickPlayerState(e.getKey(), server)
+            );
+            GameStateManager.updateTickTimings(server);
         });
         
     }
