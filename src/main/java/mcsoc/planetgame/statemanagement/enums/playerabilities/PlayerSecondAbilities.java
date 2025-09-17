@@ -1,10 +1,10 @@
 package mcsoc.planetgame.statemanagement.enums.playerabilities;
 
 import com.mojang.serialization.Codec;
-
 import io.netty.buffer.ByteBuf;
-import mcsoc.planetgame.statemanagement.enums.IntIdentifiable;
 import net.minecraft.network.codec.PacketCodec;
+
+import mcsoc.planetgame.networking.enumcodecinterfaces.IntIdentifiable;
 
 public enum PlayerSecondAbilities implements IntIdentifiable {
     NONE(IntIdentifiable.DEFAULT_ID),

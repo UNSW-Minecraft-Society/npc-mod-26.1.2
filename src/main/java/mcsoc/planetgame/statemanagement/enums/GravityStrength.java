@@ -1,9 +1,10 @@
 package mcsoc.planetgame.statemanagement.enums;
 
 import com.mojang.serialization.Codec;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+
+import mcsoc.planetgame.networking.enumcodecinterfaces.DoubleIdentifiable;
 
 public enum GravityStrength implements DoubleIdentifiable {
 

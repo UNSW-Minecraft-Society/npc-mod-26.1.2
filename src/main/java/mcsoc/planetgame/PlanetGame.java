@@ -9,7 +9,8 @@ import mcsoc.planetgame.blocks.BlockRegistration;
 import mcsoc.planetgame.eventhandlers.CommandRegistrationHandler;
 import mcsoc.planetgame.eventhandlers.PerTickServerEvent;
 import mcsoc.planetgame.eventhandlers.PlayerJoinServerEvent;
-import mcsoc.planetgame.networking.packethandlers.GravityAbilityTriggerPacketEvent;
+import mcsoc.planetgame.networking.packethandlers.FirstAbilityTriggerPacketEvent;
+import mcsoc.planetgame.networking.packethandlers.ThirdAbilityTriggerPacketEvent;
 
 
 public class PlanetGame implements ModInitializer {
@@ -37,6 +38,7 @@ public class PlanetGame implements ModInitializer {
 		BlockRegistration.Register();
 		
 		// network packet handlers
-		GravityAbilityTriggerPacketEvent.Register();
+		FirstAbilityTriggerPacketEvent.Register();
+		ThirdAbilityTriggerPacketEvent.Register();
 	}
 }

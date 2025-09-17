@@ -1,10 +1,16 @@
 package mcsoc.planetgame.statemanagement;
 
+import java.time.Instant;
+import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
+import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
+import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
@@ -21,7 +27,7 @@ public abstract class GameStateManager {
     }
 
     public static void flipPlayerGravity(UUID uuid, MinecraftServer server) {
-        Direction new_grav = switch (GameState.getPlayerGravityDirection(uuid, server)) {
+        Direction new_grav = switch (getPlayerGravityDirection(uuid, server)) {
             case DOWN -> Direction.UP;
             case EAST -> Direction.WEST;
             case NORTH -> Direction.SOUTH;
@@ -29,7 +35,7 @@ public abstract class GameStateManager {
             case UP -> Direction.DOWN;
             case WEST -> Direction.EAST;
         };
-        GameState.setPlayerGravityDirection(uuid, server, new_grav);
+        setPlayerGravityDirection(uuid, server, new_grav);
     }
 
     public static void flipPlayerGravity(ServerPlayerEntity player) {
@@ -48,6 +54,7 @@ public abstract class GameStateManager {
 
     public static void setPlayerGravityDirection(UUID uuid, MinecraftServer server, Direction grav_dir) {
         GameState.setPlayerGravityDirection(uuid, server, grav_dir);
+        setPlayerGravModified(uuid, server);
     }
 
     public static void setPlayerGravityDirection(ServerPlayerEntity player, Direction grav_dir) {
@@ -56,7 +63,7 @@ public abstract class GameStateManager {
 
 
     public static GravityStrength getPlayerGravityStrength(UUID uuid, MinecraftServer server) {
-        return GameState.getPlayerGravStrengthModifier(uuid, server);
+        return GameState.getPlayerGravityStrengthModifier(uuid, server);
     }
 
     public static GravityStrength getPlayerGravityStrength(ServerPlayerEntity player) {
@@ -65,7 +72,8 @@ public abstract class GameStateManager {
 
 
     public static void setPlayerGravityStrength(UUID uuid, MinecraftServer server, GravityStrength grav_strength) {
-        GameState.setPlayerGravStrengthModifier(uuid, server, grav_strength);
+        GameState.setPlayerGravityStrengthModifier(uuid, server, grav_strength);
+        setPlayerGravModified(uuid, server);
     }
 
     public static void setPlayerGravityStrength(ServerPlayerEntity player, GravityStrength grav_strength) {
@@ -89,5 +97,99 @@ public abstract class GameStateManager {
 
     public static void setPlayerFirstAbility(ServerPlayerEntity player, PlayerFirstAbilities ability) {
         setPlayerFirstAbility(player.getUuid(), player.getServer(), ability);
+    }
+
+    public static Boolean getPlayerGravityModified(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerGravityModified(uuid, server);
+    }
+
+    public static Boolean getPlayerGravityModified(ServerPlayerEntity player) {
+        return getPlayerGravityModified(player.getUuid(), player.getServer());
+    }
+
+    public static void setPlayerGravModified(UUID uuid, MinecraftServer server) {
+        GameState.setPlayerGravityModified(uuid, server);
+    }
+
+    public static void setPlayerGravModified(ServerPlayerEntity player) {
+        setPlayerGravModified(player.getUuid(), player.getServer());
+    }
+
+
+    public static PlayerSecondAbilities getPlayerSecondAbility(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerSecondAbility(uuid, server);
+    }
+
+    public static PlayerSecondAbilities getPlayerSecondAbility(ServerPlayerEntity player) {
+        return getPlayerSecondAbility(player.getUuid(), player.getServer());
+    }
+
+    public static void setPlayerSecondAbility(UUID uuid, MinecraftServer server, PlayerSecondAbilities ability) {
+        GameState.setPlayerSecondAbility(uuid, server, ability);
+        // TODO reset stuff here
+    }
+
+    public static void setPlayerSecondAbility(ServerPlayerEntity player, PlayerSecondAbilities ability) {
+        setPlayerSecondAbility(player.getUuid(), player.getServer(), ability);
+    }
+
+
+    public static PlayerThirdAbilities getPlayerThirdAbility(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerThirdAbility(uuid, server);
+    }
+
+    public static PlayerThirdAbilities getPlayerThirdAbility(ServerPlayerEntity player) {
+        return getPlayerThirdAbility(player.getUuid(), player.getServer());
+    }
+
+    public static void setPlayerThirdAbility(UUID uuid, MinecraftServer server, PlayerThirdAbilities ability) {
+        GameState.setPlayerThirdAbility(uuid, server, ability);
+        // reset stuff here
+    }
+
+    public static void setPlayerThirdAbility(ServerPlayerEntity player, PlayerThirdAbilities ability) {
+        setPlayerThirdAbility(player.getUuid(), player.getServer(), ability);
+    }
+
+    public static int getPlayerThirdAbilityCooldownTicks(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerThirdAbilityCooldownTicks(uuid, server);
+    }
+
+    public static int getPlayerThirdAbilityCooldownTicks(ServerPlayerEntity player) {
+        return getPlayerThirdAbilityCooldownTicks(player.getUuid(), player.getServer());
+    }
+
+
+    public static void setPlayerThirdAbilityCooldownTicks(UUID uuid, MinecraftServer server, int ticks) {
+        GameState.setPlayerThirdAbilityCooldownTicks(uuid, server, ticks);
+    }
+
+    public static void setPlayerThirdAbilityCooldownTicks(ServerPlayerEntity player, int ticks) {
+        setPlayerThirdAbilityCooldownTicks(player.getUuid(), player.getServer(), ticks);
+    }
+
+
+    public static void tickPlayerState(UUID uuid, MinecraftServer server) {
+
+        GameState.tickPlayerState(uuid, server);
+    }
+
+    public static void tickPlayerState(ServerPlayerEntity player) {
+        GameState.tickPlayerState(player.getUuid(), player.getServer());
+    }
+
+
+    public static void forEachPlayer(MinecraftServer server, Consumer<Entry<UUID, PlayerState>> action) {
+        GameState state = GameState.getServerState(server);
+        state.getPlayerEntryStream().forEach(action);
+    }
+
+
+    public static Instant getTimer(MinecraftServer server) {
+        return GameState.getTimer(server);
+    }
+
+    public static void updateTickTimings(MinecraftServer server) {
+        GameState.updateTickTimings(server);
     }
 }
