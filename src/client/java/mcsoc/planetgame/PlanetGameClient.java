@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcsoc.planetgame.keybinds.GravityKeybind;
+import mcsoc.planetgame.keybinds.MobilityKeybind;
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import mcsoc.planetgame.networking.packethandlers.GravitySyncPacketEvent;
 import net.fabricmc.api.ClientModInitializer;
@@ -32,6 +33,8 @@ public class PlanetGameClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
 		GravitySyncPacketEvent.Register();
+		
 		GravityKeybind.Register();
+		MobilityKeybind.Register();
 	}
 }
