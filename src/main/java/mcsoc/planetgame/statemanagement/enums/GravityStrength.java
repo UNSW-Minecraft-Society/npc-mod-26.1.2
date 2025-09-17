@@ -27,7 +27,7 @@ public enum GravityStrength implements DoubleIdentifiable {
         }
 
         public static GravityStrength getDefault() {
-            return GRAV_STRENGTH_LOW;
+            return GRAV_STRENGTH_NORMAL;
         }
 
         public static GravityStrength fromDouble(Double d) {
