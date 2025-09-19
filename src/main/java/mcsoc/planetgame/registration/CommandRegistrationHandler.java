@@ -1,4 +1,4 @@
-package mcsoc.planetgame.eventhandlers;
+package mcsoc.planetgame.registration;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -10,7 +10,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import mcsoc.planetgame.GameEffects;
-import mcsoc.planetgame.eventhandlers.CommandRegistrationHandler.CommandSuggestionProviders.OnlinePlayerSuggestionProvider;
+import mcsoc.planetgame.registration.CommandRegistrationHandler.CommandSuggestionProviders.OnlinePlayerSuggestionProvider;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;

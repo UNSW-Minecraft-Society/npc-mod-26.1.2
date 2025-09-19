@@ -13,8 +13,7 @@ import net.minecraft.client.render.Camera;
 @Mixin(value = Camera.class, priority = 1003)
 public class CameraRotationMixin {
 
-    @Shadow
-    @Final
+    @Shadow @Final
     public Quaternionf rotation;
 
     @ModifyArg(method = "Lnet/minecraft/client/render/Camera;setRotation(FF)V", 

@@ -8,7 +8,7 @@ public abstract class PlayerJoinServerEvent {
 
     private PlayerJoinServerEvent() { /* delete */ }
 
-    public static void Register() {
+    public static void RegisterEvent() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             
             PlanetGame.LOGGER.info("{} joined the server, sending packet.", handler.getPlayer().getUuidAsString());

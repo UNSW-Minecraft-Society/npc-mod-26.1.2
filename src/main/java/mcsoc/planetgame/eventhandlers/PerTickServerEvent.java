@@ -1,8 +1,12 @@
 package mcsoc.planetgame.eventhandlers;
 
+import gravity_changer.GravityChangerMod;
 import gravity_changer.api.GravityChangerAPI;
-
+import gravity_changer.mixin.EntityMixin;
+import gravity_changer.mixin.client.CameraMixin;
+import gravity_changer.util.RotationUtil;
 import mcsoc.planetgame.GameEffects;
+import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -19,21 +23,22 @@ public abstract class PerTickServerEvent {
         GravityChangerAPI.setBaseGravityDirection(player, GameStateManager.getPlayerGravityDirection(player));
         GravityChangerAPI.setBaseGravityStrength(player, GameStateManager.getPlayerGravityStrength(player).getDouble());
         player.getAttributeInstance(EntityAttributes.GENERIC_GRAVITY).setBaseValue(LivingEntity.GRAVITY * GameStateManager.getPlayerGravityStrength(player).getDouble());
-        
         ServerPlayNetworking.send(player, GameStateManager.getPlayerGravityStatePacket(player));
     }
     
-    public static void Register() {
+    public static void RegisterEvent() {
         ServerTickEvents.START_WORLD_TICK.register(world -> {
-
-            world.getPlayers().stream().filter(GameStateManager::getPlayerGravityModified)
-            .forEach(PerTickServerEvent::updateClientGravityState);
+            world.getPlayers().forEach(player -> {
+                if (GameStateManager.getPlayerGravityModified(player)) {
+                    PerTickServerEvent.updateClientGravityState(player);
+                }
+            });
 
             MinecraftServer server = world.getServer();
-            GameStateManager.forEachPlayer(
-                server, 
+            GameStateManager.forEachPlayer(server, 
                 e -> GameEffects.tickPlayerState(e.getKey(), server)
             );
+            
             GameStateManager.updateTickTimings(server);
         });
         

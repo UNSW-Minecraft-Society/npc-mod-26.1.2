@@ -6,11 +6,11 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
+import mcsoc.planetgame.statemanagement.PlayerState;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;

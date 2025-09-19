@@ -16,7 +16,6 @@ public record PlayerState(
     PlayerThirdAbilities third_ability, int third_ability_cooldown) {
     
 
-
     public PlayerFirstAbilities getPlayerFirstAbility() {
         return first_ability;
     }

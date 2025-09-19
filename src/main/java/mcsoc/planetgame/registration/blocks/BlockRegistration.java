@@ -1,4 +1,4 @@
-package mcsoc.planetgame.blocks;
+package mcsoc.planetgame.registration.blocks;
 
 import mcsoc.planetgame.PlanetGame;
 
@@ -21,8 +21,7 @@ public abstract class BlockRegistration {
         Registry.register(Registries.ITEM, Identifier.of(PlanetGame.MOD_ID, block_name), new BlockItem(block, new Item.Settings()));
     }
 
-    public static void Register() {
-        
+    public static void RegisterBlocks() {
         registerBlockItemPair(WEIGHTED_PRESSURE_PLATE, "weighted_pressure_plate");
     }
 }
