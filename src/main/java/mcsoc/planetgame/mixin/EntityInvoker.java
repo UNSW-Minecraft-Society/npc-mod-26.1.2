@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Entity.RemovalReason;
 import net.minecraft.util.math.Vec3d;
 
 @Mixin(Entity.class)
@@ -18,5 +19,8 @@ public interface EntityInvoker {
 
     @Accessor
     public void setVelocity(Vec3d velocity);
+
+    @Accessor
+    public RemovalReason getRemovalReason();
 
 }

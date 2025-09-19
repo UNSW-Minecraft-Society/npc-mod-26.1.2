@@ -7,7 +7,10 @@
 		"EntityMixin",
 		"LivingEntityInvoker",
 		"LivingEntityMixin",
-		"ServerPlayerEntityMixin"
+		"PlayerEntityInvoker",
+		"PlayerEntityMixin",
+		"ServerPlayerEntityMixin",
+		"RotationUtilMixin"
 	],
 	"refmap": "planet-game-refmap.json",
 	"injectors": {

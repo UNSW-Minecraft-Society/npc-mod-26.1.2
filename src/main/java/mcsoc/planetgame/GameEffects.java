@@ -3,7 +3,7 @@ package mcsoc.planetgame;
 import java.util.Objects;
 import java.util.UUID;
 
-import mcsoc.planetgame.eventhandlers.CommandRegistrationHandler;
+import mcsoc.planetgame.registration.CommandRegistrationHandler;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
@@ -16,6 +16,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -27,6 +31,8 @@ public abstract class GameEffects {
     private GameEffects() { /* delete */ }
 
     private static final double DASH_STRENGTH = 0.8;
+    public static final double PICKUP_DISTANCE = 1.5;
+    private static final double THROW_STRENGTH = 3;
     public static final int DASH_COOLDOWN_TICKS = 20 * 2;
     public static final int THROW_COOLDOWN_TICKS = 20 * 3;
 
@@ -223,11 +229,24 @@ public abstract class GameEffects {
 
 
     public static void toggleIsPlayerFlipped(UUID uuid, MinecraftServer server) {
-        GameStateManager.flipPlayerGravity(uuid, server);
+        ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
+        if (Objects.isNull(player)) {
+            GameStateManager.flipPlayerGravity(uuid, server);
+            return;
+        }
+        toggleIsPlayerFlipped(player);
     }
 
     public static void toggleIsPlayerFlipped(ServerPlayerEntity player) {
-        toggleIsPlayerFlipped(player.getUuid(), player.getServer());
+        player.setYaw(180 + player.getYaw());
+        player.networkHandler.requestTeleport(
+            player.getX(), player.getY(), player.getZ(), 
+            player.getYaw(), player.getPitch()
+        );
+        player.getServer().getPlayerManager().getPlayerList().forEach(p2 -> {
+            p2.networkHandler.sendPacket(new EntityPositionS2CPacket(player));
+        });
+        GameStateManager.flipPlayerGravity(player);
     }
 
 
@@ -257,13 +276,32 @@ public abstract class GameEffects {
         triggerPlayerDashAbsolute(player);
     }
 
+    public static boolean getIsPlayerCarryingSomething(ServerPlayerEntity player) {
+        return player.hasPassengers();
+    }
 
     public static void triggerPlayerThrow(UUID uuid, MinecraftServer server) {
-        // TODO
+        ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
+        if (Objects.isNull(player)) return;
+        triggerPlayerThrow(player);
     }
 
     public static void triggerPlayerThrow(ServerPlayerEntity player) {
-        triggerPlayerThrow(player.getUuid(), player.getServer());
+        // TODO
+        if (!getIsPlayerCarryingSomething(player)) {
+            PlayerEntity other_player = player.getWorld().getPlayers().stream().filter(p -> p != player && player.distanceTo(p) < PICKUP_DISTANCE).sorted((p1, p2) -> player.distanceTo(p1) > player.distanceTo(p2) ? 1 : -1).findFirst().orElse(null);
+            if (Objects.isNull(other_player)) {
+                return;
+            }
+            PlanetGame.LOGGER.info("found player {}", other_player);
+            other_player.startRiding(player, true);
+            other_player.setPose(EntityPose.SLEEPING);
+        } else {
+            Entity first_passenger = player.getFirstPassenger();
+            first_passenger.dismountVehicle();
+            first_passenger.addVelocity(player.getRotationVector().multiply(THROW_STRENGTH));
+            first_passenger.velocityModified = true;
+        }
     }
 
 
@@ -294,7 +332,7 @@ public abstract class GameEffects {
             GameStateManager.setPlayerThirdAbilityCooldownTicks(uuid, server, DASH_COOLDOWN_TICKS);
         } else if (third_ability == PlayerThirdAbilities.THROW) {
             //TODO
-            //GameEffects.triggerPlayerThrow(uuid, server);
+            GameEffects.triggerPlayerThrow(uuid, server);
         }
     }
 
@@ -311,6 +349,10 @@ public abstract class GameEffects {
             return Text.of(String.format("gravity strength: %.1f", GameStateManager.getPlayerGravityStrength(player).getDouble()));
         }
         return Text.literal("No ability to trigger.");
+    }
+
+    public static void sendFirstAbilityActionbarText(ServerPlayerEntity player) {
+        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(GameEffects.getFirstAbilityActionbarResponse(player)));
     }
 
 
