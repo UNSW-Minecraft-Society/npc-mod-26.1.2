@@ -1,12 +1,7 @@
 package mcsoc.planetgame.eventhandlers;
 
-import gravity_changer.GravityChangerMod;
 import gravity_changer.api.GravityChangerAPI;
-import gravity_changer.mixin.EntityMixin;
-import gravity_changer.mixin.client.CameraMixin;
-import gravity_changer.util.RotationUtil;
 import mcsoc.planetgame.GameEffects;
-import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
