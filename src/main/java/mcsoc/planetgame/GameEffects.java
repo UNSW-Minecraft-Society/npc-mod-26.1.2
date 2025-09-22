@@ -18,6 +18,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.MinecraftServer;
@@ -310,21 +311,32 @@ public abstract class GameEffects {
         triggerPlayerThrow(player);
     }
 
+    public static void pickUpEntity(ServerPlayerEntity player, LivingEntity entity) {
+        entity.startRiding(player, true);
+    }
+
+    public static void attemptPickUpNearbyPlayer(ServerPlayerEntity player) {
+        PlayerEntity other_player = player.getWorld().getPlayers().stream().filter(p -> p != player && player.distanceTo(p) < PICKUP_DISTANCE).sorted((p1, p2) -> player.distanceTo(p1) > player.distanceTo(p2) ? 1 : -1).findFirst().orElse(null);
+        if (Objects.isNull(other_player)) {
+            return;
+        }
+        pickUpEntity(player, other_player);
+        player.setPose(EntityPose.SLEEPING);
+    }
+
+    public static void throwHeldObject(ServerPlayerEntity player) {
+        Entity first_passenger = player.getFirstPassenger();
+        first_passenger.dismountVehicle();
+        first_passenger.addVelocity(player.getRotationVector().multiply(THROW_STRENGTH));
+        first_passenger.velocityModified = true;
+    }
+
     public static void triggerPlayerThrow(ServerPlayerEntity player) {
         // TODO
         if (!getIsPlayerCarryingSomething(player)) {
-            PlayerEntity other_player = player.getWorld().getPlayers().stream().filter(p -> p != player && player.distanceTo(p) < PICKUP_DISTANCE).sorted((p1, p2) -> player.distanceTo(p1) > player.distanceTo(p2) ? 1 : -1).findFirst().orElse(null);
-            if (Objects.isNull(other_player)) {
-                return;
-            }
-            PlanetGame.LOGGER.info("found player {}", other_player);
-            other_player.startRiding(player, true);
-            other_player.setPose(EntityPose.SLEEPING);
+            attemptPickUpNearbyPlayer(player);
         } else {
-            Entity first_passenger = player.getFirstPassenger();
-            first_passenger.dismountVehicle();
-            first_passenger.addVelocity(player.getRotationVector().multiply(THROW_STRENGTH));
-            first_passenger.velocityModified = true;
+            throwHeldObject(player);
         }
     }
 

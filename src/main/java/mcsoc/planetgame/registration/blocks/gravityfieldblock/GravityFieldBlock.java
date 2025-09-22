@@ -64,33 +64,4 @@ public class GravityFieldBlock extends BlockWithEntity {
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         return Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 16.0, 10.0);
     }
-
-
-    // below for rock pile
-    
-    // @Override
-    // public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-    //     return VoxelShapes.cuboid(0.3125, 0, 0.3125, 0.6875, 0.4375, 0.6875);
-    // }
-
-    // @Override
-    // public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-    //     return VoxelShapes.union(
-    //         VoxelShapes.cuboid(0.3125, 0, 0.3125, 0.6875, 0.012499999999999997, 0.6875),
-    //         VoxelShapes.cuboid(0.46875, 0.015625, 0.5, 0.59375, 0.140625, 0.625),
-    //         VoxelShapes.cuboid(0.53125, 0.015625, 0.375, 0.65625, 0.140625, 0.5),
-    //         VoxelShapes.cuboid(0.40625, 0.015625, 0.34375, 0.53125, 0.140625, 0.46875),
-    //         VoxelShapes.cuboid(0.34375, 0.140625, 0.4375, 0.46875, 0.265625, 0.5625),
-    //         VoxelShapes.cuboid(0.34375, 0.015625, 0.46875, 0.46875, 0.140625, 0.59375),
-    //         VoxelShapes.cuboid(0.46875, 0.140625, 0.4375, 0.59375, 0.265625, 0.5625),
-    //         VoxelShapes.cuboid(0.40625, 0.265625, 0.46875, 0.53125, 0.390625, 0.59375),
-    //         VoxelShapes.cuboid(0.40625, 0.015625, 0.59375, 0.46875, 0.078125, 0.65625),
-    //         VoxelShapes.cuboid(0.46875, 0.390625, 0.46875, 0.53125, 0.453125, 0.53125),
-    //         VoxelShapes.cuboid(0.59375, 0.015625, 0.5, 0.65625, 0.078125, 0.5625),
-    //         VoxelShapes.cuboid(0.34375, 0.015625, 0.40625, 0.40625, 0.078125, 0.46875),
-    //         VoxelShapes.cuboid(0.34375, 0.015625, 0.59375, 0.40625, 0.078125, 0.65625),
-    //         VoxelShapes.cuboid(0.46875, 0.140625, 0.34375, 0.53125, 0.203125, 0.40625),
-    //         VoxelShapes.cuboid(0.59375, 0.015625, 0.59375, 0.65625, 0.078125, 0.65625)
-    //     );
-    // }
 }

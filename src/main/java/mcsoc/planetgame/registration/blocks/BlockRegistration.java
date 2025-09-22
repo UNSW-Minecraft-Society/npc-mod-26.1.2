@@ -2,7 +2,7 @@ package mcsoc.planetgame.registration.blocks;
 
 import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlock;
-
+import mcsoc.planetgame.registration.blocks.rockpile.RockPileBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 import net.minecraft.block.AbstractBlock;
@@ -26,6 +26,11 @@ public abstract class BlockRegistration {
     public static final Block GRAVITY_FIELD_BLOCK = register(
             new GravityFieldBlock(AbstractBlock.Settings.create()),
             "gravity_field_generator",
+            true
+    );
+    public static final Block ROCK_PILE_BLOCK = register(
+            new RockPileBlock(AbstractBlock.Settings.create()),
+            "rock_pile",
             true
     );
     
