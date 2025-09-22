@@ -35,7 +35,7 @@ public abstract class CommandRegistrationHandler {
         }
     }
     
-    public static void Register() {
+    public static void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("gravity_control")
                 .then(CommandManager.literal("flip")

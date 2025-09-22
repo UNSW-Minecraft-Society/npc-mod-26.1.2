@@ -10,7 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class ThirdAbilityTriggerPacketEvent {
     private ThirdAbilityTriggerPacketEvent() { /* delete */}
 
-    public static void RegisterHandler() {
+    public static void registerHandler() {
 
         PayloadTypeRegistry.playC2S().register(TriggerThirdAbilityC2SPayload.ID, TriggerThirdAbilityC2SPayload.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(TriggerThirdAbilityC2SPayload.ID, (payload, context) -> {

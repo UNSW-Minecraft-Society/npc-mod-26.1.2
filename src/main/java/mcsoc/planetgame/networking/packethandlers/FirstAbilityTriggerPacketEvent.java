@@ -10,7 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class FirstAbilityTriggerPacketEvent {
     private FirstAbilityTriggerPacketEvent() { /* delete */}
 
-    public static void RegisterHandler() {
+    public static void registerHandler() {
 
         PayloadTypeRegistry.playC2S().register(TriggerFirstAbilityC2SPayload.ID, TriggerFirstAbilityC2SPayload.CODEC);
 

@@ -5,12 +5,13 @@ import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcsoc.planetgame.eventhandlers.PerTickServerEvent;
-import mcsoc.planetgame.eventhandlers.PlayerJoinServerEvent;
 import mcsoc.planetgame.networking.packethandlers.FirstAbilityTriggerPacketEvent;
 import mcsoc.planetgame.networking.packethandlers.ThirdAbilityTriggerPacketEvent;
 import mcsoc.planetgame.registration.CommandRegistrationHandler;
+import mcsoc.planetgame.registration.blocks.BlockEntityRegistration;
 import mcsoc.planetgame.registration.blocks.BlockRegistration;
+import mcsoc.planetgame.registration.eventhandlers.PerTickServerEvent;
+import mcsoc.planetgame.registration.eventhandlers.PlayerJoinServerEvent;
 
 
 public class PlanetGame implements ModInitializer {
@@ -30,17 +31,18 @@ public class PlanetGame implements ModInitializer {
 		LOGGER.info("Hello Fabric world!");
 
 		// register commands
-		CommandRegistrationHandler.Register();
+		CommandRegistrationHandler.registerCommands();
 
 		// event handlers
-		PlayerJoinServerEvent.RegisterEvent();
-		PerTickServerEvent.RegisterEvent();
+		PlayerJoinServerEvent.registerEvent();
+		PerTickServerEvent.registerEvent();
 
 		// blocks, items, potions ect
-		BlockRegistration.RegisterBlocks();
+		BlockRegistration.registerBlocks();
+		BlockEntityRegistration.registerBlockEntities();
 		
 		// network packet handlers
-		FirstAbilityTriggerPacketEvent.RegisterHandler();
-		ThirdAbilityTriggerPacketEvent.RegisterHandler();
+		FirstAbilityTriggerPacketEvent.registerHandler();
+		ThirdAbilityTriggerPacketEvent.registerHandler();
 	}
 }
