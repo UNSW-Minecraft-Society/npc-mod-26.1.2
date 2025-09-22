@@ -53,7 +53,7 @@ public abstract class GameStateManager {
 
     public static void setPlayerGravityDirection(UUID uuid, MinecraftServer server, Direction grav_dir) {
         GameState.setPlayerGravityDirection(uuid, server, grav_dir);
-        setPlayerGravModified(uuid, server);
+        setPlayerGravityModified(uuid, server);
     }
 
     public static void setPlayerGravityDirection(ServerPlayerEntity player, Direction grav_dir) {
@@ -72,7 +72,7 @@ public abstract class GameStateManager {
 
     public static void setPlayerGravityStrength(UUID uuid, MinecraftServer server, GravityStrength grav_strength) {
         GameState.setPlayerGravityStrengthModifier(uuid, server, grav_strength);
-        setPlayerGravModified(uuid, server);
+        setPlayerGravityModified(uuid, server);
     }
 
     public static void setPlayerGravityStrength(ServerPlayerEntity player, GravityStrength grav_strength) {
@@ -106,12 +106,28 @@ public abstract class GameStateManager {
         return getPlayerGravityModified(player.getUuid(), player.getServer());
     }
 
-    public static void setPlayerGravModified(UUID uuid, MinecraftServer server) {
+    public static void setPlayerGravityModified(UUID uuid, MinecraftServer server) {
         GameState.setPlayerGravityModified(uuid, server);
     }
 
-    public static void setPlayerGravModified(ServerPlayerEntity player) {
-        setPlayerGravModified(player.getUuid(), player.getServer());
+    public static void setPlayerGravityModified(ServerPlayerEntity player) {
+        setPlayerGravityModified(player.getUuid(), player.getServer());
+    }
+
+    public static boolean getPlayerInGravityField(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerInGravityField(uuid, server);
+    }
+
+    public static boolean getPlayerInGravityField(ServerPlayerEntity player) {
+        return getPlayerInGravityField(player.getUuid(), player.getServer());
+    }
+
+    public static void setPlayerInGravityField(UUID uuid, MinecraftServer server, boolean in_field) {
+        GameState.setPlayerInGravityField(uuid, server, in_field);
+    }
+
+    public static void setPlayerInGravityField(ServerPlayerEntity player, boolean in_field) {
+        setPlayerInGravityField(player.getUuid(), player.getServer(), in_field);
     }
 
 
@@ -177,8 +193,23 @@ public abstract class GameStateManager {
         GameState.tickPlayerState(player.getUuid(), player.getServer());
     }
 
+    public static void tickGravityFieldTimer(MinecraftServer server) {
+        if (shouldUpdateGravityFields(server)) {
+            resetGravityFieldTimer(server);
+        }
+        GameState.tickGravityFieldTimer(server);
+    }
 
-    public static void forEachPlayer(MinecraftServer server, Consumer<Entry<UUID, PlayerState>> action) {
+    public static void resetGravityFieldTimer(MinecraftServer server) {
+        GameState.resetGravityFieldTimer(server);
+    }
+
+    public static boolean shouldUpdateGravityFields(MinecraftServer server) {
+        return GameState.shouldUpdateGravityFields(server);
+    }
+
+
+    public static void forEachPlayerEntry(MinecraftServer server, Consumer<Entry<UUID, PlayerState>> action) {
         GameState state = GameState.getServerState(server);
         state.getPlayerEntryStream().forEach(action);
     }

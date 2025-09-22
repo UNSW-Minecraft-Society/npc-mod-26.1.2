@@ -1,6 +1,7 @@
 package mcsoc.planetgame.statemanagement;
 
 import mcsoc.planetgame.PlanetGame;
+import mcsoc.planetgame.registration.eventhandlers.PerTickServerEvent;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.*;
 
@@ -39,6 +40,7 @@ public class GameState extends PersistentState {
     private Instant prev_tick_time;
     private long pending_ticks = 0;
     private long pending_ticks_partial = 0;
+    private long grav_field_update_tick_counter = 0;
 
     private GameState() {/* delete */}
 
@@ -209,6 +211,25 @@ public class GameState extends PersistentState {
         setPlayerGravityStrengthModifier(player.getUuid(), player.getServer(), grav_strength_mod);
     }
 
+    protected static boolean getPlayerInGravityField(UUID uuid, MinecraftServer server) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerIsInGravityField();
+    }
+
+    protected static boolean getPlayerInGravityField(ServerPlayerEntity player) {
+        return getPlayerInGravityField(player.getUuid(), player.getServer());
+    }
+
+    protected static void setPlayerInGravityField(UUID uuid, MinecraftServer server, boolean in_field) {
+        PlayerState player_state = getPlayerState(uuid, server);
+        player_state = player_state.setPlayerInGravityField(in_field);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerInGravityField(ServerPlayerEntity player, boolean in_field) {
+        setPlayerInGravityField(player.getUuid(), player.getServer(), in_field);
+    }
+
 
     protected static Boolean getPlayerGravityModified(UUID uuid, MinecraftServer server) {
         PlayerState player_state = getPlayerState(uuid, server);
@@ -335,6 +356,21 @@ public class GameState extends PersistentState {
 
     protected static void tickPlayerState(ServerPlayerEntity player) {
         tickPlayerState(player.getUuid(), player.getServer());
+    }
+
+    protected static void tickGravityFieldTimer(MinecraftServer server) {
+        GameState state = getServerState(server);
+        state.grav_field_update_tick_counter += state.pending_ticks;
+    }
+
+    protected static void resetGravityFieldTimer(MinecraftServer server) {
+        GameState state = getServerState(server);
+        state.grav_field_update_tick_counter = 0;
+    }
+
+    protected static boolean shouldUpdateGravityFields(MinecraftServer server) {
+        GameState state = getServerState(server);
+        return state.grav_field_update_tick_counter >= PerTickServerEvent.GRAV_FIELD_UPDATE_TIME_TICKS;
     }
 
 

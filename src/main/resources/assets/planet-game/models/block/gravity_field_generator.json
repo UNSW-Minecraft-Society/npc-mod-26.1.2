@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/end_rod",
+  "textures": {
+		"all": "minecraft:block/amethyst_cluster"
+  }
+}

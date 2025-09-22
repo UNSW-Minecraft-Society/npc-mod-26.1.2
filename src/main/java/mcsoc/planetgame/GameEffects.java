@@ -19,12 +19,12 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 public abstract class GameEffects {    
@@ -238,15 +238,39 @@ public abstract class GameEffects {
     }
 
     public static void toggleIsPlayerFlipped(ServerPlayerEntity player) {
-        player.setYaw(180 + player.getYaw());
-        player.networkHandler.requestTeleport(
-            player.getX(), player.getY(), player.getZ(), 
-            player.getYaw(), player.getPitch()
-        );
-        player.getServer().getPlayerManager().getPlayerList().forEach(p2 -> {
-            p2.networkHandler.sendPacket(new EntityPositionS2CPacket(player));
-        });
+        // player.setYaw(180 + player.getYaw());
+        // player.networkHandler.requestTeleport(
+        //     player.getX(), player.getY(), player.getZ(), 
+        //     player.getYaw() + 180, player.getPitch()
+        // );
+        player.teleport(player.getServerWorld(), player.getX(), player.getY(), player.getZ(), player.getYaw() + 180, player.getPitch());
+        // player.getServer().getPlayerManager().getPlayerList().forEach(p2 -> {
+        //     p2.networkHandler.sendPacket(new EntityPositionS2CPacket(player));
+        // });
         GameStateManager.flipPlayerGravity(player);
+    }
+
+    public static void setPlayerInGravityField(UUID uuid, MinecraftServer server, boolean in_field) {
+        ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
+        if (Objects.isNull(player)) {
+            GameStateManager.flipPlayerGravity(uuid, server);
+            return;
+        }
+        setPlayerInGravityField(player, in_field);
+    }
+
+    public static void setPlayerInGravityField(ServerPlayerEntity player, boolean in_field) {
+        // TODO: do some visual effect here
+        if (GameStateManager.getPlayerInGravityField(player) != in_field) {
+            if (in_field) {
+                player.sendMessage(Text.literal("entered field"));
+            } else {
+                player.sendMessage(Text.literal("exited field"));
+                if (GameStateManager.getPlayerGravityDirection(player).equals(Direction.UP))
+                toggleIsPlayerFlipped(player);
+            }
+        }
+        GameStateManager.setPlayerInGravityField(player, in_field);
     }
 
 
@@ -255,7 +279,7 @@ public abstract class GameEffects {
         player.addVelocity(unitRotVecHorizontal);
         player.setVelocity(player.getVelocity().multiply(1, 0, 1));
         player.velocityModified = true;
-        GameStateManager.setPlayerGravModified(player);
+        GameStateManager.setPlayerGravityModified(player);
     }
 
     public static void triggerPlayerDashAdditive(UUID uuid, MinecraftServer server) {
@@ -306,6 +330,8 @@ public abstract class GameEffects {
 
 
     public static void triggerFirstAbility(UUID uuid, MinecraftServer server) {
+        if (!GameStateManager.getPlayerInGravityField(uuid, server)) return;
+
         PlayerFirstAbilities first_ability = GameStateManager.getPlayerFirstAbility(uuid, server);
         if (first_ability == PlayerFirstAbilities.FLIP) {
             GameEffects.toggleIsPlayerFlipped(uuid, server);
@@ -342,6 +368,9 @@ public abstract class GameEffects {
     
 
     public static Text getFirstAbilityActionbarResponse(ServerPlayerEntity player) {
+        if (!GameStateManager.getPlayerInGravityField(player)) {
+            return Text.literal("must be in gravity field to trigger");
+        }
         PlayerFirstAbilities first_ability = GameStateManager.getPlayerFirstAbility(player);
         if (first_ability == PlayerFirstAbilities.FLIP) {
             return Text.of(String.format("gravity direction: %s", GameStateManager.getPlayerGravityDirection(player)));
