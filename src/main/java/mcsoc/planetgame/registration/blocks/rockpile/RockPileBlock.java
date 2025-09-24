@@ -27,7 +27,10 @@ public class RockPileBlock extends Block {
 
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (!(player instanceof ServerPlayerEntity server_player) || GameEffects.getIsPlayerCarryingSomething(server_player)) return ActionResult.PASS;
+        if (!(player instanceof ServerPlayerEntity server_player) || 
+                !GameStateManager.getPlayerThirdAbility(server_player).equals(PlayerThirdAbilities.THROW) ||
+                GameEffects.getIsPlayerCarryingSomething(server_player)
+        ) return ActionResult.PASS;
         
         LivingEntity rock_projectile = new ThrowableRockEntity(EntityRegistration.ROCK, world);
         rock_projectile.setPosition(player.getPos());

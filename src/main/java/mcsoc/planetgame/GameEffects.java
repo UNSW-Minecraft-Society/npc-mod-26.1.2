@@ -18,7 +18,6 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.MinecraftServer;
@@ -329,6 +328,7 @@ public abstract class GameEffects {
             attemptPickUpNearbyPlayer(player);
         } else {
             throwHeldObject(player);
+            GameStateManager.setPlayerThirdAbilityCooldownTicks(player, THROW_COOLDOWN_TICKS);
         }
     }
 
@@ -416,7 +416,7 @@ public abstract class GameEffects {
 
     public static Boolean shouldSendThirdAbilityActionbarText(ServerPlayerEntity player) {
         int cooldown_ticks_remaining = GameStateManager.getPlayerThirdAbilityCooldownTicks(player);
-        return cooldown_ticks_remaining > 0;
+        return GameStateManager.getPlayerThirdAbility(player).equals(PlayerThirdAbilities.NONE) || cooldown_ticks_remaining > 0;
     }
 
     public static void sendThirdAbilityActionbarText(ServerPlayerEntity player) {
