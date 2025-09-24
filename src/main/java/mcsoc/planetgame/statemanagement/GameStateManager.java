@@ -10,7 +10,6 @@ import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
@@ -85,7 +84,7 @@ public abstract class GameStateManager {
         return GameState.getPlayerFirstAbility(uuid, server);
     }
 
-    public static PlayerFirstAbilities getPlayerFirstAbility(PlayerEntity player) {
+    public static PlayerFirstAbilities getPlayerFirstAbility(ServerPlayerEntity player) {
         return getPlayerFirstAbility(player.getUuid(), player.getServer());
     }
 
@@ -119,7 +118,7 @@ public abstract class GameStateManager {
         return GameState.getPlayerInGravityField(uuid, server);
     }
 
-    public static boolean getPlayerInGravityField(PlayerEntity player) {
+    public static boolean getPlayerInGravityField(ServerPlayerEntity player) {
         return getPlayerInGravityField(player.getUuid(), player.getServer());
     }
 
@@ -154,7 +153,7 @@ public abstract class GameStateManager {
         return GameState.getPlayerThirdAbility(uuid, server);
     }
 
-    public static PlayerThirdAbilities getPlayerThirdAbility(PlayerEntity player) {
+    public static PlayerThirdAbilities getPlayerThirdAbility(ServerPlayerEntity player) {
         return getPlayerThirdAbility(player.getUuid(), player.getServer());
     }
 
@@ -171,7 +170,7 @@ public abstract class GameStateManager {
         return GameState.getPlayerThirdAbilityCooldownTicks(uuid, server);
     }
 
-    public static int getPlayerThirdAbilityCooldownTicks(PlayerEntity player) {
+    public static int getPlayerThirdAbilityCooldownTicks(ServerPlayerEntity player) {
         return getPlayerThirdAbilityCooldownTicks(player.getUuid(), player.getServer());
     }
 

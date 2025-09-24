@@ -50,11 +50,11 @@ public abstract class CommandRegistrationHandler {
                 .then(CommandManager.literal("strength")
                     .then(CommandManager.argument(GRAVITY_STRENGTH_ARGUMENT, DoubleArgumentType.doubleArg())
                     // no player given, set self strength
-                    .executes(GameEffects.CommandActions::setCallingPlayerGravStrengthCommand)
+                    .executes(GameEffects.CommandActions::setCallingPlayerGravityStrengthCommand)
                         // set specified player strength
                         .then(CommandManager.argument(PLAYER_NAME_ARGUMENT, StringArgumentType.string())
                         .suggests(new OnlinePlayerSuggestionProvider())
-                        .executes(GameEffects.CommandActions::setTargetPlayerGravStrengthCommand)
+                        .executes(GameEffects.CommandActions::setTargetPlayerGravityStrengthCommand)
                         )
                     )
                 )

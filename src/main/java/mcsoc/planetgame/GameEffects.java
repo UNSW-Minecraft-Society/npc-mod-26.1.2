@@ -65,17 +65,17 @@ public abstract class GameEffects {
         }
 
 
-        public static int setCallingPlayerGravStrengthCommand(CommandContext<ServerCommandSource> cxt) {
+        public static int setCallingPlayerGravityStrengthCommand(CommandContext<ServerCommandSource> cxt) {
             ServerPlayerEntity player = cxt.getSource().getPlayer();
             Double new_grav_strength = DoubleArgumentType.getDouble(cxt, CommandRegistrationHandler.GRAVITY_STRENGTH_ARGUMENT);
-            setPlayerGravStrength(player, GravityStrength.fromDouble(new_grav_strength));
+            setPlayerGravityStrength(player, GravityStrength.fromDouble(new_grav_strength));
             return 1;
         }
 
-        public static int setTargetPlayerGravStrengthCommand(CommandContext<ServerCommandSource> cxt) throws CommandSyntaxException {
+        public static int setTargetPlayerGravityStrengthCommand(CommandContext<ServerCommandSource> cxt) throws CommandSyntaxException {
             ServerPlayerEntity player = getPlayerFromName(cxt);
             Double new_grav_strength = DoubleArgumentType.getDouble(cxt, CommandRegistrationHandler.GRAVITY_STRENGTH_ARGUMENT);
-            setPlayerGravStrength(player, GravityStrength.fromDouble(new_grav_strength));
+            setPlayerGravityStrength(player, GravityStrength.fromDouble(new_grav_strength));
             return 1;
         }
 
@@ -209,7 +209,7 @@ public abstract class GameEffects {
         }
 
 
-    public static void setPlayerGravStrength(ServerPlayerEntity player, GravityStrength grav_strength) {
+    public static void setPlayerGravityStrength(ServerPlayerEntity player, GravityStrength grav_strength) {
         GameStateManager.setPlayerGravityStrength(player, grav_strength);
     }
 
@@ -269,6 +269,7 @@ public abstract class GameEffects {
                 player.sendMessage(Text.literal("exited field"));
                 if (GameStateManager.getPlayerGravityDirection(player).equals(Direction.UP))
                 toggleIsPlayerFlipped(player);
+                setPlayerGravityStrength(player, GravityStrength.getDefault());
             }
         }
         GameStateManager.setPlayerInGravityField(player, in_field);
