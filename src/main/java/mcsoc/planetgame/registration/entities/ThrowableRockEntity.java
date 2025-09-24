@@ -1,6 +1,7 @@
 package mcsoc.planetgame.registration.entities;
 
-import net.minecraft.entity.EntityDimensions;
+import java.util.Vector;
+
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -16,13 +17,12 @@ public class ThrowableRockEntity extends LivingEntity {
 
     @Override
     public void equipStack(EquipmentSlot slot, ItemStack stack) {
-        return;
+        // no-op
     }
 
     @Override
     public Iterable<ItemStack> getArmorItems() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getArmorItems'");
+        return new Vector<>();
     }
 
     @Override
