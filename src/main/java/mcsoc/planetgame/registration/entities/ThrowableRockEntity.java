@@ -1,5 +1,7 @@
 package mcsoc.planetgame.registration.entities;
 
+import java.util.Vector;
+
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
