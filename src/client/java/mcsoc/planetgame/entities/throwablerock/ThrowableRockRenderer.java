@@ -3,16 +3,13 @@ package mcsoc.planetgame.entities.throwablerock;
 import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.registration.entities.ThrowableRockEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory.Context;
-import net.minecraft.client.render.entity.ProjectileEntityRenderer;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.util.Identifier;
 
-public class ThrowableRockRenderer extends ProjectileEntityRenderer<ThrowableRockEntity> {
+public class ThrowableRockRenderer extends LivingEntityRenderer<ThrowableRockEntity, ThrowableRockModel<ThrowableRockEntity>> {
 
-    // ThrowableRockModel<ThrowableRockEntity>
-    // new ThrowableRockModel<>(ctx.getPart(ThrowableRockModel.ROCK)), 0.75f
-    
     public ThrowableRockRenderer(Context ctx) {
-        super(ctx);
+        super(ctx, new ThrowableRockModel<>(ctx.getPart(ThrowableRockModel.ROCK)), 0.75f);
     }
 
     @Override
