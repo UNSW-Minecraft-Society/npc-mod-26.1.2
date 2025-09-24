@@ -20,14 +20,10 @@ public class CameraRotationMixin {
                 at = @At(value = "INVOKE", target = "Lorg/joml/Quaternionf;rotationYXZ(FFF)Lorg/joml/Quaternionf;"),
                 index = 2)
     private float rotZ90(float angleZ) {
-        // PlanetGameClient.LOGGER.info("hello");
         float rot = switch (PlanetGameClient.getPlayerState().getPlayerGravDirection()) {
             case UP -> 3.1415927F;
             default -> 0F;
         };
-
-        // PlanetGameClient.LOGGER.info("dir: {}, rot: {}", PlanetGameClient.getPlayerState().getPlayerGravDirection(), angleZ + rot);
-
         return angleZ + rot;
     }
 }

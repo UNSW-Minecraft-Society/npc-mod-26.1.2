@@ -239,15 +239,7 @@ public abstract class GameEffects {
     }
 
     public static void toggleIsPlayerFlipped(ServerPlayerEntity player) {
-        // player.setYaw(180 + player.getYaw());
-        // player.networkHandler.requestTeleport(
-        //     player.getX(), player.getY(), player.getZ(), 
-        //     player.getYaw() + 180, player.getPitch()
-        // );
         player.teleport(player.getServerWorld(), player.getX(), player.getY(), player.getZ(), player.getYaw() + 180, player.getPitch());
-        // player.getServer().getPlayerManager().getPlayerList().forEach(p2 -> {
-        //     p2.networkHandler.sendPacket(new EntityPositionS2CPacket(player));
-        // });
         GameStateManager.flipPlayerGravity(player);
     }
 
@@ -267,8 +259,7 @@ public abstract class GameEffects {
                 player.sendMessage(Text.literal("entered field"));
             } else {
                 player.sendMessage(Text.literal("exited field"));
-                if (GameStateManager.getPlayerGravityDirection(player).equals(Direction.UP))
-                toggleIsPlayerFlipped(player);
+                if (GameStateManager.getPlayerGravityDirection(player).equals(Direction.UP)) toggleIsPlayerFlipped(player);
                 setPlayerGravityStrength(player, GravityStrength.getDefault());
             }
         }
@@ -312,7 +303,7 @@ public abstract class GameEffects {
         triggerPlayerThrow(player);
     }
 
-    public static void pickUpEntity(ServerPlayerEntity player, LivingEntity entity) {
+    public static void pickUpEntity(ServerPlayerEntity player, Entity entity) {
         entity.startRiding(player, true);
     }
 
@@ -399,21 +390,28 @@ public abstract class GameEffects {
 
 
     public static Text getThirdAbilityActionbarResponse(ServerPlayerEntity player) {
+
         PlayerThirdAbilities third_ability = GameStateManager.getPlayerThirdAbility(player);
+        if (third_ability == PlayerThirdAbilities.NONE) return Text.literal("No ability to trigger.");
+
+        int cooldown_ticks_remaining = GameStateManager.getPlayerThirdAbilityCooldownTicks(player);
+
         if (third_ability == PlayerThirdAbilities.DASH_ADDITIVE || third_ability == PlayerThirdAbilities.DASH_SET) {
-            // smth about cooldowns
-            int cooldown_ticks_remaining = GameStateManager.getPlayerThirdAbilityCooldownTicks(player);
+
             if (cooldown_ticks_remaining > 1) {
                 return Text.of(String.format("dash cooldown: %.1f s", (double)(cooldown_ticks_remaining) / 20));
             } else {
-                return Text.of(String.format("dash ready"));
+                return Text.literal("dash ready");
             }
         } else if (third_ability == PlayerThirdAbilities.THROW) {
-            // smth about throw idk what
-            return Text.literal("Ability Unimplemented");
-            // return Text.of(String.format("throw cooldown: %d s", GameStateManager.getPlayerThirdAbilityCooldownTicks(player) / 20));
+            
+            if (cooldown_ticks_remaining > 1) {
+                return Text.of(String.format("throw cooldown: %.1f s", (double)(cooldown_ticks_remaining) / 20));
+            } else {
+                return Text.literal("throw ready");
+            }
         }
-        return Text.literal("No ability to trigger.");
+        return Text.literal("third ability action bar response unimplemented?");
     }
 
     public static Boolean shouldSendThirdAbilityActionbarText(ServerPlayerEntity player) {

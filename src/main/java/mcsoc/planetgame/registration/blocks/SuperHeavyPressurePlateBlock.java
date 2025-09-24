@@ -68,17 +68,18 @@ public class SuperHeavyPressurePlateBlock extends AbstractPressurePlateBlock {
 
     @Override
     protected BlockState setRedstoneOutput(BlockState state, int rsOut) {
-        return (BlockState)state.with(POWERED, rsOut > 0);
+        return state.with(POWERED, rsOut > 0);
     }
 
     @Override
     protected int getRedstoneOutput(BlockState state) {
-        return (Boolean)state.get(POWERED) ? 15 : 0;
+        return state.get(POWERED) ? 15 : 0;
     }
 
     
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        
         // TODO implement some method to change velocity threshold
         return super.onUse(state, world, pos, player, hit);
     }

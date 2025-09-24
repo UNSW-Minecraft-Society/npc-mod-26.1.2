@@ -8,7 +8,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class EntityRegistration {
+public abstract class EntityRegistration {
+    private EntityRegistration() { /* delete */ }
 
     public static final EntityType<ThrowableRockEntity> ROCK = Registry.register(
         Registries.ENTITY_TYPE,

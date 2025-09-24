@@ -9,7 +9,9 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class BlockEntityRegistration {
+public abstract class BlockEntityRegistration {
+    private BlockEntityRegistration() { /* delete */ }
+
     public static final BlockEntityType<GravityFieldBlockEntity> GRAVITY_FIELD_BLOCK_ENTITY =
             register("gravity_field_generator", GravityFieldBlockEntity::new, BlockRegistration.GRAVITY_FIELD_BLOCK);
 
@@ -21,6 +23,6 @@ public class BlockEntityRegistration {
     }
 
     public static void registerBlockEntities() {
-
+        // init statics
     }
 }
