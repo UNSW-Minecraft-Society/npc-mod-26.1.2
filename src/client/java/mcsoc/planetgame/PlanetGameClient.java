@@ -3,11 +3,16 @@ package mcsoc.planetgame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import mcsoc.planetgame.entities.throwablerock.ThrowableRockModel;
+import mcsoc.planetgame.entities.throwablerock.ThrowableRockRenderer;
 import mcsoc.planetgame.keybinds.GravityKeybind;
 import mcsoc.planetgame.keybinds.MobilityKeybind;
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import mcsoc.planetgame.networking.packethandlers.GravitySyncPacketEvent;
+import mcsoc.planetgame.registration.entities.EntityRegistration;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 
 public class PlanetGameClient implements ClientModInitializer {
 
@@ -36,5 +41,8 @@ public class PlanetGameClient implements ClientModInitializer {
 		
 		GravityKeybind.Register();
 		MobilityKeybind.Register();
+
+		EntityModelLayerRegistry.registerModelLayer(ThrowableRockModel.ROCK, ThrowableRockModel::getTexturedModelData);
+        EntityRendererRegistry.register(EntityRegistration.ROCK, ThrowableRockRenderer::new);
 	}
 }

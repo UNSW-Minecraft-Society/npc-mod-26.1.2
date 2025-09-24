@@ -10,6 +10,7 @@ import mcsoc.planetgame.networking.packethandlers.ThirdAbilityTriggerPacketEvent
 import mcsoc.planetgame.registration.CommandRegistrationHandler;
 import mcsoc.planetgame.registration.blocks.BlockEntityRegistration;
 import mcsoc.planetgame.registration.blocks.BlockRegistration;
+import mcsoc.planetgame.registration.entities.EntityRegistration;
 import mcsoc.planetgame.registration.eventhandlers.PerTickServerEvent;
 import mcsoc.planetgame.registration.eventhandlers.PlayerJoinServerEvent;
 
@@ -41,6 +42,8 @@ public class PlanetGame implements ModInitializer {
 		BlockRegistration.registerBlocks();
 		BlockEntityRegistration.registerBlockEntities();
 		
+		EntityRegistration.registerEntities();
+
 		// network packet handlers
 		FirstAbilityTriggerPacketEvent.registerHandler();
 		ThirdAbilityTriggerPacketEvent.registerHandler();
