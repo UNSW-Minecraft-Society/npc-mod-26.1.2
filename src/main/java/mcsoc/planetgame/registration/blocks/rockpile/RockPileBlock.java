@@ -3,15 +3,13 @@ package mcsoc.planetgame.registration.blocks.rockpile;
 import mcsoc.planetgame.GameEffects;
 import mcsoc.planetgame.registration.entities.EntityRegistration;
 import mcsoc.planetgame.registration.entities.ThrowableRockEntity;
-
+import mcsoc.planetgame.statemanagement.GameStateManager;
+import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
@@ -40,27 +38,27 @@ public class RockPileBlock extends Block {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        return VoxelShapes.cuboid(0.3125, 0, 0.3125, 0.6875, 0.453125, 0.6875);
+        return VoxelShapes.cuboid(-0.0625, 0, -0.125, 1.1875, 1.25, 1.125);
     }
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         return VoxelShapes.union(
-            VoxelShapes.cuboid(0.3125, 0, 0.3125, 0.6875, 0.012499999999999997, 0.6875),
-            VoxelShapes.cuboid(0.46875, 0.015625, 0.5, 0.59375, 0.140625, 0.625),
-            VoxelShapes.cuboid(0.53125, 0.015625, 0.375, 0.65625, 0.140625, 0.5),
-            VoxelShapes.cuboid(0.40625, 0.015625, 0.34375, 0.53125, 0.140625, 0.46875),
-            VoxelShapes.cuboid(0.34375, 0.140625, 0.4375, 0.46875, 0.265625, 0.5625),
-            VoxelShapes.cuboid(0.34375, 0.015625, 0.46875, 0.46875, 0.140625, 0.59375),
-            VoxelShapes.cuboid(0.46875, 0.140625, 0.4375, 0.59375, 0.265625, 0.5625),
-            VoxelShapes.cuboid(0.40625, 0.265625, 0.46875, 0.53125, 0.390625, 0.59375),
-            VoxelShapes.cuboid(0.40625, 0.015625, 0.59375, 0.46875, 0.078125, 0.65625),
-            VoxelShapes.cuboid(0.46875, 0.390625, 0.46875, 0.53125, 0.453125, 0.53125),
-            VoxelShapes.cuboid(0.59375, 0.015625, 0.5, 0.65625, 0.078125, 0.5625),
-            VoxelShapes.cuboid(0.34375, 0.015625, 0.40625, 0.40625, 0.078125, 0.46875),
-            VoxelShapes.cuboid(0.34375, 0.015625, 0.59375, 0.40625, 0.078125, 0.65625),
-            VoxelShapes.cuboid(0.46875, 0.140625, 0.34375, 0.53125, 0.203125, 0.40625),
-            VoxelShapes.cuboid(0.59375, 0.015625, 0.59375, 0.65625, 0.078125, 0.65625)
+            VoxelShapes.cuboid(-0.2098214285714285, -0.0017857142857142794, -0.2366071428571428, 1.2901785714285716, -0.0017857142857142794, 1.2633928571428572),
+            VoxelShapes.cuboid(0.41517857142857145, -0.0267857142857143, 0.5133928571428571, 0.9151785714285714, 0.4732142857142857, 1.0133928571428572),
+            VoxelShapes.cuboid(0.6651785714285714, -0.0267857142857143, 0.01339285714285715, 1.1651785714285714, 0.4732142857142857, 0.5133928571428572),
+            VoxelShapes.cuboid(0.1651785714285714, -0.0267857142857143, -0.1116071428571428, 0.6651785714285714, 0.4732142857142857, 0.3883928571428572),
+            VoxelShapes.cuboid(-0.08482142857142849, 0.4732142857142857, 0.2633928571428571, 0.4151785714285715, 0.9732142857142857, 0.7633928571428571),
+            VoxelShapes.cuboid(-0.08482142857142849, -0.0267857142857143, 0.38839285714285715, 0.4151785714285715, 0.4732142857142857, 0.8883928571428572),
+            VoxelShapes.cuboid(0.41517857142857145, 0.4732142857142857, 0.2633928571428571, 0.9151785714285714, 0.9732142857142857, 0.7633928571428571),
+            VoxelShapes.cuboid(0.1651785714285714, 0.9732142857142857, 0.38839285714285715, 0.6651785714285714, 1.4732142857142856, 0.8883928571428572),
+            VoxelShapes.cuboid(0.1651785714285714, -0.0267857142857143, 0.8883928571428572, 0.4151785714285714, 0.2232142857142857, 1.1383928571428572),
+            VoxelShapes.cuboid(0.41517857142857145, 1.4732142857142858, 0.38839285714285715, 0.6651785714285714, 1.7232142857142858, 0.6383928571428572),
+            VoxelShapes.cuboid(0.9151785714285714, -0.0267857142857143, 0.5133928571428571, 1.1651785714285714, 0.2232142857142857, 0.7633928571428572),
+            VoxelShapes.cuboid(-0.08482142857142849, -0.0267857142857143, 0.13839285714285715, 0.1651785714285715, 0.2232142857142857, 0.38839285714285715),
+            VoxelShapes.cuboid(-0.08482142857142849, -0.0267857142857143, 0.8883928571428572, 0.1651785714285715, 0.2232142857142857, 1.1383928571428572),
+            VoxelShapes.cuboid(0.41517857142857145, 0.4732142857142857, -0.1116071428571428, 0.6651785714285714, 0.7232142857142857, 0.1383928571428572),
+            VoxelShapes.cuboid(0.9151785714285714, -0.0267857142857143, 0.8883928571428572, 1.1651785714285714, 0.2232142857142857, 1.1383928571428572)
         );
     }
 
