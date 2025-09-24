@@ -7,11 +7,8 @@ import mcsoc.planetgame.registration.entities.ThrowableRockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registry;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
@@ -31,7 +28,7 @@ public class RockPileBlock extends Block {
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!(player instanceof ServerPlayerEntity server_player) || GameEffects.getIsPlayerCarryingSomething(server_player)) return ActionResult.PASS;
         
-        LivingEntity rock_projectile = new ThrowableRockEntity(EntityRegistration.ROCK, world);
+        ProjectileEntity rock_projectile = new ThrowableRockEntity(EntityRegistration.ROCK, world);
         rock_projectile.setPosition(player.getPos());
         world.spawnEntity(rock_projectile);
         GameEffects.pickUpEntity(server_player, rock_projectile);

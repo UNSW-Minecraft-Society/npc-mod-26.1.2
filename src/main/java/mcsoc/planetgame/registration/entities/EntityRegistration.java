@@ -1,7 +1,6 @@
 package mcsoc.planetgame.registration.entities;
 
 import mcsoc.planetgame.PlanetGame;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
@@ -19,6 +18,6 @@ public abstract class EntityRegistration {
 
     
     public static void registerEntities() {
-        FabricDefaultAttributeRegistry.register(ROCK, ThrowableRockEntity.createLivingAttributes());
+        // init statics
     }
 }
