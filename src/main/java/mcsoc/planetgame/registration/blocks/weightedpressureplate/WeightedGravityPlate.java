@@ -1,4 +1,4 @@
-package mcsoc.planetgame.registration.blocks;
+package mcsoc.planetgame.registration.blocks.weightedpressureplate;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -21,16 +21,16 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class SuperHeavyPressurePlateBlock extends AbstractPressurePlateBlock {
+public class WeightedGravityPlate extends AbstractPressurePlateBlock {
 
     private double velocity_threshold;
     private static final BooleanProperty POWERED = Properties.POWERED;
     
-    public static final MapCodec<SuperHeavyPressurePlateBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+    public static final MapCodec<WeightedGravityPlate> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
         Codec.DOUBLE.fieldOf("velocity_threshold").forGetter(block -> block.velocity_threshold),
         BlockSetType.CODEC.fieldOf("block_set_type").forGetter((block) -> block.blockSetType), 
         createSettingsCodec()
-    ).apply(instance, SuperHeavyPressurePlateBlock::new));
+    ).apply(instance, WeightedGravityPlate::new));
 
 
     @Override
@@ -39,7 +39,7 @@ public class SuperHeavyPressurePlateBlock extends AbstractPressurePlateBlock {
     }
 
 
-    public SuperHeavyPressurePlateBlock(Double velocity_threshold, BlockSetType type, AbstractBlock.Settings settings) {
+    public WeightedGravityPlate(Double velocity_threshold, BlockSetType type, AbstractBlock.Settings settings) {
         super(settings, type);
         this.setDefaultState(this.stateManager.getDefaultState().with(POWERED, false));
         this.velocity_threshold = velocity_threshold;

@@ -52,7 +52,6 @@ public class GravityFieldBlockEntity extends BlockEntity {
         MinecraftServer server = world.getServer();
         if (Objects.isNull(world.getServer())) return;
 
-        GameStateManager.tickGravityFieldTimer(server);
         if (!GameStateManager.shouldUpdateGravityFields(server)) return;
         
         entity.tracked_players.forEach(player -> {

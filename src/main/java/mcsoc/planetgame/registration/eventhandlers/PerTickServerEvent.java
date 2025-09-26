@@ -62,6 +62,25 @@ public abstract class PerTickServerEvent {
             GameEffects.setPlayerInGravityField(player, false);
         }
     };
+
+
+    private static void updateGravityEffects(ServerPlayerEntity player, boolean should_update_gravity_fields) {
+        if (should_update_gravity_fields) {
+            updateClosestGravityGenerator(player);
+        }
+        if (!GameStateManager.getPlayerInGravityField(player) || GameStateManager.getPlayerGravityModified(player)) {
+            updateClientGravityState(player);
+        }
+    }
+
+
+    private static void updateTickTimings(MinecraftServer server) {
+        GameStateManager.updateTickTimings(server);
+        GameStateManager.tickGravityFieldTimer(server);
+        GameStateManager.forEachPlayerEntry(server, e -> 
+                GameEffects.tickPlayerState(e.getKey(), server)
+        );
+    }
     
     public static void registerEvent() {
         ServerTickEvents.START_WORLD_TICK.register(world -> {
@@ -69,20 +88,13 @@ public abstract class PerTickServerEvent {
             List<ServerPlayerEntity> player_list = server.getPlayerManager().getPlayerList();
             
             player_list.forEach(player -> {
-                if (GameStateManager.shouldUpdateGravityFields(server)) {
-                    updateClosestGravityGenerator(player);
-                }
-                boolean player_in_grav_field = GameStateManager.getPlayerInGravityField(player);
-                if (!player_in_grav_field || (player_in_grav_field && GameStateManager.getPlayerGravityModified(player))) {
-                    PerTickServerEvent.updateClientGravityState(player);
+                updateGravityEffects(player, GameStateManager.shouldUpdateGravityFields(server));
+                if (player.isSneaking()) {
+                    GameEffects.dropPassengerIntentionally(player);
                 }
             });
-
-            GameStateManager.forEachPlayerEntry(server, 
-                e -> GameEffects.tickPlayerState(e.getKey(), server)
-            );
             
-            GameStateManager.updateTickTimings(server);
+            updateTickTimings(server);
         });
     }
 }

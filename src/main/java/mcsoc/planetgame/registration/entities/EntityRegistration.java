@@ -15,7 +15,11 @@ public abstract class EntityRegistration {
     public static final EntityType<ThrowableRockEntity> ROCK = Registry.register(
         Registries.ENTITY_TYPE,
         Identifier.of(PlanetGame.MOD_ID, "throwable_rock"),
-        EntityType.Builder.create(ThrowableRockEntity::new, SpawnGroup.CREATURE).dimensions(1f, 1f).makeFireImmune().build("throwable_rock")
+        EntityType.Builder.create(ThrowableRockEntity::new, SpawnGroup.CREATURE)
+                .dimensions(1f, 1f)
+                .makeFireImmune()
+                .alwaysUpdateVelocity(true)
+        .build("throwable_rock")
     );
 
     

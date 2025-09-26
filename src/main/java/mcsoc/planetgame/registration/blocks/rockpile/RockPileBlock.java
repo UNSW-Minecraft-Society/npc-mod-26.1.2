@@ -5,10 +5,10 @@ import mcsoc.planetgame.registration.entities.EntityRegistration;
 import mcsoc.planetgame.registration.entities.ThrowableRockEntity;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -32,8 +32,9 @@ public class RockPileBlock extends Block {
                 GameEffects.getIsPlayerCarryingSomething(server_player)
         ) return ActionResult.PASS;
         
-        LivingEntity rock_projectile = new ThrowableRockEntity(EntityRegistration.ROCK, world);
+        ThrowableRockEntity rock_projectile = new ThrowableRockEntity(EntityRegistration.ROCK, world);
         rock_projectile.setPosition(player.getPos());
+        rock_projectile.setOwner(server_player);
         world.spawnEntity(rock_projectile);
         GameEffects.pickUpEntity(server_player, rock_projectile);
         return ActionResult.SUCCESS;
@@ -64,5 +65,4 @@ public class RockPileBlock extends Block {
             VoxelShapes.cuboid(0.9151785714285714, -0.0267857142857143, 0.8883928571428572, 1.1651785714285714, 0.2232142857142857, 1.1383928571428572)
         );
     }
-
 }
