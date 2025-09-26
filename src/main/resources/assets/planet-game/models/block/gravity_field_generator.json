@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/end_rod",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-		"all": "minecraft:block/amethyst_cluster"
+		"all": "planet-game:block/gravity_field_generator"
   }
 }

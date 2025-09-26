@@ -2,14 +2,13 @@ package mcsoc.planetgame.registration.blocks.gravityfieldblock;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.serialization.MapCodec;
-
 import mcsoc.planetgame.registration.blocks.BlockEntityRegistration;
+
+import com.mojang.serialization.MapCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -17,8 +16,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 
@@ -55,13 +52,13 @@ public class GravityFieldBlock extends BlockWithEntity {
         return BlockRenderType.MODEL; // Necessary for rendering custom models
     }
 
-    @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        return Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 16.0, 10.0);
-    }
+    // @Override
+    // public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
+    //     return Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 16.0, 10.0);
+    // }
 
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        return Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 16.0, 10.0);
-    }
+    // @Override
+    // public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
+    //     return Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 16.0, 10.0);
+    // }
 }
