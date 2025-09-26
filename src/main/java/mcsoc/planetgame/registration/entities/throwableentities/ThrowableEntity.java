@@ -1,9 +1,8 @@
-package mcsoc.planetgame.registration.entities;
+package mcsoc.planetgame.registration.entities.throwableentities;
 
 import java.util.Vector;
 
 import mcsoc.planetgame.registration.blocks.crackedblocks.CrackedBricksBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -21,11 +20,11 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
 
-public class ThrowableRockEntity extends LivingEntity {
+public class ThrowableEntity extends LivingEntity {
     private ServerPlayerEntity owner;
     private boolean should_kill = false;
     
-    public ThrowableRockEntity(EntityType<? extends ThrowableRockEntity> entityType, World world) {
+    public ThrowableEntity(EntityType<? extends ThrowableRockEntity> entityType, World world) {
         super(entityType, world);
         this.owner = null;
     }
@@ -75,10 +74,11 @@ public class ThrowableRockEntity extends LivingEntity {
         return VoxelShapes.matchesAnywhere(this.getBoundingShape(), collision_shape, BooleanBiFunction.AND);
     }
 
+    
     protected void onHitBlockEffect(BlockState state, World world, BlockPos pos) {
         Block block = state.getBlock();
         if (block instanceof CrackedBricksBlock brick_block) {
-            brick_block.triggerThrowableRockCollision(state, world, pos, this);
+            brick_block.triggerThrowableCollision(state, world, pos, this);
         }
     }
 

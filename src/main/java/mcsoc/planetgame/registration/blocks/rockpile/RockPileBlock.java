@@ -2,7 +2,7 @@ package mcsoc.planetgame.registration.blocks.rockpile;
 
 import mcsoc.planetgame.GameEffects;
 import mcsoc.planetgame.registration.entities.EntityRegistration;
-import mcsoc.planetgame.registration.entities.ThrowableRockEntity;
+import mcsoc.planetgame.registration.entities.throwableentities.ThrowableRockEntity;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
 
