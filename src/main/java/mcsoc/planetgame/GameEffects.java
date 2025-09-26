@@ -177,18 +177,6 @@ public abstract class GameEffects {
             return 1;
         }
 
-        public static int setCallingPlayerThirdAbilityDashAbsolute(CommandContext<ServerCommandSource> cxt) {
-            ServerPlayerEntity player = cxt.getSource().getPlayer();
-            GameStateManager.setPlayerThirdAbility(player, PlayerThirdAbilities.DASH_SET);
-            return 1;
-        }
-
-        public static int setTargetPlayerThirdAbilityDashAbsolute(CommandContext<ServerCommandSource> cxt) throws CommandSyntaxException {
-            ServerPlayerEntity player = getPlayerFromName(cxt);
-            GameStateManager.setPlayerThirdAbility(player, PlayerThirdAbilities.DASH_SET);
-            return 1;
-        }
-
         public static int setCallingPlayerThirdAbilityThrow(CommandContext<ServerCommandSource> cxt) {
             ServerPlayerEntity player = cxt.getSource().getPlayer();
             GameStateManager.setPlayerThirdAbility(player, PlayerThirdAbilities.THROW);
@@ -269,27 +257,18 @@ public abstract class GameEffects {
     public static void triggerPlayerDashAdditive(ServerPlayerEntity player) {
         Vec3d unitRotVecHorizontal = player.getRotationVector().multiply(1, 0, 1).normalize().multiply(DASH_STRENGTH);
         player.addVelocity(unitRotVecHorizontal);
-        player.setVelocity(player.getVelocity().multiply(1, 0, 1));
+        if (GameStateManager.getPlayerGravityDirection(player).equals(Direction.UP)) {
+            player.setVelocity(player.getVelocity().multiply(-1, 0, -1));
+        } else {
+            player.setVelocity(player.getVelocity().multiply(1, 0, 1));
+        }
         player.velocityModified = true;
-        GameStateManager.setPlayerGravityModified(player);
     }
 
     public static void triggerPlayerDashAdditive(UUID uuid, MinecraftServer server) {
         ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
         if (Objects.isNull(player)) return;
         triggerPlayerDashAdditive(player);
-    }
-
-    public static void triggerPlayerDashAbsolute(ServerPlayerEntity player) {
-        Vec3d unitRotVecHorizontal = player.getRotationVector().multiply(1, 0, 1).normalize().multiply(DASH_STRENGTH);
-        player.setVelocity(unitRotVecHorizontal);
-        player.velocityModified = true;
-    }
-
-    public static void triggerPlayerDashAbsolute(UUID uuid, MinecraftServer server) {
-        ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
-        if (Objects.isNull(player)) return;
-        triggerPlayerDashAbsolute(player);
     }
 
     public static boolean getIsPlayerCarryingSomething(ServerPlayerEntity player) {
@@ -356,10 +335,6 @@ public abstract class GameEffects {
             //TODO
             GameEffects.triggerPlayerDashAdditive(uuid, server);
             GameStateManager.setPlayerThirdAbilityCooldownTicks(uuid, server, DASH_COOLDOWN_TICKS);
-        } else if (third_ability == PlayerThirdAbilities.DASH_SET) {
-            //TODO
-            GameEffects.triggerPlayerDashAbsolute(uuid, server);
-            GameStateManager.setPlayerThirdAbilityCooldownTicks(uuid, server, DASH_COOLDOWN_TICKS);
         } else if (third_ability == PlayerThirdAbilities.THROW) {
             //TODO
             GameEffects.triggerPlayerThrow(uuid, server);
@@ -396,7 +371,7 @@ public abstract class GameEffects {
 
         int cooldown_ticks_remaining = GameStateManager.getPlayerThirdAbilityCooldownTicks(player);
 
-        if (third_ability == PlayerThirdAbilities.DASH_ADDITIVE || third_ability == PlayerThirdAbilities.DASH_SET) {
+        if (third_ability == PlayerThirdAbilities.DASH_ADDITIVE) {
 
             if (cooldown_ticks_remaining > 1) {
                 return Text.of(String.format("dash cooldown: %.1f s", (double)(cooldown_ticks_remaining) / 20));

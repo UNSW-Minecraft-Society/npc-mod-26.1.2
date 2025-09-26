@@ -9,7 +9,6 @@ import mcsoc.planetgame.networking.enumcodecinterfaces.IntIdentifiable;
 public enum PlayerThirdAbilities implements IntIdentifiable {
     NONE(IntIdentifiable.DEFAULT_ID),
     DASH_ADDITIVE(1),
-    DASH_SET(3),
     THROW(2);
 
     private final int identifier;
