@@ -35,6 +35,7 @@ public abstract class GameEffects {
     private static final double THROW_STRENGTH = 3;
     public static final int DASH_COOLDOWN_TICKS = 20 * 2;
     public static final int THROW_COOLDOWN_TICKS = 20 * 3;
+    public static final int DROP_COOLDOWN_TICKS = 20 * 1;
 
     public abstract static class CommandActions {
         private CommandActions() { /* delete */ }
@@ -283,6 +284,23 @@ public abstract class GameEffects {
 
     public static void pickUpEntity(ServerPlayerEntity player, Entity entity) {
         entity.startRiding(player, true);
+    }
+
+    public static Entity dropHeldEntity(ServerPlayerEntity player) {
+        Entity first_passenger = player.getFirstPassenger();
+        if (Objects.isNull(first_passenger)) return null;
+
+        first_passenger.dismountVehicle();
+        Vec3d dismount_offset = player.getRotationVector().multiply(1, 0, 1).normalize().multiply(0.5);
+        first_passenger.requestTeleportOffset(dismount_offset.getX(), dismount_offset.getY(), dismount_offset.getZ());
+        return first_passenger;
+    }
+
+    public static void dropPassengerIntentionally(ServerPlayerEntity player) {
+        Entity first_passenger = dropHeldEntity(player);
+        if (Objects.isNull(first_passenger)) return;
+        
+        GameStateManager.setPlayerThirdAbilityCooldownTicks(player, DROP_COOLDOWN_TICKS);
     }
 
     public static void attemptPickUpNearbyPlayer(ServerPlayerEntity player) {
