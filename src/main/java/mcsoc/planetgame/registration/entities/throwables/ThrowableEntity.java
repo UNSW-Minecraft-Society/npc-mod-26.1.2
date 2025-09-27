@@ -1,4 +1,4 @@
-package mcsoc.planetgame.registration.entities.throwableentities;
+package mcsoc.planetgame.registration.entities.throwables;
 
 import java.util.Vector;
 
