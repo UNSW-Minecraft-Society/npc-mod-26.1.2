@@ -7,11 +7,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import mcsoc.planetgame.statemanagement.GameStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 @Mixin(Entity.class)
@@ -34,6 +36,15 @@ public abstract class EntityMixin {
     protected void getRotationVectorFlipped(CallbackInfoReturnable<Vec3d> cir) {
         
     }
+
+    @Inject(method = "getPassengerAttachmentPos", at = @At("RETURN"))
+    private void getPassengerAttachmentPosWhenFlipped(CallbackInfoReturnable<Vec3d> cir) {
+        if (((Entity)(Object)this) instanceof ServerPlayerEntity player && 
+        GameStateManager.getPlayerGravityDirection(player).equals(Direction.UP)) {
+            cir.setReturnValue(cir.getReturnValue().multiply(-1));
+        }
+    }
+
 
     // below functions taken from https://github.com/ForwarD-NerN/PlayerLadder (1.19.2 branch)
     @Inject(method = "removePassenger", at = @At("TAIL"))
