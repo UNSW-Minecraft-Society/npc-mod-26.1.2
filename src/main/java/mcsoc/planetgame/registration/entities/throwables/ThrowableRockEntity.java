@@ -1,4 +1,4 @@
-package mcsoc.planetgame.registration.entities.throwableentities;
+package mcsoc.planetgame.registration.entities.throwables;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
