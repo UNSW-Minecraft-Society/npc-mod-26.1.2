@@ -1,6 +1,7 @@
 package mcsoc.planetgame.registration.blocks.crackedblocks;
 
 import mcsoc.planetgame.registration.entities.throwables.ThrowableEntity;
+import mcsoc.planetgame.registration.entities.throwables.ThrowableInteractible;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -10,7 +11,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public abstract class CrackedBlock extends Block {
+public abstract class CrackedBlock extends Block implements ThrowableInteractible {
     protected CrackedBlock(Settings settings) {
         super(settings);
     }
