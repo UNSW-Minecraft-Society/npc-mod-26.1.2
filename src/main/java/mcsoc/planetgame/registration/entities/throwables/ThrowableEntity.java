@@ -22,7 +22,7 @@ public abstract class ThrowableEntity extends LivingEntity {
     private ServerPlayerEntity owner;
     private boolean should_kill = false;
     
-    public ThrowableEntity(EntityType<? extends ThrowableRockEntity> entityType, World world) {
+    protected ThrowableEntity(EntityType<? extends ThrowableRockEntity> entityType, World world) {
         super(entityType, world);
         this.owner = null;
     }
@@ -54,9 +54,7 @@ public abstract class ThrowableEntity extends LivingEntity {
         return false;
     }
 
-    protected void doDeathEffect() {
-        this.kill();
-    }
+    protected abstract void doDeathEffect();
 
     protected boolean canHitTarget(Entity target) {
         return !(

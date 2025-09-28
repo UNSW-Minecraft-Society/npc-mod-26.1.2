@@ -1,7 +1,5 @@
 package mcsoc.planetgame.registration.entities.throwables;
 
-import mcsoc.planetgame.registration.blocks.crackedblocks.CrackedBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
@@ -15,12 +13,18 @@ public class ThrowableRockEntity extends ThrowableEntity {
     }
 
 
+    @Override
     protected boolean onHitBlockEffect(BlockState state, World world, BlockPos pos) {
         Block block = state.getBlock();
-        if (block instanceof CrackedBlock cracked_block) {
-            cracked_block.triggerThrowableCollision(state, world, pos, this);
+        if (block instanceof ThrowableInteractible interactible) {
+            interactible.triggerThrowableCollision(state, world, pos, this);
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected void doDeathEffect() {
+        this.kill();
     }
 }
