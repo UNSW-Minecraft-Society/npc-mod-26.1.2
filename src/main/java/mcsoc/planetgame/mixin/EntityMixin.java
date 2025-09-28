@@ -1,48 +1,39 @@
 package mcsoc.planetgame.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import mcsoc.planetgame.statemanagement.GameStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
-    @Shadow
-    private Vec3d velocity;
-
     @Inject(method = "getPose", at = @At("RETURN"), cancellable = true)
     protected void getPoseWhenLiftedByPlayer(CallbackInfoReturnable<EntityPose> cir) {
-        
+
     }
 
     @Inject(method = "setVelocity(Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), cancellable = true)
     protected void setVelocityWhenFlipped(Vec3d velocity, CallbackInfo ci) {
-        
+
     }
 
     @Inject(method = "getRotationVector", at = @At("RETURN"), cancellable = true)
     protected void getRotationVectorFlipped(CallbackInfoReturnable<Vec3d> cir) {
-        
+
     }
 
-    @Inject(method = "getPassengerAttachmentPos", at = @At("RETURN"))
-    private void getPassengerAttachmentPosWhenFlipped(CallbackInfoReturnable<Vec3d> cir) {
-        if (((Entity)(Object)this) instanceof ServerPlayerEntity player && 
-        GameStateManager.getPlayerGravityDirection(player).equals(Direction.UP)) {
-            cir.setReturnValue(cir.getReturnValue().multiply(-1));
-        }
+    @Inject(method = "getPassengerAttachmentPos", at = @At("RETURN"), cancellable = true)
+    protected void getPassengerAttachmentPosWhenFlipped(CallbackInfoReturnable<Vec3d> cir) {
+        
     }
 
 
