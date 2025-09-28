@@ -1,6 +1,6 @@
 package mcsoc.planetgame.registration.blocks.crackedblocks;
 
-import mcsoc.planetgame.registration.entities.throwableentities.ThrowableEntity;
+import mcsoc.planetgame.registration.entities.throwables.ThrowableEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

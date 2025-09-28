@@ -1,7 +1,7 @@
 package mcsoc.planetgame.registration.entities;
 
 import mcsoc.planetgame.PlanetGame;
-import mcsoc.planetgame.registration.entities.throwableentities.ThrowableRockEntity;
+import mcsoc.planetgame.registration.entities.throwables.ThrowableRockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

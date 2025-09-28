@@ -2,8 +2,6 @@ package mcsoc.planetgame.registration.entities.throwables;
 
 import java.util.Vector;
 
-import mcsoc.planetgame.registration.blocks.crackedblocks.CrackedBricksBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -20,7 +18,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
 
-public class ThrowableEntity extends LivingEntity {
+public abstract class ThrowableEntity extends LivingEntity {
     private ServerPlayerEntity owner;
     private boolean should_kill = false;
     
@@ -56,6 +54,10 @@ public class ThrowableEntity extends LivingEntity {
         return false;
     }
 
+    protected void doDeathEffect() {
+        this.kill();
+    }
+
     protected boolean canHitTarget(Entity target) {
         return !(
             target.equals(getOwner()) || 
@@ -74,18 +76,14 @@ public class ThrowableEntity extends LivingEntity {
         return VoxelShapes.matchesAnywhere(this.getBoundingShape(), collision_shape, BooleanBiFunction.AND);
     }
 
-    
-    protected void onHitBlockEffect(BlockState state, World world, BlockPos pos) {
-        Block block = state.getBlock();
-        if (block instanceof CrackedBricksBlock brick_block) {
-            brick_block.triggerThrowableCollision(state, world, pos, this);
-        }
-    }
+
+    protected abstract boolean onHitBlockEffect(BlockState state, World world, BlockPos pos);
+
 
     @Override
     public void tick() {
         if (should_kill) {
-            this.kill();
+            this.doDeathEffect();
         }
         super.tick();
 
@@ -96,6 +94,7 @@ public class ThrowableEntity extends LivingEntity {
         }
 
         if (this.horizontalCollision) {
+
             // below loop code taken DIRECTLY from Entity.checkBlockCollision() LMAO
             Box box = this.getBoundingBox().expand(0.1);
             BlockPos min_corner = BlockPos.ofFloored(box.minX + 1.0E-7, box.minY + 1.0E-7, box.minZ + 1.0E-7);
@@ -109,12 +108,11 @@ public class ThrowableEntity extends LivingEntity {
                         BlockPos cursor_pos = new BlockPos(i, j, k);
                         BlockState state = world.getBlockState(cursor_pos);
                         if (this.isIntersectingWithBlock(state, world, cursor_pos)) {
-                            this.onHitBlockEffect(state, world, cursor_pos);
+                            should_kill = this.onHitBlockEffect(state, world, cursor_pos);
                         }
                     }
                 }
             }
-
             should_kill = true;
         }
         
