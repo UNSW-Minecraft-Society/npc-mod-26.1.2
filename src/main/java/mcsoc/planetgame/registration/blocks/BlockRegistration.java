@@ -4,12 +4,14 @@ import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.registration.blocks.crackedblocks.CrackedBricksBlock;
 import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlock;
 import mcsoc.planetgame.registration.blocks.rockpile.RockPileBlock;
+import mcsoc.planetgame.registration.blocks.throwswitch.RockSwitch;
 import mcsoc.planetgame.registration.blocks.weightedpressureplate.WeightedGravityPlate;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSetType;
+import net.minecraft.block.LeverBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -25,20 +27,30 @@ public abstract class BlockRegistration {
             "weighted_pressure_plate",
             true
     );
+
     public static final Block GRAVITY_FIELD_BLOCK = register(
             new GravityFieldBlock(AbstractBlock.Settings.create()),
             "gravity_field_generator",
             true
     );
+
     public static final Block ROCK_PILE_BLOCK = register(
             new RockPileBlock(AbstractBlock.Settings.create()),
             "rock_pile",
             true
     );
+
     public static final Block CRACKED_BRICKS_BLOCK = register(
         new CrackedBricksBlock(AbstractBlock.Settings.create()),
         "cracked_bricks",
-        true);
+        true
+    );
+
+    public static final Block ROCK_SWITCH_BLOCK = register(
+        new RockSwitch(AbstractBlock.Settings.create()),
+        "rock_switch",
+        true
+    );
     
     
     // from fabric wiki: https://docs.fabricmc.net/1.21/develop/blocks/block-entities
