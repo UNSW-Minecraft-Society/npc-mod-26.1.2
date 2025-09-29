@@ -3,6 +3,7 @@ package mcsoc.planetgame.registration.entities.throwables;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -25,6 +26,7 @@ public class ThrowableRockEntity extends ThrowableEntity {
 
     @Override
     protected void doDeathEffect() {
-        this.kill();
+        this.getWorld().addParticle(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY(), this.getZ(), 0.5D, 0.5D, 0.5D);
+        this.discard();
     }
 }

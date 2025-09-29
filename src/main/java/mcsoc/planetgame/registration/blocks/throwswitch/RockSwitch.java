@@ -13,13 +13,19 @@ import net.minecraft.world.World;
 
 public class RockSwitch extends ThrowableHittableSwitch {
 
+    protected static final int COOLDOWN_TICKS = 10;
+
     public RockSwitch(Settings settings) {
         super(settings);
     }
 
+    @Override
+    protected int getCooldownTick() {
+        return COOLDOWN_TICKS;
+    }
 
     @Override
-    public void activate(BlockState state, World world, BlockPos pos) {
+    public void activateAction(BlockState state, World world, BlockPos pos) {
         state = state.cycle(POWERED);
         world.setBlockState(pos, state, 3);
     }

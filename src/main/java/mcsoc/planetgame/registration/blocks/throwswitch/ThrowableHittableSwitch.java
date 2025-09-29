@@ -8,18 +8,20 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.WallMountedBlock;
 import net.minecraft.block.enums.BlockFace;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public abstract class ThrowableHittableSwitch extends WallMountedBlock implements ThrowableInteractible {
-
+    
     protected static final BooleanProperty POWERED = Properties.POWERED;
     protected static final VoxelShape NORTH_WALL_SHAPE = Block.createCuboidShape(5.0, 4.0, 10.0, 11.0, 12.0, 16.0);
     protected static final VoxelShape SOUTH_WALL_SHAPE = Block.createCuboidShape(5.0, 4.0, 0.0, 11.0, 12.0, 6.0);
@@ -29,6 +31,8 @@ public abstract class ThrowableHittableSwitch extends WallMountedBlock implement
     protected static final VoxelShape FLOOR_X_AXIS_SHAPE = Block.createCuboidShape(4.0, 0.0, 5.0, 12.0, 6.0, 11.0);
     protected static final VoxelShape CEILING_Z_AXIS_SHAPE = Block.createCuboidShape(5.0, 10.0, 4.0, 11.0, 16.0, 12.0);
     protected static final VoxelShape CEILING_X_AXIS_SHAPE = Block.createCuboidShape(4.0, 10.0, 5.0, 12.0, 16.0, 11.0);
+
+    protected boolean can_activate = true;
 
     protected ThrowableHittableSwitch(Settings settings) {
         super(settings);
@@ -80,12 +84,30 @@ public abstract class ThrowableHittableSwitch extends WallMountedBlock implement
         };
     }
 
-
-    protected abstract void activate(BlockState state, World world, BlockPos pos);
+    protected abstract int getCooldownTick();
 
     protected abstract void onThrowableCollision(BlockState state, World world, BlockPos pos, ThrowableEntity entity);
     
     public void triggerThrowableCollision(BlockState state, World world, BlockPos pos, ThrowableEntity entity) {
         this.onThrowableCollision(state, world, pos, entity);
+    }
+
+    protected void allowActivation() {
+        this.can_activate = true;
+    }
+
+    protected abstract void activateAction(BlockState state, World world, BlockPos pos);
+
+    protected void activate(BlockState state, World world, BlockPos pos) {
+        if (!this.can_activate) return;
+        
+        this.can_activate = false;
+        world.scheduleBlockTick(pos, this, this.getCooldownTick());
+        activateAction(state, world, pos);
+    }
+
+    @Override
+    protected void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        this.allowActivation();
     }
 }
