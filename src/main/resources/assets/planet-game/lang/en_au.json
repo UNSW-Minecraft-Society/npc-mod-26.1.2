@@ -1,4 +1,9 @@
 {
   "block.planet-game.gravity_field_generator": "Gravity Generator",
-  "block.planet-game.weighted_pressure_plate": "Weighted Detector Plate"
+  "block.planet-game.weighted_pressure_plate": "Weighted Detector Plate",
+  "block.planet-game.rock_pile": "Rock Pile",
+  "block.planet-game.spike": "Sharp Spike",
+  "block.planet-game.cracked_bricks": "Cracked Bricks",
+  "block.planet-game.rock_switch": "Stiff Lever",
+  "death.attack.spike_trap": "%1$s was impaled on spikes."
 }
