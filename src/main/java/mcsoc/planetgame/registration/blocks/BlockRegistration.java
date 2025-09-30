@@ -4,14 +4,14 @@ import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.registration.blocks.crackedblocks.CrackedBricksBlock;
 import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlock;
 import mcsoc.planetgame.registration.blocks.rockpile.RockPileBlock;
+import mcsoc.planetgame.registration.blocks.spikes.SpikeBlock;
 import mcsoc.planetgame.registration.blocks.throwswitch.RockSwitch;
 import mcsoc.planetgame.registration.blocks.weightedpressureplate.WeightedGravityPlate;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockSetType;
-import net.minecraft.block.LeverBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -23,7 +23,7 @@ public abstract class BlockRegistration {
     private BlockRegistration() { /* delete */ }
 
     public static final Block WEIGHTED_PRESSURE_PLATE = register(
-            new WeightedGravityPlate(1.5D, BlockSetType.POLISHED_BLACKSTONE, AbstractBlock.Settings.create()),
+            new WeightedGravityPlate(AbstractBlock.Settings.create()),
             "weighted_pressure_plate",
             true
     );
@@ -38,6 +38,12 @@ public abstract class BlockRegistration {
             new RockPileBlock(AbstractBlock.Settings.create()),
             "rock_pile",
             true
+    );
+
+    public static final Block P1_SPIKE_BLOCK = register(
+        new SpikeBlock(AbstractBlock.Settings.create()), 
+        "spike",
+        true
     );
 
     public static final Block CRACKED_BRICKS_BLOCK = register(
