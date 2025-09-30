@@ -20,7 +20,7 @@ public class RockSwitch extends ThrowableHittableSwitch {
     }
 
     @Override
-    protected int getCooldownTick() {
+    protected int getCooldownTicks() {
         return COOLDOWN_TICKS;
     }
 

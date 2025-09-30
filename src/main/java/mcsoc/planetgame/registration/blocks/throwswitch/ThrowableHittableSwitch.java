@@ -84,7 +84,7 @@ public abstract class ThrowableHittableSwitch extends WallMountedBlock implement
         };
     }
 
-    protected abstract int getCooldownTick();
+    protected abstract int getCooldownTicks();
 
     protected abstract void onThrowableCollision(BlockState state, World world, BlockPos pos, ThrowableEntity entity);
     
@@ -102,7 +102,7 @@ public abstract class ThrowableHittableSwitch extends WallMountedBlock implement
         if (!this.can_activate) return;
         
         this.can_activate = false;
-        world.scheduleBlockTick(pos, this, this.getCooldownTick());
+        world.scheduleBlockTick(pos, this, this.getCooldownTicks());
         activateAction(state, world, pos);
     }
 
