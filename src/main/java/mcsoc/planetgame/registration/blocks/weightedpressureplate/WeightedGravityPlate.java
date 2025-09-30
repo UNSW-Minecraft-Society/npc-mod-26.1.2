@@ -1,9 +1,6 @@
 package mcsoc.planetgame.registration.blocks.weightedpressureplate;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import mcsoc.planetgame.PlanetGame;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.AbstractPressurePlateBlock;
@@ -25,12 +22,7 @@ public class WeightedGravityPlate extends AbstractPressurePlateBlock {
 
     private double velocity_threshold;
     private static final BooleanProperty POWERED = Properties.POWERED;
-    
-    public static final MapCodec<WeightedGravityPlate> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-        Codec.DOUBLE.fieldOf("velocity_threshold").forGetter(block -> block.velocity_threshold),
-        BlockSetType.CODEC.fieldOf("block_set_type").forGetter((block) -> block.blockSetType), 
-        createSettingsCodec()
-    ).apply(instance, WeightedGravityPlate::new));
+    private static final double DEFAULT_VELOCITY_THRESHOLD = 1.5F;
 
 
     @Override
@@ -39,22 +31,26 @@ public class WeightedGravityPlate extends AbstractPressurePlateBlock {
     }
 
 
-    public WeightedGravityPlate(Double velocity_threshold, BlockSetType type, AbstractBlock.Settings settings) {
+    public WeightedGravityPlate(AbstractBlock.Settings settings, Double velocity_threshold, BlockSetType type) {
         super(settings, type);
         this.setDefaultState(this.stateManager.getDefaultState().with(POWERED, false));
         this.velocity_threshold = velocity_threshold;
     }
 
+    public WeightedGravityPlate(AbstractBlock.Settings settings) {
+        this(settings, DEFAULT_VELOCITY_THRESHOLD, BlockSetType.IRON);
+    }
+
 
     @Override
     protected MapCodec<? extends AbstractPressurePlateBlock> getCodec() {
-        return CODEC;
+        return createCodec(WeightedGravityPlate::new);
     }
 
 
     @Override
     protected int getRedstoneOutput(World world, BlockPos pos) {
-        Double max_velocity = world.getEntitiesByClass(
+        double max_velocity = world.getEntitiesByClass(
             ServerPlayerEntity.class, 
             BOX.offset(pos).offset(0, 2, 0), 
             EntityPredicates.EXCEPT_SPECTATOR.and(entity -> !entity.canAvoidTraps())

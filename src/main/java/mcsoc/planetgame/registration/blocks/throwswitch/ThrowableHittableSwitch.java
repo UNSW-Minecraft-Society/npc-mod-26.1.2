@@ -41,8 +41,8 @@ public abstract class ThrowableHittableSwitch extends WallMountedBlock implement
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-      builder.add(FACE, FACING, POWERED);
-   }
+        builder.add(FACE, FACING, POWERED);
+    }
 
     @Override
     protected boolean emitsRedstonePower(BlockState state) {
@@ -84,20 +84,19 @@ public abstract class ThrowableHittableSwitch extends WallMountedBlock implement
         };
     }
 
-    protected abstract int getCooldownTicks();
-
-    protected abstract void onThrowableCollision(BlockState state, World world, BlockPos pos, ThrowableEntity entity);
     
     public void triggerThrowableCollision(BlockState state, World world, BlockPos pos, ThrowableEntity entity) {
         this.onThrowableCollision(state, world, pos, entity);
     }
 
+    
     protected void allowActivation() {
         this.can_activate = true;
     }
 
-    protected abstract void activateAction(BlockState state, World world, BlockPos pos);
-
+    /*
+     * abcd
+     */
     protected void activate(BlockState state, World world, BlockPos pos) {
         if (!this.can_activate) return;
         
@@ -106,8 +105,16 @@ public abstract class ThrowableHittableSwitch extends WallMountedBlock implement
         activateAction(state, world, pos);
     }
 
+    
     @Override
     protected void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         this.allowActivation();
     }
+
+    
+    protected abstract int getCooldownTicks();
+
+    protected abstract void activateAction(BlockState state, World world, BlockPos pos);
+
+    protected abstract void onThrowableCollision(BlockState state, World world, BlockPos pos, ThrowableEntity entity);
 }
