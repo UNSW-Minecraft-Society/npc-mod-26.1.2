@@ -11,6 +11,7 @@ import mcsoc.planetgame.registration.CommandRegistrationHandler;
 import mcsoc.planetgame.registration.blocks.BlockEntityRegistration;
 import mcsoc.planetgame.registration.blocks.BlockRegistration;
 import mcsoc.planetgame.registration.entities.EntityRegistration;
+import mcsoc.planetgame.registration.entities.damagesources.DamageSourceRegistration;
 import mcsoc.planetgame.registration.eventhandlers.PerTickServerEvent;
 import mcsoc.planetgame.registration.eventhandlers.PlayerJoinServerEvent;
 
@@ -43,6 +44,8 @@ public class PlanetGame implements ModInitializer {
 		BlockEntityRegistration.registerBlockEntities();
 		
 		EntityRegistration.registerEntities();
+
+		DamageSourceRegistration.registerDamageSources();
 
 		// network packet handlers
 		FirstAbilityTriggerPacketEvent.registerHandler();
