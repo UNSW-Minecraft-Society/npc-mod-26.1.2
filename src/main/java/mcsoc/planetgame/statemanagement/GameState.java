@@ -1,17 +1,23 @@
 package mcsoc.planetgame.statemanagement;
 
 import mcsoc.planetgame.PlanetGame;
+import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlockEntity;
 import mcsoc.planetgame.registration.eventhandlers.PerTickServerEvent;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.*;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -29,6 +35,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Uuids;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
@@ -41,6 +48,8 @@ public class GameState extends PersistentState {
     private long pending_ticks = 0;
     private long pending_ticks_partial = 0;
     private long grav_field_update_tick_counter = 0;
+
+    private Set<BlockPos> gravity_generator_locations = new TreeSet<>();
 
     private GameState() {/* delete */}
 
@@ -231,12 +240,12 @@ public class GameState extends PersistentState {
     }
 
 
-    protected static Boolean getPlayerGravityModified(UUID uuid, MinecraftServer server) {
+    protected static boolean getPlayerGravityModified(UUID uuid, MinecraftServer server) {
         PlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerGravityModified();
     }
 
-    protected static Boolean getPlayerGravityModified(ServerPlayerEntity player) {
+    protected static boolean getPlayerGravityModified(ServerPlayerEntity player) {
         return getPlayerGravityModified(player.getUuid(), player.getServer());
     }
 
@@ -334,14 +343,11 @@ public class GameState extends PersistentState {
         GameState state = getServerState(server);
         
         long tick_delta_millis = Duration.between(state.prev_tick_time, Instant.now()).toMillis();
-        // PlanetGame.LOGGER.info("tick delta: {}", tick_delta_nanos);
         long ticks_to_millis = 50;
 
         tick_delta_millis += state.pending_ticks_partial;
         state.pending_ticks_partial = tick_delta_millis % ticks_to_millis;
         state.pending_ticks = tick_delta_millis / ticks_to_millis;
-        // PlanetGame.LOGGER.info("pending: {}, partial: {}", state.pending_ticks, state.pending_ticks_partial);
-
         state.prev_tick_time = Instant.now();
     }
 
@@ -377,5 +383,16 @@ public class GameState extends PersistentState {
     protected static Instant getTimer(MinecraftServer server) {
         GameState state = getServerState(server);
         return state.prev_tick_time;
+    }
+
+
+    protected static void registerGravityGeneratorPosition(MinecraftServer server, GravityFieldBlockEntity entity) {
+        GameState state = getServerState(server);
+        state.gravity_generator_locations.add(entity.getPos());
+    }
+
+    protected static void forEachGravityGenerator(MinecraftServer server, Consumer<BlockPos> todo_for_each) {
+        GameState state = getServerState(server);
+        state.gravity_generator_locations.forEach(todo_for_each);
     }
 }

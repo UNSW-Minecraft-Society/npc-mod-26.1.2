@@ -6,12 +6,14 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
+import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlockEntity;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public abstract class GameStateManager {
@@ -98,11 +100,11 @@ public abstract class GameStateManager {
         setPlayerFirstAbility(player.getUuid(), player.getServer(), ability);
     }
 
-    public static Boolean getPlayerGravityModified(UUID uuid, MinecraftServer server) {
+    public static boolean getPlayerGravityModified(UUID uuid, MinecraftServer server) {
         return GameState.getPlayerGravityModified(uuid, server);
     }
 
-    public static Boolean getPlayerGravityModified(ServerPlayerEntity player) {
+    public static boolean getPlayerGravityModified(ServerPlayerEntity player) {
         return getPlayerGravityModified(player.getUuid(), player.getServer());
     }
 
@@ -221,5 +223,14 @@ public abstract class GameStateManager {
 
     public static void updateTickTimings(MinecraftServer server) {
         GameState.updateTickTimings(server);
+    }
+
+
+    public static void registerGravityGeneratorPosition(MinecraftServer server, GravityFieldBlockEntity entity) {
+        GameState.registerGravityGeneratorPosition(server, entity);
+    }
+
+    public static void forEachGravityGenerator(MinecraftServer server, Consumer<BlockPos> todo_for_each) {
+        GameState.forEachGravityGenerator(server, todo_for_each);
     }
 }
