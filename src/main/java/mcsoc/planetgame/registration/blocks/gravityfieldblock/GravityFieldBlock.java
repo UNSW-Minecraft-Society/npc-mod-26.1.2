@@ -21,14 +21,21 @@ import net.minecraft.world.World;
 
 public class GravityFieldBlock extends BlockWithEntity {
     private static final BooleanProperty POWERED = Properties.POWERED;
+    
+    private final float radius;
+
+    public GravityFieldBlock(Settings settings, float radius) {
+        super(settings);
+        this.radius = radius;
+    }
 
     public GravityFieldBlock(Settings settings) {
-        super(settings);
+        this(settings, GravityFieldBlockEntity.DEFAULT_SIZE);
     }
 
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new GravityFieldBlockEntity(pos, state, GravityFieldBlockEntity.DEFAULT_SIZE);
+        return new GravityFieldBlockEntity(pos, state, this.radius);
     }
 
     @Override
@@ -51,14 +58,4 @@ public class GravityFieldBlock extends BlockWithEntity {
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL; // Necessary for rendering custom models
     }
-
-    // @Override
-    // public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-    //     return Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 16.0, 10.0);
-    // }
-
-    // @Override
-    // public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-    //     return Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 16.0, 10.0);
-    // }
 }

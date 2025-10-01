@@ -13,7 +13,10 @@ public abstract class BlockEntityRegistration {
     private BlockEntityRegistration() { /* delete */ }
 
     public static final BlockEntityType<GravityFieldBlockEntity> GRAVITY_FIELD_BLOCK_ENTITY =
-            register("gravity_field_generator", GravityFieldBlockEntity::new, BlockRegistration.GRAVITY_FIELD_BLOCK);
+            register("gravity_field_generator", GravityFieldBlockEntity::new, 
+        BlockRegistration.GRAVITY_FIELD_BLOCK, 
+        BlockRegistration.CAVE_GRAVITY_FIELD_BLOCK
+    );
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String name,
                                                                     BlockEntityType.BlockEntityFactory<? extends T> entityFactory,

@@ -34,6 +34,12 @@ public abstract class BlockRegistration {
             true
     );
 
+    public static final Block CAVE_GRAVITY_FIELD_BLOCK = register(
+            new GravityFieldBlock(AbstractBlock.Settings.create(), 200),
+            "cave_gravity_field_generator",
+            true
+    );
+
     public static final Block ROCK_PILE_BLOCK = register(
             new RockPileBlock(AbstractBlock.Settings.create()),
             "rock_pile",

@@ -16,16 +16,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
-
 public class GravityFieldBlockEntity extends BlockEntity {
 
-    protected final static int DEFAULT_SIZE = 10;
+    protected static final int DEFAULT_SIZE = 10;
     
     private final Box gravity_field_box;
     private List<ServerPlayerEntity> tracked_players = new ArrayList<>();
 
 
-    public GravityFieldBlockEntity(BlockPos pos, BlockState state, int size) {
+    public GravityFieldBlockEntity(BlockPos pos, BlockState state, float size) {
         super(BlockEntityRegistration.GRAVITY_FIELD_BLOCK_ENTITY, pos, state);
         gravity_field_box = new Box(pos).expand(size);
     }
@@ -48,19 +47,20 @@ public class GravityFieldBlockEntity extends BlockEntity {
         });
     }
 
+
     protected static void tick(World world, BlockPos pos, BlockState state, GravityFieldBlockEntity entity) {
+        if (world.isClient) return;
+
         MinecraftServer server = world.getServer();
         if (Objects.isNull(world.getServer())) return;
 
+        GameStateManager.registerGravityGeneratorPosition(server, entity);
+
         if (!GameStateManager.shouldUpdateGravityFields(server)) return;
         
-        entity.tracked_players.forEach(player -> {
-            if (entity.gravity_field_box.contains(player.getPos())) {
-                GameEffects.setPlayerInGravityField(player, true);
-            } else {
-                GameEffects.setPlayerInGravityField(player, false);
-            }
-        });
+        entity.tracked_players.forEach(player -> 
+            GameEffects.setPlayerInGravityField(player, entity.gravity_field_box.contains(player.getPos()))
+        );
         entity.resetTrackedPlayers();
     }
 }
