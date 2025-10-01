@@ -4,6 +4,7 @@ import mcsoc.planetgame.registration.entities.damagesources.DamageSourceRegistra
 import mcsoc.planetgame.statemanagement.GameStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PointedDripstoneBlock;
+import net.minecraft.block.enums.Thickness;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -18,7 +19,7 @@ public class SpikeBlock extends PointedDripstoneBlock {
 
     @Override
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
-        if (entity instanceof ServerPlayerEntity player && (
+        if (state.get(THICKNESS) == Thickness.TIP && entity instanceof ServerPlayerEntity player && (
             (GameStateManager.getPlayerGravityDirection(player).equals(Direction.DOWN) && state.get(VERTICAL_DIRECTION) == Direction.UP) ||
             (GameStateManager.getPlayerGravityDirection(player).equals(Direction.UP) && state.get(VERTICAL_DIRECTION) == Direction.DOWN)
         )) {
