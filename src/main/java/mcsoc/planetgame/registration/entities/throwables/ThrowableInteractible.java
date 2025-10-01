@@ -6,5 +6,5 @@ import net.minecraft.world.World;
 
 public interface ThrowableInteractible {
 
-    public abstract void triggerThrowableCollision(BlockState state, World world, BlockPos pos, ThrowableEntity entity);
+    public void triggerThrowableCollision(BlockState state, World world, BlockPos pos, ThrowableEntity entity);
 }
