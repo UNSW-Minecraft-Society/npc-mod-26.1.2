@@ -227,6 +227,7 @@ public abstract class GameEffects {
     }
 
     public static void toggleIsPlayerFlipped(ServerPlayerEntity player) {
+        player.setSprinting(false);
         player.teleport(player.getServerWorld(), player.getX(), player.getY(), player.getZ(), player.getYaw() + 180, player.getPitch());
         GameStateManager.flipPlayerGravity(player);
     }
