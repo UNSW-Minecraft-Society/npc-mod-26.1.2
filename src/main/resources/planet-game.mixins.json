@@ -10,7 +10,7 @@
 		"PlayerEntityInvoker",
 		"PlayerEntityMixin",
 		"ServerPlayerEntityMixin",
-		"RotationUtilMixin"
+		"ServerPlayNetworkHandlerMixin"
 	],
 	"refmap": "planet-game-refmap.json",
 	"injectors": {

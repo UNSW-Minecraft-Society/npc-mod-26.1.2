@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
 import gravity_changer.util.RotationUtil;
+import net.minecraft.util.math.Direction;
 
 @Mixin(value = RotationUtil.class, remap = false)
 public class RotationUtilMixin {
