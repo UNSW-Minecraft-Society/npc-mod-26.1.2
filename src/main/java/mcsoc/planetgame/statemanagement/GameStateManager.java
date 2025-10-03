@@ -11,6 +11,8 @@ import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
+import mcsoc.planetgame.statemanagement.playerstate.PlayerState;
+import mcsoc.planetgame.statemanagement.playerstate.PlayerStateManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -20,10 +22,10 @@ public abstract class GameStateManager {
     private GameStateManager() { /* delete */ }
 
     public static SyncPlayerGravityDataS2CPayload getPlayerGravityStatePacket(ServerPlayerEntity player) {
-        PlayerState state = GameState.getPlayerState(player);
+        PlayerStateManager state = GameState.getPlayerState(player);
         return new SyncPlayerGravityDataS2CPayload(
-            state.grav_dir(),
-            state.grav_strength()
+            state.getCurrentPlayerGravityDirection(),
+            state.getPlayerGravityStrengthModifier()
         );
     }
 
@@ -176,13 +178,28 @@ public abstract class GameStateManager {
         return getPlayerThirdAbilityCooldownTicks(player.getUuid(), player.getServer());
     }
 
-
     public static void setPlayerThirdAbilityCooldownTicks(UUID uuid, MinecraftServer server, int ticks) {
         GameState.setPlayerThirdAbilityCooldownTicks(uuid, server, ticks);
     }
 
     public static void setPlayerThirdAbilityCooldownTicks(ServerPlayerEntity player, int ticks) {
         setPlayerThirdAbilityCooldownTicks(player.getUuid(), player.getServer(), ticks);
+    }
+
+    public static boolean getIfPlayerIsCarrying(UUID uuid, MinecraftServer server) {
+        return GameState.getIfPlayerIsCarrying(uuid, server);
+    }
+
+    public static boolean getIfPlayerIsCarrying(ServerPlayerEntity player) {
+        return getIfPlayerIsCarrying(player.getUuid(), player.getServer());
+    }
+
+    public static void setIfPlayerIsCarrying(UUID uuid, MinecraftServer server, boolean is_carrying) {
+        GameState.setIfPlayerIsCarrying(uuid, server, is_carrying);
+    }
+
+    public static void setIfPlayerIsCarrying(ServerPlayerEntity player, boolean is_carrying) {
+        setIfPlayerIsCarrying(player.getUuid(), player.getServer(), is_carrying);
     }
 
 
@@ -211,7 +228,7 @@ public abstract class GameStateManager {
     }
 
 
-    public static void forEachPlayerEntry(MinecraftServer server, Consumer<Entry<UUID, PlayerState>> action) {
+    public static void forEachPlayerEntry(MinecraftServer server, Consumer<Entry<UUID, PlayerStateManager>> action) {
         GameState state = GameState.getServerState(server);
         state.getPlayerEntryStream().forEach(action);
     }

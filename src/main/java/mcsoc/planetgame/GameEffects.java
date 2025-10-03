@@ -410,7 +410,7 @@ public abstract class GameEffects {
 
     public static Boolean shouldSendThirdAbilityActionbarText(ServerPlayerEntity player) {
         int cooldown_ticks_remaining = GameStateManager.getPlayerThirdAbilityCooldownTicks(player);
-        return GameStateManager.getPlayerThirdAbility(player).equals(PlayerThirdAbilities.NONE) || cooldown_ticks_remaining > 0;
+        return !GameStateManager.getPlayerThirdAbility(player).equals(PlayerThirdAbilities.NONE) && cooldown_ticks_remaining > 0;
     }
 
     public static void sendThirdAbilityActionbarText(ServerPlayerEntity player) {
