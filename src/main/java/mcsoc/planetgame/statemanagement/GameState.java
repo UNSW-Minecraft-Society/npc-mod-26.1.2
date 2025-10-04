@@ -299,7 +299,7 @@ public class GameState extends PersistentState {
     }
 
     protected static boolean getPlayerXrayState(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerXrayState();
     }
 
@@ -308,7 +308,7 @@ public class GameState extends PersistentState {
     }
 
     protected static void setPlayerXrayState(UUID uuid, MinecraftServer server, boolean xray_on) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         player_state.setPlayerXrayState(xray_on);
         setPlayerState(uuid, server, player_state);
     }
