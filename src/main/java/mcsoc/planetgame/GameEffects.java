@@ -381,20 +381,6 @@ public abstract class GameEffects {
         triggerFirstAbility(player.getUuid(), player.getServer());
     }
 
-    public static void triggerSecondAbility(UUID uuid, MinecraftServer server) {
-        PlayerSecondAbilities second_ability = GameStateManager.getPlayerSecondAbility(uuid, server);
-        if (second_ability == PlayerSecondAbilities.DRILLING) {
-            //TODO
-        } else if (second_ability == PlayerSecondAbilities.XRAY) {
-            // TODO
-            togglePlayerXrayState(uuid, server);
-        }
-    }
-
-    public static void triggerSecondAbility(ServerPlayerEntity player) {
-        triggerThirdAbility(player.getUuid(), player.getServer());
-    }
-
     public static void triggerThirdAbility(UUID uuid, MinecraftServer server) {
         if (GameStateManager.getPlayerThirdAbilityCooldownTicks(uuid, server) > 0) return;
         PlayerThirdAbilities third_ability = GameStateManager.getPlayerThirdAbility(uuid, server);
@@ -430,6 +416,20 @@ public abstract class GameEffects {
         player.networkHandler.sendPacket(new OverlayMessageS2CPacket(GameEffects.getFirstAbilityActionbarResponse(player)));
     }
 
+    public static Text getSecondAbilityActionbarResponse(ServerPlayerEntity player) {
+        
+        PlayerFirstAbilities first_ability = GameStateManager.getPlayerFirstAbility(player);
+        if (first_ability == PlayerFirstAbilities.FLIP) {
+            return Text.of(String.format("gravity direction: %s", GameStateManager.getPlayerGravityDirection(player)));
+        } else if (first_ability == PlayerFirstAbilities.CONTROL) {
+            return Text.of(String.format("gravity strength: %.1f", GameStateManager.getPlayerGravityStrength(player).getDouble()));
+        }
+        return Text.literal("No ability to trigger.");
+    }
+
+    public static void sendSecondAbilityActionbarText(ServerPlayerEntity player) {
+        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(GameEffects.getSecondAbilityActionbarResponse(player)));
+    }
 
     public static Text getThirdAbilityActionbarResponse(ServerPlayerEntity player) {
 
@@ -465,6 +465,19 @@ public abstract class GameEffects {
         if (shouldSendThirdAbilityActionbarText(player)) {
             player.networkHandler.sendPacket(new OverlayMessageS2CPacket(GameEffects.getThirdAbilityActionbarResponse(player)));
         }
+    }
+    public static void triggerSecondAbility(UUID uuid, MinecraftServer server) {
+        PlayerSecondAbilities second_ability = GameStateManager.getPlayerSecondAbility(uuid, server);
+        if (second_ability == PlayerSecondAbilities.DRILLING) {
+            //TODO
+        } else if (second_ability == PlayerSecondAbilities.XRAY) {
+            // TODO
+            togglePlayerXrayState(uuid, server);
+        }
+    }
+
+    public static void triggerSecondAbility(ServerPlayerEntity player) {
+        triggerThirdAbility(player.getUuid(), player.getServer());
     }
 
 
