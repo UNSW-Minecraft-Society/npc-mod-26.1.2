@@ -16,7 +16,6 @@ public class ThirdAbilityTriggerPacketEvent {
         ServerPlayNetworking.registerGlobalReceiver(TriggerThirdAbilityC2SPayload.ID, (payload, context) -> {
             ServerPlayerEntity player = context.player();
             GameEffects.triggerThirdAbility(player);
-            GameEffects.sendThirdAbilityActionbarText(player);
         });
     }
 }

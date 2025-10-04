@@ -329,40 +329,6 @@ public abstract class GameEffects {
             GameStateManager.setPlayerThirdAbilityCooldownTicks(player, THROW_COOLDOWN_TICKS);
         }
     }
-
-
-    public static void triggerFirstAbility(UUID uuid, MinecraftServer server) {
-        if (!GameStateManager.getPlayerInGravityField(uuid, server)) return;
-
-        PlayerFirstAbilities first_ability = GameStateManager.getPlayerFirstAbility(uuid, server);
-        if (first_ability == PlayerFirstAbilities.FLIP) {
-            GameEffects.toggleIsPlayerFlipped(uuid, server);
-        } else if (first_ability == PlayerFirstAbilities.CONTROL) {
-            GameEffects.toggleNextGravityStrength(uuid, server);
-        }
-    }
-
-    public static void triggerFirstAbility(ServerPlayerEntity player) {
-        triggerFirstAbility(player.getUuid(), player.getServer());
-    }
-
-
-    public static void triggerThirdAbility(UUID uuid, MinecraftServer server) {
-        if (GameStateManager.getPlayerThirdAbilityCooldownTicks(uuid, server) > 0) return;
-        PlayerThirdAbilities third_ability = GameStateManager.getPlayerThirdAbility(uuid, server);
-        if (third_ability == PlayerThirdAbilities.DASH_ADDITIVE) {
-            //TODO
-            GameEffects.triggerPlayerDashAdditive(uuid, server);
-            GameStateManager.setPlayerThirdAbilityCooldownTicks(uuid, server, DASH_COOLDOWN_TICKS);
-        } else if (third_ability == PlayerThirdAbilities.THROW) {
-            //TODO
-            GameEffects.triggerPlayerThrow(uuid, server);
-        }
-    }
-
-    public static void triggerThirdAbility(ServerPlayerEntity player) {
-        triggerThirdAbility(player.getUuid(), player.getServer());
-    }
     
 
     public static Text getFirstAbilityActionbarResponse(ServerPlayerEntity player) {
@@ -391,14 +357,12 @@ public abstract class GameEffects {
         int cooldown_ticks_remaining = GameStateManager.getPlayerThirdAbilityCooldownTicks(player);
 
         if (third_ability == PlayerThirdAbilities.DASH_ADDITIVE) {
-
             if (cooldown_ticks_remaining > 1) {
                 return Text.of(String.format("dash cooldown: %.1f s", (double)(cooldown_ticks_remaining) / 20));
             } else {
                 return Text.literal("dash ready");
             }
         } else if (third_ability == PlayerThirdAbilities.THROW) {
-            
             if (cooldown_ticks_remaining > 1) {
                 return Text.of(String.format("throw cooldown: %.1f s", (double)(cooldown_ticks_remaining) / 20));
             } else {
@@ -408,21 +372,61 @@ public abstract class GameEffects {
         return Text.literal("third ability action bar response unimplemented?");
     }
 
-    public static Boolean shouldSendThirdAbilityActionbarText(ServerPlayerEntity player) {
+    public static boolean shouldSendThirdAbilityPerTickActionbarText(ServerPlayerEntity player) {
         int cooldown_ticks_remaining = GameStateManager.getPlayerThirdAbilityCooldownTicks(player);
         return !GameStateManager.getPlayerThirdAbility(player).equals(PlayerThirdAbilities.NONE) && cooldown_ticks_remaining > 0;
     }
 
-    public static void sendThirdAbilityActionbarText(ServerPlayerEntity player) {
-        if (shouldSendThirdAbilityActionbarText(player)) {
-            player.networkHandler.sendPacket(new OverlayMessageS2CPacket(GameEffects.getThirdAbilityActionbarResponse(player)));
+    public static void sendThirdAbilityPerTickActionbarText(ServerPlayerEntity player) {
+        if (shouldSendThirdAbilityPerTickActionbarText(player)) {
+            sendThirdAbilityActionbarText(player);
         }
+    }
+
+    public static void sendThirdAbilityActionbarText(ServerPlayerEntity player) {
+        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(GameEffects.getThirdAbilityActionbarResponse(player)));
+    }
+
+
+    public static void triggerFirstAbility(UUID uuid, MinecraftServer server) {
+        if (!GameStateManager.getPlayerInGravityField(uuid, server)) return;
+
+        PlayerFirstAbilities first_ability = GameStateManager.getPlayerFirstAbility(uuid, server);
+        if (first_ability == PlayerFirstAbilities.FLIP) {
+            GameEffects.toggleIsPlayerFlipped(uuid, server);
+        } else if (first_ability == PlayerFirstAbilities.CONTROL) {
+            GameEffects.toggleNextGravityStrength(uuid, server);
+        }
+    }
+
+    public static void triggerFirstAbility(ServerPlayerEntity player) {
+        triggerFirstAbility(player.getUuid(), player.getServer());
+        sendFirstAbilityActionbarText(player);
+    }
+    
+
+    public static void triggerThirdAbility(UUID uuid, MinecraftServer server) {
+        if (GameStateManager.getPlayerThirdAbilityCooldownTicks(uuid, server) > 0) return;
+        PlayerThirdAbilities third_ability = GameStateManager.getPlayerThirdAbility(uuid, server);
+        if (third_ability == PlayerThirdAbilities.DASH_ADDITIVE) {
+            //TODO
+            GameEffects.triggerPlayerDashAdditive(uuid, server);
+            GameStateManager.setPlayerThirdAbilityCooldownTicks(uuid, server, DASH_COOLDOWN_TICKS);
+        } else if (third_ability == PlayerThirdAbilities.THROW) {
+            //TODO
+            GameEffects.triggerPlayerThrow(uuid, server);
+        }
+    }
+
+    public static void triggerThirdAbility(ServerPlayerEntity player) {
+        triggerThirdAbility(player.getUuid(), player.getServer());
+        sendThirdAbilityActionbarText(player);
     }
 
 
     public static void tickPlayerState(ServerPlayerEntity player) {
         GameStateManager.tickPlayerState(player);
-        GameEffects.sendThirdAbilityActionbarText(player);
+        GameEffects.sendThirdAbilityPerTickActionbarText(player);
     }
 
     public static void tickPlayerState(UUID uuid, MinecraftServer server) {

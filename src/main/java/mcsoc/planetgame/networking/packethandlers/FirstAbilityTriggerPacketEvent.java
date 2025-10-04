@@ -13,11 +13,9 @@ public class FirstAbilityTriggerPacketEvent {
     public static void registerHandler() {
 
         PayloadTypeRegistry.playC2S().register(TriggerFirstAbilityC2SPayload.ID, TriggerFirstAbilityC2SPayload.CODEC);
-
         ServerPlayNetworking.registerGlobalReceiver(TriggerFirstAbilityC2SPayload.ID, (payload, context) -> {
             ServerPlayerEntity player = context.player();
             GameEffects.triggerFirstAbility(player);
-            GameEffects.sendFirstAbilityActionbarText(player);
         });
     }
 }
