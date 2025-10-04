@@ -1,13 +1,12 @@
 package mcsoc.planetgame.statemanagement.playerstate;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.math.Direction;
 
 public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3PlayerState p3_state) {
@@ -15,6 +14,10 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
     private static record P1PlayerState(PlayerFirstAbilities first_ability, Direction grav_dir, GravityStrength grav_strength, boolean gravity_modified, boolean in_gravity_field) {
         public static P1PlayerState getDefaultPlayerState() {
             return new P1PlayerState(PlayerFirstAbilities.getDefault(), Direction.DOWN, GravityStrength.getDefault(), false, false);
+        }
+
+        public P1PlayerState setPlayerFirstAbility(PlayerFirstAbilities new_first_ability) {
+            return new P1PlayerState(new_first_ability, getCurrentPlayerGravityDirection(), getPlayerGravityStrengthModifier(), getIfPlayerInGravityField(), getPlayerGravityModified());
         }
         
         public PlayerFirstAbilities getPlayerFirstAbility() {
@@ -25,38 +28,33 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
             return grav_dir;
         }
 
-        public GravityStrength getPlayerGravityStrengthModifier() {
-            return grav_strength;
-        }
-
-        public boolean getPlayerGravityModified() {
-            return gravity_modified;
-        }
-
-        public boolean getIfPlayerInGravityField() {
-            return in_gravity_field;
-        }
-
-        public P1PlayerState setPlayerFirstAbility(PlayerFirstAbilities new_first_ability) {
-            return new P1PlayerState(new_first_ability, getCurrentPlayerGravityDirection(), getPlayerGravityStrengthModifier(), getIfPlayerInGravityField(), getPlayerGravityModified());
-        }
-
         public P1PlayerState setPlayerGravityDirection(Direction new_grav_dir) {
             return new P1PlayerState(getPlayerFirstAbility(), new_grav_dir, getPlayerGravityStrengthModifier(), getIfPlayerInGravityField(), getPlayerGravityModified());
+        }
+
+        public GravityStrength getPlayerGravityStrengthModifier() {
+            return grav_strength;
         }
 
         public P1PlayerState setPlayerGravityStrengthModifier(GravityStrength new_grav_strength) {
             return new P1PlayerState(getPlayerFirstAbility(), getCurrentPlayerGravityDirection(), new_grav_strength, getIfPlayerInGravityField(), getPlayerGravityModified());
         }
 
+        public boolean getPlayerGravityModified() {
+            return gravity_modified;
+        }
+
         public P1PlayerState setPlayerGravityModified() {
             return new P1PlayerState(getPlayerFirstAbility(), getCurrentPlayerGravityDirection(), getPlayerGravityStrengthModifier(), true, getIfPlayerInGravityField());
+        }
+
+        public boolean getIfPlayerInGravityField() {
+            return in_gravity_field;
         }
 
         public P1PlayerState setPlayerInGravityField(boolean in_field) {
             return new P1PlayerState(getPlayerFirstAbility(), getCurrentPlayerGravityDirection(), getPlayerGravityStrengthModifier(), getPlayerGravityModified(), in_field);
         }
-
 
         public static Codec<P1PlayerState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             PlayerFirstAbilities.CODEC.fieldOf("player_first_ability").forGetter(P1PlayerState::getPlayerFirstAbility),
@@ -83,6 +81,7 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
             PlayerSecondAbilities.CODEC.fieldOf("player_second_ability").forGetter(P2PlayerState::getPlayerSecondAbility)
         ).apply(inst, P2PlayerState::new));
     }
+    
     private static record P3PlayerState(PlayerThirdAbilities third_ability, int third_ability_cooldown, boolean is_carrying) {
         public static P3PlayerState getDefaultPlayerState() {
             return new P3PlayerState(PlayerThirdAbilities.getDefault(), 0, false);
@@ -92,16 +91,12 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
             return third_ability;
         }
 
-        public int getPlayerThirdAbilityCooldownTicks() {
-            return third_ability_cooldown;
-        }
-
-        public boolean getIfPlayerIsCarrying() {
-            return is_carrying;
-        }
-
         public P3PlayerState setPlayerThirdAbility(PlayerThirdAbilities new_third_ability) {
             return new P3PlayerState(new_third_ability, getPlayerThirdAbilityCooldownTicks(), getIfPlayerIsCarrying());
+        }
+
+        public int getPlayerThirdAbilityCooldownTicks() {
+            return third_ability_cooldown;
         }
 
         public P3PlayerState setPlayerThirdAbilityCooldownTicks(int new_third_ability_cooldown) {
@@ -110,6 +105,10 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
 
         public P3PlayerState decrementPlayerThirdAbilityCooldown() {
             return new P3PlayerState(getPlayerThirdAbility(), getPlayerThirdAbilityCooldownTicks() - 1, getIfPlayerIsCarrying());
+        }
+
+        public boolean getIfPlayerIsCarrying() {
+            return is_carrying;
         }
 
         public P3PlayerState setPlayerIsCarrying(boolean carrying) {
