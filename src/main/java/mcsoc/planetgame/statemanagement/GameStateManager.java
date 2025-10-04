@@ -12,7 +12,7 @@ import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbiliti
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
 import mcsoc.planetgame.statemanagement.playerstate.PlayerState;
-import mcsoc.planetgame.statemanagement.playerstate.PlayerStateManager;
+import mcsoc.planetgame.statemanagement.playerstate.ManagedPlayerState;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +22,7 @@ public abstract class GameStateManager {
     private GameStateManager() { /* delete */ }
 
     public static SyncPlayerGravityDataS2CPayload getPlayerGravityStatePacket(ServerPlayerEntity player) {
-        PlayerStateManager state = GameState.getPlayerState(player);
+        ManagedPlayerState state = GameState.getPlayerState(player);
         return new SyncPlayerGravityDataS2CPayload(
             state.getCurrentPlayerGravityDirection(),
             state.getPlayerGravityStrengthModifier()
@@ -245,7 +245,7 @@ public abstract class GameStateManager {
     }
 
 
-    public static void forEachPlayerEntry(MinecraftServer server, Consumer<Entry<UUID, PlayerStateManager>> action) {
+    public static void forEachPlayerEntry(MinecraftServer server, Consumer<Entry<UUID, ManagedPlayerState>> action) {
         GameState state = GameState.getServerState(server);
         state.getPlayerEntryStream().forEach(action);
     }

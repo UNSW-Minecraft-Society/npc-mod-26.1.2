@@ -5,7 +5,7 @@ import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlockE
 import mcsoc.planetgame.registration.eventhandlers.PerTickServerEvent;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.*;
-import mcsoc.planetgame.statemanagement.playerstate.PlayerStateManager;
+import mcsoc.planetgame.statemanagement.playerstate.ManagedPlayerState;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -42,7 +42,7 @@ import net.minecraft.world.World;
 
 public class GameState extends PersistentState {
     
-    private Map<UUID, PlayerStateManager> player_state_map = new HashMap<>();
+    private Map<UUID, ManagedPlayerState> player_state_map = new HashMap<>();
     private Instant prev_tick_time;
     private long pending_ticks = 0;
     private long pending_ticks_partial = 0;
@@ -52,17 +52,17 @@ public class GameState extends PersistentState {
 
     private GameState() {/* delete */}
 
-    private GameState(Map<UUID, PlayerStateManager> data) {
+    private GameState(Map<UUID, ManagedPlayerState> data) {
         player_state_map.putAll(data);
         this.prev_tick_time = Instant.now();
     }
 
-    private Map<UUID, PlayerStateManager> getStates() {
+    private Map<UUID, ManagedPlayerState> getStates() {
         return player_state_map;
     }
     
     public static final Codec<GameState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-        Codec.unboundedMap(Uuids.CODEC, PlayerStateManager.CODEC).fieldOf("player_states_map").forGetter(GameState::getStates)
+        Codec.unboundedMap(Uuids.CODEC, ManagedPlayerState.CODEC).fieldOf("player_states_map").forGetter(GameState::getStates)
     ).apply(inst, GameState::new));
 
 
@@ -131,57 +131,57 @@ public class GameState extends PersistentState {
     }
 
 
-    protected Stream<PlayerStateManager> getPlayerStateStream() {
+    protected Stream<ManagedPlayerState> getPlayerStateStream() {
         return this.player_state_map.values().stream();
     }
 
-    protected Stream<Entry<UUID, PlayerStateManager>> getPlayerEntryStream() {
+    protected Stream<Entry<UUID, ManagedPlayerState>> getPlayerEntryStream() {
         return this.player_state_map.entrySet().stream();
     }
 
-    private PlayerStateManager getPlayerState(UUID uuid) throws NoSuchElementException {
-        PlayerStateManager player_state = this.player_state_map.get(uuid);
+    private ManagedPlayerState getPlayerState(UUID uuid) throws NoSuchElementException {
+        ManagedPlayerState player_state = this.player_state_map.get(uuid);
         if (Objects.isNull(player_state)) {
             throw new NoSuchElementException("No player state entry associated with uuid!");
         }
         return player_state;
     }
 
-    private PlayerStateManager getOrCreatePlayerState(UUID uuid) throws NoSuchElementException {
-        PlayerStateManager player_state;
+    private ManagedPlayerState getOrCreatePlayerState(UUID uuid) throws NoSuchElementException {
+        ManagedPlayerState player_state;
         try {
             player_state = getPlayerState(uuid);
         } catch (NoSuchElementException e) {
-            player_state = PlayerStateManager.getDefaultPlayerState();
+            player_state = ManagedPlayerState.getDefaultPlayerState();
         }
         return player_state;
     }
 
-    private void setPlayerState(UUID uuid, PlayerStateManager player_state) {
+    private void setPlayerState(UUID uuid, ManagedPlayerState player_state) {
         this.player_state_map.put(uuid, player_state);
     }
 
-    protected static PlayerStateManager getPlayerState(UUID uuid, MinecraftServer server) {
+    protected static ManagedPlayerState getPlayerState(UUID uuid, MinecraftServer server) {
         GameState state = getServerState(server);
         return state.getOrCreatePlayerState(uuid);
     }
 
-    protected static PlayerStateManager getPlayerState(ServerPlayerEntity player) {
+    protected static ManagedPlayerState getPlayerState(ServerPlayerEntity player) {
         return getPlayerState(player.getUuid(), player.getServer());
     }
 
-    protected static void setPlayerState(UUID uuid, MinecraftServer server, PlayerStateManager player_state) {
+    protected static void setPlayerState(UUID uuid, MinecraftServer server, ManagedPlayerState player_state) {
         GameState state = getServerState(server);
         state.setPlayerState(uuid, player_state);
     }
 
-    protected static void setPlayerState(ServerPlayerEntity player, PlayerStateManager player_state) {
+    protected static void setPlayerState(ServerPlayerEntity player, ManagedPlayerState player_state) {
         setPlayerState(player.getUuid(), player.getServer(), player_state);
     }
 
 
     protected static Direction getPlayerGravityDirection(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getCurrentPlayerGravityDirection();
     }
 
@@ -190,7 +190,7 @@ public class GameState extends PersistentState {
     }
 
     protected static void setPlayerGravityDirection(UUID uuid, MinecraftServer server, Direction grav_dir) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         player_state.setPlayerGravityDirection(grav_dir);
         setPlayerState(uuid, server, player_state);
     }
@@ -201,7 +201,7 @@ public class GameState extends PersistentState {
 
 
     protected static GravityStrength getPlayerGravityStrengthModifier(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerGravityStrengthModifier();
     }
 
@@ -210,7 +210,7 @@ public class GameState extends PersistentState {
     }
 
     protected static void setPlayerGravityStrengthModifier(UUID uuid, MinecraftServer server, GravityStrength grav_strength_mod) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         player_state.setPlayerGravityStrengthModifier(grav_strength_mod);
         setPlayerState(uuid, server, player_state);
     }
@@ -220,7 +220,7 @@ public class GameState extends PersistentState {
     }
 
     protected static boolean getPlayerInGravityField(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getIfPlayerInGravityField();
     }
 
@@ -229,7 +229,7 @@ public class GameState extends PersistentState {
     }
 
     protected static void setPlayerInGravityField(UUID uuid, MinecraftServer server, boolean in_field) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         player_state.setPlayerInGravityField(in_field);
         setPlayerState(uuid, server, player_state);
     }
@@ -240,7 +240,7 @@ public class GameState extends PersistentState {
 
 
     protected static boolean getPlayerGravityModified(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerGravityModified();
     }
 
@@ -249,7 +249,7 @@ public class GameState extends PersistentState {
     }
 
     protected static void setPlayerGravityModified(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         player_state.setPlayerGravityModified();
         setPlayerState(uuid, server, player_state);
     }
@@ -260,7 +260,7 @@ public class GameState extends PersistentState {
 
 
     protected static PlayerFirstAbilities getPlayerFirstAbility(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerFirstAbility();
     }
 
@@ -269,7 +269,7 @@ public class GameState extends PersistentState {
     }
 
     protected static void setPlayerFirstAbility(UUID uuid, MinecraftServer server, PlayerFirstAbilities first_ability) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         player_state.setPlayerFirstAbility(first_ability);
         setPlayerState(uuid, server, player_state);
     }
@@ -280,7 +280,7 @@ public class GameState extends PersistentState {
 
 
     protected static PlayerSecondAbilities getPlayerSecondAbility(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerSecondAbility();
     }
 
@@ -289,7 +289,7 @@ public class GameState extends PersistentState {
     }
 
     protected static void setPlayerSecondAbility(UUID uuid, MinecraftServer server, PlayerSecondAbilities second_ability) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         player_state.setPlayerSecondAbility(second_ability);
         setPlayerState(uuid, server, player_state);
     }
@@ -319,7 +319,7 @@ public class GameState extends PersistentState {
 
 
     protected static PlayerThirdAbilities getPlayerThirdAbility(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerThirdAbility();
     }
 
@@ -328,7 +328,7 @@ public class GameState extends PersistentState {
     }
 
     protected static void setPlayerThirdAbility(UUID uuid, MinecraftServer server, PlayerThirdAbilities third_ability) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         player_state.setPlayerThirdAbility(third_ability);
         setPlayerState(uuid, server, player_state);
     }
@@ -338,7 +338,7 @@ public class GameState extends PersistentState {
     }
 
     protected static int getPlayerThirdAbilityCooldownTicks(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerThirdAbilityCooldownTicks();
     }
 
@@ -347,7 +347,7 @@ public class GameState extends PersistentState {
     }
 
     protected static void setPlayerThirdAbilityCooldownTicks(UUID uuid, MinecraftServer server, int cooldown_ticks) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         player_state.setPlayerThirdAbilityCooldownTicks(cooldown_ticks);
         setPlayerState(uuid, server, player_state);
     }
@@ -357,7 +357,7 @@ public class GameState extends PersistentState {
     }
 
     protected static boolean getIfPlayerIsCarrying(UUID uuid, MinecraftServer server) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getIfPlayerIsCarrying();
     }
 
@@ -366,7 +366,7 @@ public class GameState extends PersistentState {
     }
 
     protected static void setIfPlayerIsCarrying(UUID uuid, MinecraftServer server, boolean is_carrying) {
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         player_state.setIfPlayerIsCarrying(is_carrying);
         setPlayerState(uuid, server, player_state);
     }
@@ -390,7 +390,7 @@ public class GameState extends PersistentState {
 
     protected static void tickPlayerState(UUID uuid, MinecraftServer server) {
         GameState state = getServerState(server);
-        PlayerStateManager player_state = getPlayerState(uuid, server);
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
         for (int i = 0; i < state.pending_ticks; i++) {
             player_state.tick();
         }

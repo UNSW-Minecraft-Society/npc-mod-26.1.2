@@ -8,15 +8,15 @@ import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilit
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
 import net.minecraft.util.math.Direction;
 
-public class PlayerStateManager {
+public class ManagedPlayerState {
 
     private PlayerState state;
 
-    PlayerStateManager(PlayerState state) {
+    ManagedPlayerState(PlayerState state) {
         this.state = state;
     }
 
-    PlayerStateManager() {
+    ManagedPlayerState() {
         this(PlayerState.getDefaultPlayerState());
     }
 
@@ -25,8 +25,8 @@ public class PlayerStateManager {
     }
 
 
-    public static PlayerStateManager getDefaultPlayerState() {
-        return new PlayerStateManager();
+    public static ManagedPlayerState getDefaultPlayerState() {
+        return new ManagedPlayerState();
     }
 
 
@@ -120,5 +120,5 @@ public class PlayerStateManager {
         this.state = state.tick();
     }
 
-    public static final Codec<PlayerStateManager> CODEC = PlayerState.CODEC.xmap(PlayerStateManager::new, PlayerStateManager::getState);
+    public static final Codec<ManagedPlayerState> CODEC = PlayerState.CODEC.xmap(ManagedPlayerState::new, ManagedPlayerState::getState);
 }
