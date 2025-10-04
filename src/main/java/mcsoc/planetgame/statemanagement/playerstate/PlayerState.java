@@ -66,9 +66,10 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
             Codec.BOOL.fieldOf("in_gravity_field").forGetter(P1PlayerState::getIfPlayerInGravityField)
         ).apply(inst, P1PlayerState::new));
     }
-    private static record P2PlayerState(PlayerSecondAbilities second_ability) {
+    
+    private static record P2PlayerState(PlayerSecondAbilities second_ability, boolean xray_on) {
         public static P2PlayerState getDefaultPlayerState() {
-            return new P2PlayerState(PlayerSecondAbilities.getDefault());
+            return new P2PlayerState(PlayerSecondAbilities.getDefault(), false);
         }
 
         public PlayerSecondAbilities getPlayerSecondAbility() {
@@ -76,11 +77,20 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
         }
 
         public P2PlayerState setPlayerSecondAbility(PlayerSecondAbilities new_second_ability) {
-            return new P2PlayerState(new_second_ability);
+            return new P2PlayerState(new_second_ability, false);
+        }
+
+        public boolean getPlayerXrayState() {
+            return xray_on;
+        }
+
+        public P2PlayerState setPlayerXrayState(boolean xray_on) {
+            return new P2PlayerState(getPlayerSecondAbility(), xray_on);
         }
 
         public static Codec<P2PlayerState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            PlayerSecondAbilities.CODEC.fieldOf("player_second_ability").forGetter(P2PlayerState::getPlayerSecondAbility)
+            PlayerSecondAbilities.CODEC.fieldOf("player_second_ability").forGetter(P2PlayerState::getPlayerSecondAbility),
+            Codec.BOOL.fieldOf("xray_on").forGetter(P2PlayerState::xray_on)
         ).apply(inst, P2PlayerState::new));
     }
     private static record P3PlayerState(PlayerThirdAbilities third_ability, int third_ability_cooldown, boolean is_carrying) {
@@ -148,6 +158,10 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
         return p2_state.getPlayerSecondAbility();
     }
 
+    protected boolean getPlayerXrayState() {
+        return p2_state.getPlayerXrayState();
+    }
+
     protected PlayerThirdAbilities getPlayerThirdAbility() {
         return p3_state.getPlayerThirdAbility();
     }
@@ -187,6 +201,10 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
 
     protected PlayerState setPlayerSecondAbility(PlayerSecondAbilities new_second_ability) {
         return new PlayerState(p1_state, p2_state.setPlayerSecondAbility(new_second_ability), p3_state);
+    }
+
+    protected PlayerState setPlayerXrayState(boolean xray_on) {
+        return new PlayerState(p1_state, p2_state.setPlayerXrayState(xray_on), p3_state);
     }
 
     protected PlayerState setPlayerThirdAbility(PlayerThirdAbilities new_third_ability) {

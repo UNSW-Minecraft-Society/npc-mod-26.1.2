@@ -256,6 +256,41 @@ public abstract class GameEffects {
     }
 
 
+    public static void setPlayerXrayState(UUID uuid, MinecraftServer server, boolean xray_on) {
+        ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
+        if (Objects.isNull(player)) {
+            GameStateManager.setPlayerXrayState(uuid, server, xray_on);
+            return;
+        }
+        setPlayerXrayState(player, xray_on);
+    }
+
+    public static void setPlayerXrayState(ServerPlayerEntity player, boolean xray_on) {
+        // TODO: do some visual effect here
+        if (xray_on) {
+            
+        } else {
+
+        }
+        GameStateManager.setPlayerXrayState(player, xray_on);
+    }
+
+
+    public static void togglePlayerXrayState(UUID uuid, MinecraftServer server) {
+        ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
+        if (Objects.isNull(player)) {
+            GameStateManager.setPlayerXrayState(uuid, server, !GameStateManager.getPlayerXrayState(uuid, server));
+            return;
+        }
+        togglePlayerXrayState(player);
+    }
+
+    public static void togglePlayerXrayState(ServerPlayerEntity player) {
+        // TODO: do some visual effect here
+        GameStateManager.setPlayerXrayState(player, !GameStateManager.getPlayerXrayState(player));
+    }
+
+
     public static void triggerPlayerDashAdditive(ServerPlayerEntity player) {
         Vec3d unitRotVecHorizontal = player.getRotationVector().multiply(1, 0, 1).normalize().multiply(DASH_STRENGTH);
         player.addVelocity(unitRotVecHorizontal);
@@ -346,6 +381,19 @@ public abstract class GameEffects {
         triggerFirstAbility(player.getUuid(), player.getServer());
     }
 
+    public static void triggerSecondAbility(UUID uuid, MinecraftServer server) {
+        PlayerSecondAbilities second_ability = GameStateManager.getPlayerSecondAbility(uuid, server);
+        if (second_ability == PlayerSecondAbilities.DRILLING) {
+            //TODO
+        } else if (second_ability == PlayerSecondAbilities.XRAY) {
+            // TODO
+            togglePlayerXrayState(uuid, server);
+        }
+    }
+
+    public static void triggerSecondAbility(ServerPlayerEntity player) {
+        triggerThirdAbility(player.getUuid(), player.getServer());
+    }
 
     public static void triggerThirdAbility(UUID uuid, MinecraftServer server) {
         if (GameStateManager.getPlayerThirdAbilityCooldownTicks(uuid, server) > 0) return;

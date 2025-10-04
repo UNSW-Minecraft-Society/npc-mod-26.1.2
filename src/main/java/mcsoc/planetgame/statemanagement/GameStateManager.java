@@ -152,6 +152,23 @@ public abstract class GameStateManager {
         setPlayerSecondAbility(player.getUuid(), player.getServer(), ability);
     }
 
+    public static boolean getPlayerXrayState(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerXrayState(uuid, server);
+    }
+
+    public static boolean getPlayerXrayState(ServerPlayerEntity player) {
+        return getPlayerXrayState(player.getUuid(), player.getServer());
+    }
+
+    public static void setPlayerXrayState(UUID uuid, MinecraftServer server, boolean xray_on) {
+        GameState.setPlayerXrayState(uuid, server, xray_on);
+        // TODO reset stuff here
+    }
+
+    public static void setPlayerXrayState(ServerPlayerEntity player, boolean xray_on) {
+        setPlayerXrayState(player.getUuid(), player.getServer(), xray_on);
+    }
+
 
     public static PlayerThirdAbilities getPlayerThirdAbility(UUID uuid, MinecraftServer server) {
         return GameState.getPlayerThirdAbility(uuid, server);
@@ -250,4 +267,5 @@ public abstract class GameStateManager {
     public static void forEachGravityGenerator(MinecraftServer server, Consumer<BlockPos> todo_for_each) {
         GameState.forEachGravityGenerator(server, todo_for_each);
     }
+
 }

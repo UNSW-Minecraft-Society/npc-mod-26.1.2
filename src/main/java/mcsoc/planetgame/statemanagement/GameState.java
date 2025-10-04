@@ -298,6 +298,25 @@ public class GameState extends PersistentState {
         setPlayerSecondAbility(player.getUuid(), player.getServer(), second_ability);
     }
 
+    protected static boolean getPlayerXrayState(UUID uuid, MinecraftServer server) {
+        PlayerStateManager player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerXrayState();
+    }
+
+    protected static boolean getPlayerXrayState(ServerPlayerEntity player) {
+        return getPlayerXrayState(player.getUuid(), player.getServer());
+    }
+
+    protected static void setPlayerXrayState(UUID uuid, MinecraftServer server, boolean xray_on) {
+        PlayerStateManager player_state = getPlayerState(uuid, server);
+        player_state.setPlayerXrayState(xray_on);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerXrayState(ServerPlayerEntity player, boolean xray_on) {
+        setPlayerXrayState(player.getUuid(), player.getServer(), xray_on);
+    }
+
 
     protected static PlayerThirdAbilities getPlayerThirdAbility(UUID uuid, MinecraftServer server) {
         PlayerStateManager player_state = getPlayerState(uuid, server);

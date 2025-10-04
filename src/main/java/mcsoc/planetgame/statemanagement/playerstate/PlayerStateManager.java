@@ -54,6 +54,10 @@ public class PlayerStateManager {
         return state.getPlayerSecondAbility();
     }
 
+    public boolean getPlayerXrayState() {
+        return state.getPlayerXrayState();
+    }
+
     public PlayerThirdAbilities getPlayerThirdAbility() {
         return state.getPlayerThirdAbility();
     }
@@ -89,6 +93,10 @@ public class PlayerStateManager {
 
     public void setPlayerSecondAbility(PlayerSecondAbilities new_second_ability) {
         this.state = state.setPlayerSecondAbility(new_second_ability);
+    }
+
+    public void setPlayerXrayState(boolean xray_on) {
+        this.state = state.setPlayerXrayState(xray_on);
     }
 
     public void setPlayerThirdAbility(PlayerThirdAbilities new_third_ability) {
