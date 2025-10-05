@@ -9,7 +9,7 @@ public abstract class GravitySyncPacketEvent {
 
     private GravitySyncPacketEvent() { /* delete */}
 
-    public static void Register() {
+    public static void register() {
 
         PayloadTypeRegistry.playS2C().register(SyncPlayerGravityDataS2CPayload.ID, SyncPlayerGravityDataS2CPayload.CODEC);    
 

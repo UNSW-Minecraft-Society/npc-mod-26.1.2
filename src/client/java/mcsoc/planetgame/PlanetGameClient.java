@@ -45,9 +45,13 @@ public class PlanetGameClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
+
+		GravitySyncPacketEvent.register();
 		MiningSyncPacketEvent.register();
 		
+		GravityKeybind.register();
 		MiningKeybind.register();
+		MobilityKeybind.register();
 
 		EntityModelLayerRegistry.registerModelLayer(ThrowableRockModel.ROCK, ThrowableRockModel::getTexturedModelData);
         EntityRendererRegistry.register(EntityRegistration.ROCK, ThrowableRockRenderer::new);
