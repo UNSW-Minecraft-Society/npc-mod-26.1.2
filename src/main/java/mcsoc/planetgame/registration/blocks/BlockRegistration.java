@@ -7,16 +7,20 @@ import mcsoc.planetgame.registration.blocks.rockpile.RockPileBlock;
 import mcsoc.planetgame.registration.blocks.spikes.SpikeBlock;
 import mcsoc.planetgame.registration.blocks.throwswitch.RockSwitch;
 import mcsoc.planetgame.registration.blocks.weightedpressureplate.WeightedGravityPlate;
-
+import mcsoc.planetgame.registration.blocks.xrayblock.XrayableSandBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.MapColor;
+import net.minecraft.block.enums.NoteBlockInstrument;
+import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
 public abstract class BlockRegistration {
@@ -61,6 +65,17 @@ public abstract class BlockRegistration {
     public static final Block ROCK_SWITCH_BLOCK = register(
         new RockSwitch(AbstractBlock.Settings.create()),
         "rock_switch",
+        true
+    );
+
+    public static final Block XRAYABLE_SAND_BLOCK = register(
+        new XrayableSandBlock(Settings.create()
+            .mapColor(MapColor.PALE_YELLOW)
+            .instrument(NoteBlockInstrument.SNARE)
+            .strength(0.5F).sounds(BlockSoundGroup.SAND)
+            .nonOpaque()
+        ), 
+        "xrayable_sand", 
         true
     );
     

@@ -2,6 +2,7 @@ package mcsoc.planetgame.registration.blocks;
 
 import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlockEntity;
+import mcsoc.planetgame.registration.blocks.xrayblock.XrayableBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -16,6 +17,11 @@ public abstract class BlockEntityRegistration {
             register("gravity_field_generator", GravityFieldBlockEntity::new, 
         BlockRegistration.GRAVITY_FIELD_BLOCK, 
         BlockRegistration.CAVE_GRAVITY_FIELD_BLOCK
+    );
+
+    public static final BlockEntityType<XrayableBlockEntity> XRAYABLE_BLOCK_ENTITY =
+            register("xrayable_block_rendering_entity", XrayableBlockEntity::new, 
+        BlockRegistration.XRAYABLE_SAND_BLOCK
     );
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String name,

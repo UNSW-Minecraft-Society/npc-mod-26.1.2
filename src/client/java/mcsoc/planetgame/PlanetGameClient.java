@@ -3,6 +3,7 @@ package mcsoc.planetgame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import mcsoc.planetgame.blocks.BlockEntityRendererRegistration;
 import mcsoc.planetgame.entities.throwablerock.ThrowableRockModel;
 import mcsoc.planetgame.entities.throwablerock.ThrowableRockRenderer;
 import mcsoc.planetgame.keybinds.GravityKeybind;
@@ -32,6 +33,10 @@ public class PlanetGameClient implements ClientModInitializer {
 		setPlayerState(getPlayerState().updateGravityFromPayload(payload));
 	}
 
+	public static void updateXrayState(SyncPlayerDrillingDataS2CPayload payload) {
+		setPlayerState(getPlayerState().updateXrayStateFromPayload(payload));
+	}
+
 
 	@Override
 	public void onInitializeClient() {
@@ -44,5 +49,6 @@ public class PlanetGameClient implements ClientModInitializer {
 
 		EntityModelLayerRegistry.registerModelLayer(ThrowableRockModel.ROCK, ThrowableRockModel::getTexturedModelData);
         EntityRendererRegistry.register(EntityRegistration.ROCK, ThrowableRockRenderer::new);
+		BlockEntityRendererRegistration.register();
 	}
 }
