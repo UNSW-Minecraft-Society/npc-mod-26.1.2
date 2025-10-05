@@ -5,13 +5,13 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import mcsoc.planetgame.networking.SyncPlayerDrillingDataS2CPayload;
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlockEntity;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
-import mcsoc.planetgame.statemanagement.playerstate.PlayerState;
 import mcsoc.planetgame.statemanagement.playerstate.ManagedPlayerState;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -26,6 +26,13 @@ public abstract class GameStateManager {
         return new SyncPlayerGravityDataS2CPayload(
             state.getCurrentPlayerGravityDirection(),
             state.getPlayerGravityStrengthModifier()
+        );
+    }
+
+    public static SyncPlayerDrillingDataS2CPayload getPlayerMiningStatePacket(ServerPlayerEntity player) {
+        ManagedPlayerState state = GameState.getPlayerState(player);
+        return new SyncPlayerDrillingDataS2CPayload(
+            state.getPlayerXrayState()
         );
     }
 

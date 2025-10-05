@@ -1,5 +1,6 @@
 package mcsoc.planetgame;
 
+import mcsoc.planetgame.networking.SyncPlayerDrillingDataS2CPayload;
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import net.minecraft.util.math.Direction;
 
@@ -28,5 +29,8 @@ public record ClientPlayerState(Direction grav_dir, boolean xray_active) {
     public ClientPlayerState updateGravityFromPayload(SyncPlayerGravityDataS2CPayload payload) {
         return this.withGravityDirection(payload.gravity_direction());
     }
-    
+
+    public ClientPlayerState updateXrayStateFromPayload(SyncPlayerDrillingDataS2CPayload payload) {
+        return this.withXrayState(payload.xray_active());
+    }
 }

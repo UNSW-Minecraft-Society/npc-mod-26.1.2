@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcsoc.planetgame.networking.packethandlers.FirstAbilityTriggerPacketEvent;
+import mcsoc.planetgame.networking.packethandlers.SecondAbilityTriggerPacketEvent;
 import mcsoc.planetgame.networking.packethandlers.ThirdAbilityTriggerPacketEvent;
 import mcsoc.planetgame.registration.CommandRegistrationHandler;
 import mcsoc.planetgame.registration.blocks.BlockEntityRegistration;
@@ -49,6 +50,7 @@ public class PlanetGame implements ModInitializer {
 
 		// network packet handlers
 		FirstAbilityTriggerPacketEvent.registerHandler();
+		SecondAbilityTriggerPacketEvent.registerHandler();
 		ThirdAbilityTriggerPacketEvent.registerHandler();
 	}
 }

@@ -7,9 +7,12 @@ import mcsoc.planetgame.blocks.BlockEntityRendererRegistration;
 import mcsoc.planetgame.entities.throwablerock.ThrowableRockModel;
 import mcsoc.planetgame.entities.throwablerock.ThrowableRockRenderer;
 import mcsoc.planetgame.keybinds.GravityKeybind;
+import mcsoc.planetgame.keybinds.MiningKeybind;
 import mcsoc.planetgame.keybinds.MobilityKeybind;
+import mcsoc.planetgame.networking.SyncPlayerDrillingDataS2CPayload;
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import mcsoc.planetgame.networking.packethandlers.GravitySyncPacketEvent;
+import mcsoc.planetgame.networking.packethandlers.MiningSyncPacketEvent;
 import mcsoc.planetgame.registration.entities.EntityRegistration;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -42,10 +45,9 @@ public class PlanetGameClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
-		GravitySyncPacketEvent.Register();
+		MiningSyncPacketEvent.register();
 		
-		GravityKeybind.Register();
-		MobilityKeybind.Register();
+		MiningKeybind.register();
 
 		EntityModelLayerRegistry.registerModelLayer(ThrowableRockModel.ROCK, ThrowableRockModel::getTexturedModelData);
         EntityRendererRegistry.register(EntityRegistration.ROCK, ThrowableRockRenderer::new);

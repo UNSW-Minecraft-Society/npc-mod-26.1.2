@@ -18,6 +18,8 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.MinecraftServer;
@@ -287,7 +289,14 @@ public abstract class GameEffects {
 
     public static void togglePlayerXrayState(ServerPlayerEntity player) {
         // TODO: do some visual effect here
-        GameStateManager.setPlayerXrayState(player, !GameStateManager.getPlayerXrayState(player));
+        
+        if (GameStateManager.getPlayerXrayState(player)) {
+            GameStateManager.setPlayerXrayState(player, false);
+            player.removeStatusEffect(StatusEffects.NIGHT_VISION);
+        } else {
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, -1, 1, false, false));
+            GameStateManager.setPlayerXrayState(player, true);
+        }
     }
 
 
@@ -385,10 +394,10 @@ public abstract class GameEffects {
 
     public static Text getSecondAbilityActionbarResponse(ServerPlayerEntity player) {
         
-        PlayerFirstAbilities first_ability = GameStateManager.getPlayerFirstAbility(player);
-        if (first_ability == PlayerFirstAbilities.FLIP) {
+        PlayerSecondAbilities second_ability = GameStateManager.getPlayerSecondAbility(player);
+        if (second_ability == PlayerSecondAbilities.XRAY) {
             return Text.of(String.format("gravity direction: %s", GameStateManager.getPlayerGravityDirection(player)));
-        } else if (first_ability == PlayerFirstAbilities.CONTROL) {
+        } else if (second_ability == PlayerSecondAbilities.DRILLING) {
             return Text.of(String.format("gravity strength: %.1f", GameStateManager.getPlayerGravityStrength(player).getDouble()));
         }
         return Text.literal("No ability to trigger.");
@@ -464,7 +473,8 @@ public abstract class GameEffects {
     }
 
     public static void triggerSecondAbility(ServerPlayerEntity player) {
-        triggerThirdAbility(player.getUuid(), player.getServer());
+        triggerSecondAbility(player.getUuid(), player.getServer());
+        sendSecondAbilityActionbarText(player);
     }
 
     public static void triggerThirdAbility(UUID uuid, MinecraftServer server) {

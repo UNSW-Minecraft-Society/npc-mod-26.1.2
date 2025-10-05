@@ -88,6 +88,8 @@ public abstract class PerTickServerEvent {
                 if (player.isSneaking()) {
                     GameEffects.dropPassengerIntentionally(player);
                 }
+
+                ServerPlayNetworking.send(player, GameStateManager.getPlayerMiningStatePacket(player));
             });
             
             updateTickTimings(server);
