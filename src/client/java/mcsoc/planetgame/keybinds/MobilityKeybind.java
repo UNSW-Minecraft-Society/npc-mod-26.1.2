@@ -31,7 +31,7 @@ public class MobilityKeybind {
         });
     }
 
-    public static void Register() {
+    public static void register() {
         registerBindings();
         registerBindEvents();
     }
