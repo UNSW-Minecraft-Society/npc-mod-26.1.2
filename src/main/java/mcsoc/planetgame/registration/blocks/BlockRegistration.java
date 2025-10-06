@@ -8,23 +8,73 @@ import mcsoc.planetgame.registration.blocks.spikes.SpikeBlock;
 import mcsoc.planetgame.registration.blocks.throwswitch.RockSwitch;
 import mcsoc.planetgame.registration.blocks.weightedpressureplate.WeightedGravityPlate;
 import mcsoc.planetgame.registration.blocks.xrayblock.XrayableSandBlock;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.MapColor;
-import net.minecraft.block.enums.NoteBlockInstrument;
+import net.minecraft.block.BlockSetType;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.LadderBlock;
+import net.minecraft.block.TrapdoorBlock;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public abstract class BlockRegistration {
     private BlockRegistration() { /* delete */ }
+
+    public static final Block ANDESITE_CASING = register(
+        new Block(AbstractBlock.Settings.create()),
+        "andesite_casing",
+        true
+    );
+
+    public static final Block ANDESITE_ALLOY_BLOCK = register(
+        new Block(AbstractBlock.Settings.create()),
+        "andesite_alloy_block",
+        true
+    );
+
+    public static final Block TRAIN_CASING = register(
+        new Block(AbstractBlock.Settings.create()),
+        "train_casing",
+        true
+    );
+
+    public static final Block TRAIN_TRAPDOOR = register(
+        new TrapdoorBlock(BlockSetType.DARK_OAK, AbstractBlock.Settings.create()),
+        "train_trapdoor",
+        true
+    );
+
+    public static final Block TRAIN_DOOR = register(
+        new DoorBlock(BlockSetType.DARK_OAK, AbstractBlock.Settings.create()),
+        "train_door",
+        true
+    );
+
+    public static final Block ANDESITE_LADDER = register(
+        new LadderBlock(AbstractBlock.Settings.create()
+            .notSolid()
+            .strength(0.4F)
+            .sounds(BlockSoundGroup.LADDER)
+            .nonOpaque()
+            .pistonBehavior(PistonBehavior.DESTROY)
+        ),
+        "andesite_ladder",
+        true
+    );
+
 
     public static final Block WEIGHTED_PRESSURE_PLATE = register(
             new WeightedGravityPlate(AbstractBlock.Settings.create()),
@@ -38,21 +88,23 @@ public abstract class BlockRegistration {
             true
     );
 
-    public static final Block CAVE_GRAVITY_FIELD_BLOCK = register(
-            new GravityFieldBlock(AbstractBlock.Settings.create(), 200),
-            "cave_gravity_field_generator",
-            true
-    );
-
-    public static final Block ROCK_PILE_BLOCK = register(
-            new RockPileBlock(AbstractBlock.Settings.create()),
-            "rock_pile",
-            true
-    );
-
     public static final Block P1_SPIKE_BLOCK = register(
         new SpikeBlock(AbstractBlock.Settings.create()), 
         "spike",
+        true
+    );
+
+
+    public static final Block XRAYABLE_SAND_BLOCK = register(
+        new XrayableSandBlock(Settings.create()), 
+        "xrayable_sand", 
+        true
+    );
+
+
+    public static final Block ROCK_PILE_BLOCK = register(
+        new RockPileBlock(AbstractBlock.Settings.create()),
+        "rock_pile",
         true
     );
 
@@ -67,18 +119,20 @@ public abstract class BlockRegistration {
         "rock_switch",
         true
     );
-
-    public static final Block XRAYABLE_SAND_BLOCK = register(
-        new XrayableSandBlock(Settings.create()
-            .mapColor(MapColor.PALE_YELLOW)
-            .instrument(NoteBlockInstrument.SNARE)
-            .strength(0.5F).sounds(BlockSoundGroup.SAND)
-            .nonOpaque()
-        ), 
-        "xrayable_sand", 
+    
+    public static final Block CAVE_GRAVITY_FIELD_BLOCK = register(
+        new GravityFieldBlock(AbstractBlock.Settings.create(), 200),
+        "cave_gravity_field_generator",
         true
     );
-    
+
+
+    public static final RegistryKey<ItemGroup> PLANET_GAME_GROUP_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(PlanetGame.MOD_ID, "planet_game_group"));
+    public static final ItemGroup PLANET_GAME_GROUP = FabricItemGroup.builder()
+        .icon(() -> new ItemStack(GRAVITY_FIELD_BLOCK))
+        .displayName(Text.translatable("itemGroup.planet_game"))
+    .build();
+
     
     // from fabric wiki: https://docs.fabricmc.net/1.21/develop/blocks/block-entities
     public static Block register(Block block, String name, boolean should_register_item) {
@@ -95,10 +149,19 @@ public abstract class BlockRegistration {
 		return Registry.register(Registries.BLOCK, id, block);
 	}
 
+
     public static void registerBlocks() {
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(itemGroup -> {
+        Registry.register(Registries.ITEM_GROUP, PLANET_GAME_GROUP_KEY, PLANET_GAME_GROUP);
+
+        ItemGroupEvents.modifyEntriesEvent(PLANET_GAME_GROUP_KEY).register(itemGroup -> {
             itemGroup.add(GRAVITY_FIELD_BLOCK.asItem());
             itemGroup.add(WEIGHTED_PRESSURE_PLATE.asItem());
+            itemGroup.add(P1_SPIKE_BLOCK.asItem());
+            itemGroup.add(XRAYABLE_SAND_BLOCK.asItem());
+            itemGroup.add(ROCK_PILE_BLOCK.asItem());
+            itemGroup.add(CRACKED_BRICKS_BLOCK.asItem());
+            itemGroup.add(ROCK_SWITCH_BLOCK.asItem());
+            itemGroup.add(CAVE_GRAVITY_FIELD_BLOCK.asItem());
         });
     }
 }
