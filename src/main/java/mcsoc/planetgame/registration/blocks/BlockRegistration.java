@@ -67,15 +67,10 @@ public abstract class BlockRegistration {
         "rock_switch",
         true
     );
-
-    public static final Block XRAYABLE_SAND_BLOCK = register(
-        new XrayableSandBlock(Settings.create()
-            .mapColor(MapColor.PALE_YELLOW)
-            .instrument(NoteBlockInstrument.SNARE)
-            .strength(0.5F).sounds(BlockSoundGroup.SAND)
-            .nonOpaque()
-        ), 
-        "xrayable_sand", 
+    
+    public static final Block CAVE_GRAVITY_FIELD_BLOCK = register(
+        new GravityFieldBlock(AbstractBlock.Settings.create(), 200),
+        "cave_gravity_field_generator",
         true
     );
     
