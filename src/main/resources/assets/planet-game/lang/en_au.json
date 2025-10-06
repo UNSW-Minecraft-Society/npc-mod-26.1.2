@@ -6,5 +6,6 @@
   "block.planet-game.spike": "Sharp Spike",
   "block.planet-game.cracked_bricks": "Cracked Bricks",
   "block.planet-game.rock_switch": "Stiff Lever",
-  "death.attack.spike_trap": "%1$s was impaled on spikes."
+  "itemGroup.planet_game": "Planet Game",
+  "death.attack.spike_trap": "%1$s was impaled on spikes."  
 }
