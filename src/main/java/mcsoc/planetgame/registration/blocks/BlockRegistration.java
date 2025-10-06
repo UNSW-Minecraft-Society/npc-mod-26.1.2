@@ -143,6 +143,8 @@ public abstract class BlockRegistration {
 
 
     public static void registerBlocks() {
+        Registry.register(Registries.ITEM_GROUP, PLANET_GAME_GROUP_KEY, PLANET_GAME_GROUP);
+
         ItemGroupEvents.modifyEntriesEvent(PLANET_GAME_GROUP_KEY).register(itemGroup -> {
             itemGroup.add(GRAVITY_FIELD_BLOCK.asItem());
             itemGroup.add(WEIGHTED_PRESSURE_PLATE.asItem());
