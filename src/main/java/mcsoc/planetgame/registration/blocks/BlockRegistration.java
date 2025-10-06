@@ -13,6 +13,10 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockSetType;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.LadderBlock;
+import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -26,6 +30,43 @@ import net.minecraft.util.Identifier;
 
 public abstract class BlockRegistration {
     private BlockRegistration() { /* delete */ }
+
+    public static final Block ANDESITE_CASING = register(
+        new Block(AbstractBlock.Settings.create()),
+        "andesite_casing",
+        true
+    );
+
+    public static final Block ANDESITE_ALLOY_BLOCK = register(
+        new Block(AbstractBlock.Settings.create()),
+        "andesite_alloy_block",
+        true
+    );
+
+    public static final Block TRAIN_CASING = register(
+        new Block(AbstractBlock.Settings.create()),
+        "train_casing",
+        true
+    );
+
+    public static final Block TRAIN_TRAPDOOR = register(
+        new TrapdoorBlock(BlockSetType.IRON, AbstractBlock.Settings.create()),
+        "train_trapdoor",
+        true
+    );
+
+    public static final Block TRAIN_DOOR = register(
+        new DoorBlock(BlockSetType.IRON, AbstractBlock.Settings.create()),
+        "train_door",
+        true
+    );
+
+    public static final Block ANDESITE_LADDER = register(
+        new LadderBlock(AbstractBlock.Settings.create()),
+        "andesite_ladder",
+        true
+    );
+
 
     public static final Block WEIGHTED_PRESSURE_PLATE = register(
             new WeightedGravityPlate(AbstractBlock.Settings.create()),
