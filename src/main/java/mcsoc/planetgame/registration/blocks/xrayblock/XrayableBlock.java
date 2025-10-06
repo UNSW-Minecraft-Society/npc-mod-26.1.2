@@ -8,10 +8,10 @@ import net.minecraft.util.math.BlockPos;
 
 public interface XrayableBlock extends BlockEntityProvider {
 
-    public ItemConvertible getItem();
+    public ItemConvertible getItemToDisplay();
 
     @Override
     public default BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new XrayableBlockEntity(pos, state, getItem());
+        return new XrayableBlockEntity(pos, state, getItemToDisplay());
     }
 }

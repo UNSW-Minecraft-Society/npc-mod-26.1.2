@@ -25,10 +25,8 @@ public class XrayBlockDynamicRenderer implements BlockEntityRenderer<XrayableBlo
         matrices.translate(0.5, 0.5, 0.5);
         matrices.scale(1, 1, 1);
 
-        PlanetGameClient.LOGGER.info("xray: {}, dist: {}", PlanetGameClient.getPlayerState().getXrayState(), entity.getPos().getSquaredDistance(MinecraftClient.getInstance().player.getPos()));
-
         if (PlanetGameClient.getPlayerState().getXrayState() && entity.getPos().getSquaredDistance(MinecraftClient.getInstance().player.getPos()) <= 25) {
-
+            // render nothing for now
         } else {
             item_renderer.renderItem(entity.getItemStack(), ModelTransformationMode.GROUND, light, overlay, matrices, vertexConsumers, entity.getWorld(), overlay);
         }
