@@ -17,6 +17,7 @@ import net.minecraft.block.BlockSetType;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.block.TrapdoorBlock;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -25,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -50,19 +52,25 @@ public abstract class BlockRegistration {
     );
 
     public static final Block TRAIN_TRAPDOOR = register(
-        new TrapdoorBlock(BlockSetType.IRON, AbstractBlock.Settings.create()),
+        new TrapdoorBlock(BlockSetType.DARK_OAK, AbstractBlock.Settings.create()),
         "train_trapdoor",
         true
     );
 
     public static final Block TRAIN_DOOR = register(
-        new DoorBlock(BlockSetType.IRON, AbstractBlock.Settings.create()),
+        new DoorBlock(BlockSetType.DARK_OAK, AbstractBlock.Settings.create()),
         "train_door",
         true
     );
 
     public static final Block ANDESITE_LADDER = register(
-        new LadderBlock(AbstractBlock.Settings.create()),
+        new LadderBlock(AbstractBlock.Settings.create()
+            .notSolid()
+            .strength(0.4F)
+            .sounds(BlockSoundGroup.LADDER)
+            .nonOpaque()
+            .pistonBehavior(PistonBehavior.DESTROY)
+        ),
         "andesite_ladder",
         true
     );
@@ -121,9 +129,9 @@ public abstract class BlockRegistration {
 
     public static final RegistryKey<ItemGroup> PLANET_GAME_GROUP_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(PlanetGame.MOD_ID, "planet_game_group"));
     public static final ItemGroup PLANET_GAME_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(GRAVITY_FIELD_BLOCK))
-            .displayName(Text.translatable("itemGroup.planet_game"))
-            .build();
+        .icon(() -> new ItemStack(GRAVITY_FIELD_BLOCK))
+        .displayName(Text.translatable("itemGroup.planet_game"))
+    .build();
 
     
     // from fabric wiki: https://docs.fabricmc.net/1.21/develop/blocks/block-entities
