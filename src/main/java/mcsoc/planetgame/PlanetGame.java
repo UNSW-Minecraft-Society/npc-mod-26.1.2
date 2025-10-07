@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import mcsoc.planetgame.networking.NetworkingIdentifiers;
 import mcsoc.planetgame.networking.packethandlers.FirstAbilityTriggerPacketEvent;
 import mcsoc.planetgame.networking.packethandlers.SecondAbilityTriggerPacketEvent;
 import mcsoc.planetgame.networking.packethandlers.ThirdAbilityTriggerPacketEvent;
@@ -33,6 +34,12 @@ public class PlanetGame implements ModInitializer {
 
 		LOGGER.info("Hello Fabric world!");
 
+		// network packet handlers
+		NetworkingIdentifiers.registerPackets();
+		FirstAbilityTriggerPacketEvent.registerHandler();
+		SecondAbilityTriggerPacketEvent.registerHandler();
+		ThirdAbilityTriggerPacketEvent.registerHandler();
+
 		// register commands
 		CommandRegistrationHandler.registerCommands();
 
@@ -47,10 +54,5 @@ public class PlanetGame implements ModInitializer {
 		EntityRegistration.registerEntities();
 
 		DamageSourceRegistration.registerDamageSources();
-
-		// network packet handlers
-		FirstAbilityTriggerPacketEvent.registerHandler();
-		SecondAbilityTriggerPacketEvent.registerHandler();
-		ThirdAbilityTriggerPacketEvent.registerHandler();
 	}
 }
