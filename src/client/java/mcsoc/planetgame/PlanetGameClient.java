@@ -45,7 +45,6 @@ public class PlanetGameClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
-
 		GravitySyncPacketEvent.register();
 		MiningSyncPacketEvent.register();
 		
@@ -56,5 +55,6 @@ public class PlanetGameClient implements ClientModInitializer {
 		EntityModelLayerRegistry.registerModelLayer(ThrowableRockModel.ROCK, ThrowableRockModel::getTexturedModelData);
         EntityRendererRegistry.register(EntityRegistration.ROCK, ThrowableRockRenderer::new);
 		BlockEntityRendererRegistration.register();
+
 	}
 }

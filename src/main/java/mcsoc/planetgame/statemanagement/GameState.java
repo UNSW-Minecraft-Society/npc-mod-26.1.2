@@ -9,7 +9,6 @@ import mcsoc.planetgame.statemanagement.playerstate.ManagedPlayerState;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -33,7 +32,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Uuids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.PersistentState;
@@ -42,27 +40,32 @@ import net.minecraft.world.World;
 
 public class GameState extends PersistentState {
     
-    private Map<UUID, ManagedPlayerState> player_state_map = new HashMap<>();
+    // data I care about
+    private PersistentGameData persistent_state_data = PersistentGameData.getEmpty();
+
+    // data I don't care about
     private Instant prev_tick_time;
     private long pending_ticks = 0;
     private long pending_ticks_partial = 0;
     private long grav_field_update_tick_counter = 0;
-
     private Set<BlockPos> gravity_generator_locations = new TreeSet<>();
 
-    private GameState() {/* delete */}
 
-    private GameState(Map<UUID, ManagedPlayerState> data) {
-        player_state_map.putAll(data);
+    private GameState(PersistentGameData data) {
+        persistent_state_data.player_state_map().putAll(data.player_state_map());
         this.prev_tick_time = Instant.now();
     }
 
     private Map<UUID, ManagedPlayerState> getStates() {
-        return player_state_map;
+        return persistent_state_data.player_state_map();
+    }
+
+    private PersistentGameData getPersistentData() {
+        return persistent_state_data;
     }
     
     public static final Codec<GameState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-        Codec.unboundedMap(Uuids.CODEC, ManagedPlayerState.CODEC).fieldOf("player_states_map").forGetter(GameState::getStates)
+        PersistentGameData.CODEC.fieldOf("game_data").forGetter(GameState::getPersistentData)
     ).apply(inst, GameState::new));
 
 
@@ -96,7 +99,7 @@ public class GameState extends PersistentState {
 
 
     private static GameState createNewGameState() {
-        GameState state = new GameState();
+        GameState state = new GameState(PersistentGameData.getEmpty());
 
         // assign other stuff here
         state.prev_tick_time = Instant.now();
@@ -132,15 +135,15 @@ public class GameState extends PersistentState {
 
 
     protected Stream<ManagedPlayerState> getPlayerStateStream() {
-        return this.player_state_map.values().stream();
+        return this.getStates().values().stream();
     }
 
     protected Stream<Entry<UUID, ManagedPlayerState>> getPlayerEntryStream() {
-        return this.player_state_map.entrySet().stream();
+        return this.getStates().entrySet().stream();
     }
 
     private ManagedPlayerState getPlayerState(UUID uuid) throws NoSuchElementException {
-        ManagedPlayerState player_state = this.player_state_map.get(uuid);
+        ManagedPlayerState player_state = this.getStates().get(uuid);
         if (Objects.isNull(player_state)) {
             throw new NoSuchElementException("No player state entry associated with uuid!");
         }
@@ -158,7 +161,7 @@ public class GameState extends PersistentState {
     }
 
     private void setPlayerState(UUID uuid, ManagedPlayerState player_state) {
-        this.player_state_map.put(uuid, player_state);
+        this.getStates().put(uuid, player_state);
     }
 
     protected static ManagedPlayerState getPlayerState(UUID uuid, MinecraftServer server) {
