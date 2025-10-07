@@ -8,7 +8,7 @@ import java.util.Set;
 import gravity_changer.api.GravityChangerAPI;
 
 import mcsoc.planetgame.GameEffects;
-import mcsoc.planetgame.PlanetGame;
+import mcsoc.planetgame.networking.NetworkingIdentifiers;
 import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlockEntity;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 
@@ -84,6 +84,8 @@ public abstract class PerTickServerEvent {
             List<ServerPlayerEntity> player_list = server.getPlayerManager().getPlayerList();
             
             player_list.forEach(player -> {
+                if (!ServerPlayNetworking.canSend(player, NetworkingIdentifiers.PLAYER_SYNC_GRAVITY_PACKET_ID)) return;
+
                 updateGravityEffects(player, GameStateManager.shouldUpdateGravityFields(server));
                 if (player.isSneaking()) {
                     GameEffects.dropPassengerIntentionally(player);
