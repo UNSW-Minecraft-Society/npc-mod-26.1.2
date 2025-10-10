@@ -10,9 +10,6 @@ public class SecondAbilityTriggerPacketEvent {
     private SecondAbilityTriggerPacketEvent() { /* delete */}
 
     public static void registerHandler() {
-
-        PayloadTypeRegistry.playC2S().register(TriggerSecondAbilityC2SPayload.ID, TriggerSecondAbilityC2SPayload.CODEC);
-
         ServerPlayNetworking.registerGlobalReceiver(TriggerSecondAbilityC2SPayload.ID, (payload, context) -> {
             ServerPlayerEntity player = context.player();
             GameEffects.triggerSecondAbility(player);

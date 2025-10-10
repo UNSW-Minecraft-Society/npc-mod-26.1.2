@@ -10,9 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class FirstAbilityTriggerPacketEvent {
     private FirstAbilityTriggerPacketEvent() { /* delete */}
 
-    public static void registerHandler() {
-
-        PayloadTypeRegistry.playC2S().register(TriggerFirstAbilityC2SPayload.ID, TriggerFirstAbilityC2SPayload.CODEC);
+    public static void registerHandler() {        
         ServerPlayNetworking.registerGlobalReceiver(TriggerFirstAbilityC2SPayload.ID, (payload, context) -> {
             ServerPlayerEntity player = context.player();
             GameEffects.triggerFirstAbility(player);
