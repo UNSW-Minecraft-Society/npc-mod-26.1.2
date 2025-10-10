@@ -25,7 +25,7 @@ public class ThrowableRockEntity extends ThrowableEntity {
     }
 
     @Override
-    protected void doDeathEffect() {
+    public void doDeathEffect() {
         this.getWorld().addParticle(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY(), this.getZ(), 0.5D, 0.5D, 0.5D);
         this.discard();
     }
