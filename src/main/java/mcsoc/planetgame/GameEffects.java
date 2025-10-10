@@ -1,6 +1,7 @@
 package mcsoc.planetgame;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import mcsoc.planetgame.registration.CommandRegistrationHandler;
@@ -21,6 +22,9 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -329,6 +333,8 @@ public abstract class GameEffects {
 
     public static void pickUpEntity(ServerPlayerEntity player, Entity entity) {
         entity.startRiding(player, true);
+        GameStateManager.setIfPlayerIsCarrying(player, true);
+        storePlayerInventory(player);
     }
 
     public static Entity dropHeldEntity(ServerPlayerEntity player) {
@@ -362,11 +368,39 @@ public abstract class GameEffects {
         first_passenger.dismountVehicle();
         first_passenger.addVelocity(player.getRotationVector().multiply(THROW_STRENGTH));
         first_passenger.velocityModified = true;
+
+        GameStateManager.setIfPlayerIsCarrying(player, false);
+        attemptReturnPlayerInventory(player);
+    }
+
+    public static void storePlayerInventory(ServerPlayerEntity player) {
+        PlayerInventory cloned_inventory = new PlayerInventory(player);
+        cloned_inventory.clone(player.getInventory());
+        GameStateManager.addInventoryToHeap(player, cloned_inventory);
+        player.getInventory().clear();
+    }
+
+    public static void attemptReturnPlayerInventory(ServerPlayerEntity player) {
+        Optional<Inventory> player_inventory_optional = GameStateManager.retrieveOptionalInventoryFromHeap(player);
+        if (player_inventory_optional.isEmpty()) return;
+        Inventory player_inventory = player_inventory_optional.get();
+        for (int i = 0; i < player_inventory.size(); ++i) {
+            ItemStack itemStack = player_inventory.getStack(i);
+            player.getInventory().setStack(i, itemStack);
+        }
+    }
+
+    public static void returnPlayerInventory(ServerPlayerEntity player) {
+        Inventory player_inventory = GameStateManager.retrieveOptionalInventoryFromHeap(player).orElseThrow();
+        for (int i = 0; i < player_inventory.size(); ++i) {
+            ItemStack itemStack = player_inventory.getStack(i);
+            player.getInventory().setStack(i, itemStack);
+        }
     }
 
     public static void triggerPlayerThrow(ServerPlayerEntity player) {
         // TODO
-        if (!getIsPlayerCarryingSomething(player)) {
+        if (!GameStateManager.getIfPlayerIsCarrying(player)) {
             attemptPickUpNearbyPlayer(player);
         } else {
             throwHeldObject(player);
