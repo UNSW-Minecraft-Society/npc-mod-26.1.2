@@ -10,9 +10,11 @@ import gravity_changer.api.GravityChangerAPI;
 import mcsoc.planetgame.GameEffects;
 import mcsoc.planetgame.networking.NetworkingIdentifiers;
 import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlockEntity;
+import mcsoc.planetgame.registration.entities.throwables.ThrowableRockEntity;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
@@ -95,6 +97,16 @@ public abstract class PerTickServerEvent {
             });
             
             updateTickTimings(server);
+        });
+
+
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            ServerPlayerEntity player = handler.getPlayer();
+            if (GameStateManager.getIfPlayerIsCarrying(player)) {
+                GameStateManager.setIfPlayerIsCarrying(player, false);
+                GameEffects.returnPlayerInventory(player);
+            }
+            player.getWorld().getEntitiesByClass(ThrowableRockEntity.class, player.getBoundingBox().expand(1), rock -> true).forEach(rock -> rock.doDeathEffect());
         });
     }
 }
