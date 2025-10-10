@@ -2,6 +2,7 @@ package mcsoc.planetgame.statemanagement;
 
 import java.time.Instant;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -13,6 +14,8 @@ import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbiliti
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
 import mcsoc.planetgame.statemanagement.playerstate.ManagedPlayerState;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -187,7 +190,8 @@ public abstract class GameStateManager {
 
     public static void setPlayerThirdAbility(UUID uuid, MinecraftServer server, PlayerThirdAbilities ability) {
         GameState.setPlayerThirdAbility(uuid, server, ability);
-        // reset stuff here
+        // TODO reset stuff here
+        setIfPlayerIsCarrying(uuid, server, false);
     }
 
     public static void setPlayerThirdAbility(ServerPlayerEntity player, PlayerThirdAbilities ability) {
@@ -273,6 +277,31 @@ public abstract class GameStateManager {
 
     public static void forEachGravityGenerator(MinecraftServer server, Consumer<BlockPos> todo_for_each) {
         GameState.forEachGravityGenerator(server, todo_for_each);
+    }
+
+    public static void addInventoryToHeap(UUID uuid, MinecraftServer server, PlayerInventory inventory) {
+        GameState.addInventoryToHeap(uuid, server, inventory);
+    }
+
+    public static void addInventoryToHeap(ServerPlayerEntity player, PlayerInventory inventory) {
+        addInventoryToHeap(player.getUuid(), player.getServer(), inventory);
+    }
+
+
+    public static Optional<Inventory> retrieveOptionalInventoryFromHeap(UUID uuid, MinecraftServer server) {
+        return GameState.retrieveInventoryFromHeap(uuid, server);
+    }
+
+    public static Optional<Inventory> retrieveOptionalInventoryFromHeap(ServerPlayerEntity player) {
+        return retrieveOptionalInventoryFromHeap(player.getUuid(), player.getServer());
+    }
+
+    public static Inventory retrieveInventoryFromHeap(UUID uuid, MinecraftServer server) {
+        return retrieveOptionalInventoryFromHeap(uuid, server).orElseThrow();
+    }
+
+    public static Inventory retrieveInventoryFromHeap(ServerPlayerEntity player) {
+        return retrieveInventoryFromHeap(player.getUuid(), player.getServer());
     }
 
 }
