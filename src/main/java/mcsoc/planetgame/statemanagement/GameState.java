@@ -290,23 +290,79 @@ public class GameState extends PersistentState {
         setPlayerSecondAbility(player.getUuid(), player.getServer(), second_ability);
     }
 
-    protected static boolean getPlayerXrayState(UUID uuid, MinecraftServer server) {
+    protected static boolean getPlayerSecondAbilityState(UUID uuid, MinecraftServer server) {
         ManagedPlayerState player_state = getPlayerState(uuid, server);
-        return player_state.getPlayerXrayState();
+        return player_state.getPlayerSecondAbilityState();
     }
 
-    protected static boolean getPlayerXrayState(ServerPlayerEntity player) {
-        return getPlayerXrayState(player.getUuid(), player.getServer());
+    protected static boolean getPlayerSecondAbilityState(ServerPlayerEntity player) {
+        return getPlayerSecondAbilityState(player.getUuid(), player.getServer());
     }
 
-    protected static void setPlayerXrayState(UUID uuid, MinecraftServer server, boolean xray_on) {
+    protected static void setPlayerSecondAbilityState(UUID uuid, MinecraftServer server, boolean xray_on) {
         ManagedPlayerState player_state = getPlayerState(uuid, server);
-        player_state.setPlayerXrayState(xray_on);
+        player_state.setPlayerSecondAbilityState(xray_on);
         setPlayerState(uuid, server, player_state);
     }
 
-    protected static void setPlayerXrayState(ServerPlayerEntity player, boolean xray_on) {
-        setPlayerXrayState(player.getUuid(), player.getServer(), xray_on);
+    protected static void setPlayerSecondAbilityState(ServerPlayerEntity player, boolean xray_on) {
+        setPlayerSecondAbilityState(player.getUuid(), player.getServer(), xray_on);
+    }
+
+    protected static double getPlayerDrillCharge(UUID uuid, MinecraftServer server) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerDrillCharge();
+    }
+
+    protected static double getPlayerDrillCharge(ServerPlayerEntity player) {
+        return getPlayerDrillCharge(player.getUuid(), player.getServer());
+    }
+
+    protected static void setPlayerDrillCharge(UUID uuid, MinecraftServer server, double new_drill_charge) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        player_state.setPlayerDrillCharge(new_drill_charge);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerDrillCharge(ServerPlayerEntity player, double new_drill_charge) {
+        setPlayerDrillCharge(player.getUuid(), player.getServer(), new_drill_charge);
+    }
+
+    protected static double getPlayerDrillHeat(UUID uuid, MinecraftServer server) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerDrillHeat();
+    }
+
+    protected static double getPlayerDrillHeat(ServerPlayerEntity player) {
+        return getPlayerDrillHeat(player.getUuid(), player.getServer());
+    }
+
+    public static void setPlayerDrillHeat(UUID uuid, MinecraftServer server, double new_drill_heat) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        player_state.setPlayerDrillHeat(new_drill_heat);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerDrillHeat(ServerPlayerEntity player, double new_drill_heat) {
+        setPlayerDrillHeat(player.getUuid(), player.getServer(), new_drill_heat);
+    }
+
+    public static void incrementPlayerDrillHeat(UUID uuid, MinecraftServer server, double added_drill_heat) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        player_state.incrementPlayerDrillHeat(added_drill_heat);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void incrementPlayerDrillHeat(ServerPlayerEntity player, double added_drill_heat) {
+        incrementPlayerDrillHeat(player.getUuid(), player.getServer(), added_drill_heat);
+    }
+
+    public static void decrementPlayerDrillHeat(UUID uuid, MinecraftServer server, double removed_drill_heat) {
+        GameState.decrementPlayerDrillHeat(uuid, server, removed_drill_heat);
+    }
+
+    protected static void decrementPlayerDrillHeat(ServerPlayerEntity player, double removed_drill_heat) {
+        decrementPlayerDrillHeat(player.getUuid(), player.getServer(), removed_drill_heat);
     }
 
 

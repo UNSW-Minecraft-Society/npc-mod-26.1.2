@@ -2,7 +2,6 @@ package mcsoc.planetgame.keybinds;
 
 import org.lwjgl.glfw.GLFW;
 
-import mcsoc.planetgame.networking.TriggerFirstAbilityC2SPayload;
 import mcsoc.planetgame.networking.TriggerSecondAbilityC2SPayload;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;

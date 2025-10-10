@@ -45,22 +45,40 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
         ).apply(inst, P1PlayerState::new));
     }
     
-    private static record P2PlayerState(PlayerSecondAbilities second_ability, boolean xray_on) {
+    private static record P2PlayerState(PlayerSecondAbilities second_ability, boolean second_ability_active, double drill_charge, double drill_heat) {
         public static P2PlayerState withDefaultPlayerState() {
-            return new P2PlayerState(PlayerSecondAbilities.getDefault(), false);
+            return new P2PlayerState(PlayerSecondAbilities.getDefault(), false, 100, 0);
         }
 
-        public P2PlayerState withPlayerSecondAbility(PlayerSecondAbilities second_ability) {
-            return new P2PlayerState(second_ability, xray_on()); 
+        public P2PlayerState withPlayerSecondAbility(PlayerSecondAbilities new_second_ability) {
+            return new P2PlayerState(new_second_ability, second_ability_active(), drill_charge(), drill_heat()); 
         }
 
-        public P2PlayerState setPlayerXrayState(boolean xray_on) {
-            return new P2PlayerState(second_ability(), xray_on);
+        public P2PlayerState withPlayerSecondAbilityState(boolean ability_active) {
+            return new P2PlayerState(second_ability(), ability_active, drill_charge(), drill_heat());
+        }
+
+        public P2PlayerState withPlayerDrillCharge(double new_drill_charge) {
+            return new P2PlayerState(second_ability(), second_ability_active(), new_drill_charge, drill_heat());
+        }
+
+        public P2PlayerState withPlayerDrillHeat(double new_drill_heat) {
+            return new P2PlayerState(second_ability(), second_ability_active(), drill_charge(), new_drill_heat);
+        }
+
+        public P2PlayerState withIncrementedPlayerDrillHeat(double added_drill_heat) {
+            return new P2PlayerState(second_ability(), second_ability_active(), drill_charge(), drill_heat() + added_drill_heat);
+        }
+
+        public P2PlayerState withDecrementedPlayerDrillHeat(double removed_drill_heat) {
+            return new P2PlayerState(second_ability(), second_ability_active(), drill_charge(), drill_heat() - removed_drill_heat);
         }
 
         public static Codec<P2PlayerState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             PlayerSecondAbilities.CODEC.fieldOf("player_second_ability").forGetter(P2PlayerState::second_ability),
-            Codec.BOOL.fieldOf("xray_on").forGetter(P2PlayerState::xray_on)
+            Codec.BOOL.fieldOf("ability_active").forGetter(P2PlayerState::second_ability_active),
+            Codec.DOUBLE.fieldOf("drill_charge").forGetter(P2PlayerState::drill_charge),
+            Codec.DOUBLE.fieldOf("drill_heat").forGetter(P2PlayerState::drill_heat)
         ).apply(inst, P2PlayerState::new));
     }
     
@@ -117,8 +135,16 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
         return p2_state.second_ability();
     }
 
-    protected boolean getPlayerXrayState() {
-        return p2_state.xray_on();
+    protected boolean getPlayerSecondAbilityState() {
+        return p2_state.second_ability_active();
+    }
+
+    protected double getPlayerDrillCharge() {
+        return p2_state.drill_charge();
+    }
+
+    protected double getPlayerDrillHeat() {
+        return p2_state.drill_heat();
     }
 
     protected PlayerThirdAbilities getPlayerThirdAbility() {
@@ -162,8 +188,24 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
         return new PlayerState(p1_state, p2_state.withPlayerSecondAbility(new_second_ability), p3_state);
     }
 
-    protected PlayerState setPlayerXrayState(boolean xray_on) {
-        return new PlayerState(p1_state, p2_state.setPlayerXrayState(xray_on), p3_state);
+    protected PlayerState withPlayerSecondAbilityState(boolean xray_on) {
+        return new PlayerState(p1_state, p2_state.withPlayerSecondAbilityState(xray_on), p3_state);
+    }
+
+    public PlayerState withPlayerDrillCharge(double new_drill_charge) {
+        return new PlayerState(p1_state, p2_state.withPlayerDrillCharge(new_drill_charge), p3_state);
+    }
+
+    public PlayerState withPlayerDrillHeat(double new_drill_heat) {
+        return new PlayerState(p1_state, p2_state.withPlayerDrillHeat(new_drill_heat), p3_state);
+    }
+
+    public PlayerState withIncrementedPlayerDrillHeat(double added_drill_heat) {
+        return new PlayerState(p1_state, p2_state.withIncrementedPlayerDrillHeat(added_drill_heat), p3_state);
+    }
+
+    public PlayerState withDecrementedPlayerDrillHeat(double removed_drill_heat) {
+        return new PlayerState(p1_state, p2_state.withDecrementedPlayerDrillHeat(removed_drill_heat), p3_state);
     }
 
 

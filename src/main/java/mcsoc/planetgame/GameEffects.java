@@ -17,6 +17,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ExperienceDroppingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -25,13 +29,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.hit.HitResult.Type;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public abstract class GameEffects {    
     private GameEffects() { /* delete */ }
@@ -42,6 +51,8 @@ public abstract class GameEffects {
     public static final int DASH_COOLDOWN_TICKS = 20 * 2;
     public static final int THROW_COOLDOWN_TICKS = 20 * 3;
     public static final int DROP_COOLDOWN_TICKS = 20 * 1;
+    public static final double XRAY_RANGE = 5;
+    public static final int DIG_SIZE = 3/2;
 
     public abstract static class CommandActions {
         private CommandActions() { /* delete */ }
@@ -261,45 +272,86 @@ public abstract class GameEffects {
         GameStateManager.setPlayerInGravityField(player, in_field);
     }
 
-
-    public static void setPlayerXrayState(UUID uuid, MinecraftServer server, boolean xray_on) {
+    public static void togglePlayerSecondAbilityState(UUID uuid, MinecraftServer server) {
         ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
         if (Objects.isNull(player)) {
-            GameStateManager.setPlayerXrayState(uuid, server, xray_on);
+            GameStateManager.togglePlayerSecondAbilityState(uuid, server);
             return;
         }
-        setPlayerXrayState(player, xray_on);
+        togglePlayerSecondAbilityState(player);
     }
 
-    public static void setPlayerXrayState(ServerPlayerEntity player, boolean xray_on) {
+    public static void togglePlayerSecondAbilityState(ServerPlayerEntity player) {
         // TODO: do some visual effect here
-        if (xray_on) {
-            
-        } else {
+        PlayerSecondAbilities ability = GameStateManager.getPlayerSecondAbility(player);
 
+        if (GameStateManager.getPlayerSecondAbilityState(player)) {
+            GameStateManager.setPlayerSecondAbilityState(player, false);
+            if (ability == PlayerSecondAbilities.DRILLING) {
+                player.removeStatusEffect(StatusEffects.SLOWNESS);
+            } else if (ability == PlayerSecondAbilities.XRAY) {
+                player.removeStatusEffect(StatusEffects.NIGHT_VISION);
+            }
+        } else {
+            if (ability == PlayerSecondAbilities.DRILLING) {
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, -1, 3, false, false));
+            } else if (ability == PlayerSecondAbilities.XRAY) {
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, -1, 1, false, false));
+            }
+            GameStateManager.setPlayerSecondAbilityState(player, true);
         }
-        GameStateManager.setPlayerXrayState(player, xray_on);
+    }
+
+    private static boolean blockIsBreakable(Block block) {
+        return !block.equals(Blocks.DIORITE);
     }
 
 
-    public static void togglePlayerXrayState(UUID uuid, MinecraftServer server) {
-        ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
-        if (Objects.isNull(player)) {
-            GameStateManager.setPlayerXrayState(uuid, server, !GameStateManager.getPlayerXrayState(uuid, server));
-            return;
-        }
-        togglePlayerXrayState(player);
+    private static boolean shouldDropBlock(Block block) {
+        return block instanceof ExperienceDroppingBlock;
     }
 
-    public static void togglePlayerXrayState(ServerPlayerEntity player) {
-        // TODO: do some visual effect here
-        
-        if (GameStateManager.getPlayerXrayState(player)) {
-            GameStateManager.setPlayerXrayState(player, false);
-            player.removeStatusEffect(StatusEffects.NIGHT_VISION);
-        } else {
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, -1, 1, false, false));
-            GameStateManager.setPlayerXrayState(player, true);
+    private static BlockPos shiftedBlockPosFromDirection(int i, int j, Direction direction) {
+        return switch (direction) {
+            case EAST  -> new BlockPos(0, j, i);
+            case WEST  -> new BlockPos(-1, j, i);
+            case UP    -> new BlockPos(i, 0, j);
+            case DOWN  -> new BlockPos(i, 0, j);
+            case NORTH -> new BlockPos(i, j, -1);
+            case SOUTH -> new BlockPos(i, j, 0);
+        };
+    }
+
+    private static boolean attemptBlockBreak(World world, ServerPlayerEntity player, BlockPos pos, boolean do_drop) {
+        BlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock();
+        if (blockIsBreakable(block)) {
+            BlockState blockState2 = block.onBreak(world, pos, blockState, player);
+            if (world.breakBlock(pos, do_drop)) {
+                block.onBroken(world, pos, blockState2);
+            }
+            player.networkHandler.sendPacket(new BlockUpdateS2CPacket(pos, world.getBlockState(pos)));
+            return true;
+        }
+        return false;
+    }
+
+    private static void breakBlocksBig(ServerPlayerEntity player, BlockPos pos) {
+        Direction mining_direction = player.getFacing();
+        World world = player.getWorld();
+        for (int col = -DIG_SIZE; col <= DIG_SIZE; col++) {
+            for (int row = -DIG_SIZE; row <= DIG_SIZE; row++) {
+                BlockPos shifted_pos = pos.add(shiftedBlockPosFromDirection(col, row, mining_direction));
+                attemptBlockBreak(world, player, shifted_pos, shouldDropBlock(world.getBlockState(pos).getBlock()));
+            }
+        }
+    }
+    
+    private static void drillEffect(ServerPlayerEntity player) {
+        HitResult hit_result = player.raycast(3, 0, false);
+        if (hit_result.getType() == Type.BLOCK) {
+            Vec3d hit_pos = hit_result.getPos();
+            breakBlocksBig(player, new BlockPos((int)hit_pos.x, (int)hit_pos.y - 1, (int)hit_pos.z));
         }
     }
 
@@ -319,10 +371,6 @@ public abstract class GameEffects {
         ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
         if (Objects.isNull(player)) return;
         triggerPlayerDashAdditive(player);
-    }
-
-    public static boolean getIsPlayerCarryingSomething(ServerPlayerEntity player) {
-        return player.hasPassengers();
     }
 
     public static void triggerPlayerThrow(UUID uuid, MinecraftServer server) {
@@ -360,7 +408,7 @@ public abstract class GameEffects {
             return;
         }
         pickUpEntity(player, other_player);
-        player.setPose(EntityPose.SLEEPING);
+        other_player.setPose(EntityPose.SLEEPING);
     }
 
     public static void throwHeldObject(ServerPlayerEntity player) {
@@ -427,12 +475,11 @@ public abstract class GameEffects {
     }
 
     public static Text getSecondAbilityActionbarResponse(ServerPlayerEntity player) {
-        
         PlayerSecondAbilities second_ability = GameStateManager.getPlayerSecondAbility(player);
         if (second_ability == PlayerSecondAbilities.XRAY) {
-            return Text.of(String.format("gravity direction: %s", GameStateManager.getPlayerGravityDirection(player)));
+            return Text.of(String.format("xray %s", GameStateManager.getPlayerSecondAbilityState(player) ? "on" : "off"));
         } else if (second_ability == PlayerSecondAbilities.DRILLING) {
-            return Text.of(String.format("gravity strength: %.1f", GameStateManager.getPlayerGravityStrength(player).getDouble()));
+            return Text.of(String.format("drill %s", GameStateManager.getPlayerSecondAbilityState(player) ? "on" : "off"));
         }
         return Text.literal("No ability to trigger.");
     }
@@ -500,9 +547,10 @@ public abstract class GameEffects {
         PlayerSecondAbilities second_ability = GameStateManager.getPlayerSecondAbility(uuid, server);
         if (second_ability == PlayerSecondAbilities.DRILLING) {
             //TODO
+            togglePlayerSecondAbilityState(uuid, server);
         } else if (second_ability == PlayerSecondAbilities.XRAY) {
             // TODO
-            togglePlayerXrayState(uuid, server);
+            togglePlayerSecondAbilityState(uuid, server);
         }
     }
 
@@ -533,6 +581,10 @@ public abstract class GameEffects {
     public static void tick(ServerPlayerEntity player) {
         GameStateManager.tickPlayerState(player);
         GameEffects.sendThirdAbilityPerTickActionbarText(player);
+        if (GameStateManager.getPlayerSecondAbility(player) == PlayerSecondAbilities.DRILLING && 
+                GameStateManager.getPlayerSecondAbilityState(player)) {
+            drillEffect(player);
+        }
     }
 
     public static void tick(UUID uuid, MinecraftServer server) {

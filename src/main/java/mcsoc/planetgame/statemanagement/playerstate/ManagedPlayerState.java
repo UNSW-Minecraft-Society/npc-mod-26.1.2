@@ -54,8 +54,16 @@ public class ManagedPlayerState {
         return state.getPlayerSecondAbility();
     }
 
-    public boolean getPlayerXrayState() {
-        return state.getPlayerXrayState();
+    public boolean getPlayerSecondAbilityState() {
+        return state.getPlayerSecondAbilityState();
+    }
+
+    public double getPlayerDrillCharge() {
+        return state.getPlayerDrillCharge();
+    }
+
+    public double getPlayerDrillHeat() {
+        return state.getPlayerDrillHeat();
     }
 
     public PlayerThirdAbilities getPlayerThirdAbility() {
@@ -95,8 +103,24 @@ public class ManagedPlayerState {
         this.state = state.withPlayerSecondAbility(new_second_ability);
     }
 
-    public void setPlayerXrayState(boolean xray_on) {
-        this.state = state.setPlayerXrayState(xray_on);
+    public void setPlayerSecondAbilityState(boolean xray_on) {
+        this.state = state.withPlayerSecondAbilityState(xray_on);
+    }
+
+    public void setPlayerDrillCharge(double new_drill_charge) {
+        this.state = state.withPlayerDrillCharge(new_drill_charge);
+    }
+
+    public void setPlayerDrillHeat(double new_drill_heat) {
+        this.state = state.withPlayerDrillHeat(new_drill_heat);
+    }
+
+    public void incrementPlayerDrillHeat(double added_drill_heat) {
+        this.state = state.withIncrementedPlayerDrillHeat(added_drill_heat);
+    }
+
+    public void decrementPlayerDrillHeat(double removed_drill_heat) {
+        this.state = state.withDecrementedPlayerDrillHeat(removed_drill_heat);
     }
 
     public void setPlayerThirdAbility(PlayerThirdAbilities new_third_ability) {
