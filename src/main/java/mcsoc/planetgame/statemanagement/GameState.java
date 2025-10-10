@@ -25,6 +25,8 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.datafixer.DataFixTypes;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -49,6 +51,7 @@ public class GameState extends PersistentState {
     private long pending_ticks_partial = 0;
     private long grav_field_update_tick_counter = 0;
     private Set<BlockPos> gravity_generator_locations = new HashSet<>();
+    private Map<UUID, PlayerInventory> player_inventory_heap = new HashMap<>();
 
 
     private GameState(PersistentGameData data) {
@@ -420,5 +423,25 @@ public class GameState extends PersistentState {
     protected static void forEachGravityGenerator(MinecraftServer server, Consumer<BlockPos> todo_for_each) {
         GameState state = getServerState(server);
         state.gravity_generator_locations.forEach(todo_for_each);
+    }
+
+
+    protected static void addInventoryToHeap(UUID uuid, MinecraftServer server, PlayerInventory inventory) {
+        GameState state = getServerState(server);
+        state.player_inventory_heap.put(uuid, inventory);
+    }
+
+    protected static void addInventoryToHeap(ServerPlayerEntity player, PlayerInventory inventory) {
+        
+        addInventoryToHeap(player.getUuid(), player.getServer(), inventory);
+    }
+
+    protected static Optional<Inventory> retrieveInventoryFromHeap(UUID uuid, MinecraftServer server) {
+        GameState state = getServerState(server);
+        return Optional.ofNullable(state.player_inventory_heap.get(uuid));
+    }
+
+    protected static Optional<Inventory> retrieveInventoryFromHeap(ServerPlayerEntity player) {
+        return retrieveInventoryFromHeap(player.getUuid(), player.getServer());
     }
 }
