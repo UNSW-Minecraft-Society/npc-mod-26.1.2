@@ -45,29 +45,23 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
         ).apply(inst, P1PlayerState::new));
     }
     
-    private static record P2PlayerState(PlayerSecondAbilities second_ability, boolean second_ability_active, double drill_charge, double drill_heat) {
+
+    private static record P2PlayerState(PlayerSecondAbilities second_ability, boolean xray_on) {
         public static P2PlayerState withDefaultPlayerState() {
             return new P2PlayerState(PlayerSecondAbilities.getDefault(), false);
         }
 
-        public P2PlayerState withPlayerSecondAbility(PlayerSecondAbilities new_second_ability) {
-            return second_ability;
-        }
-
-        public P2PlayerState withPlayerSecondAbilityState(boolean xray_on) {
-        }
-
-        public boolean getPlayerXrayState() {
-            return xray_on;
+        public P2PlayerState withPlayerSecondAbility(PlayerSecondAbilities second_ability) {
+            return new P2PlayerState(second_ability, xray_on());
         }
 
         public P2PlayerState setPlayerXrayState(boolean xray_on) {
-            return new P2PlayerState(getPlayerSecondAbility(), xray_on);
+            return new P2PlayerState(second_ability(), xray_on);
         }
 
         public static Codec<P2PlayerState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             PlayerSecondAbilities.CODEC.fieldOf("player_second_ability").forGetter(P2PlayerState::second_ability),
-            Codec.BOOL.fieldOf("xray_on").forGetter(P2PlayerState::second_ability_active),
+            Codec.BOOL.fieldOf("xray_on").forGetter(P2PlayerState::xray_on)
         ).apply(inst, P2PlayerState::new));
     }
     
@@ -125,7 +119,7 @@ public record PlayerState(P1PlayerState p1_state, P2PlayerState p2_state, P3Play
     }
 
     protected boolean getPlayerXrayState() {
-        return p2_state.getPlayerXrayState();
+        return p2_state.xray_on();
     }
 
     protected PlayerThirdAbilities getPlayerThirdAbility() {
