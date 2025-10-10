@@ -35,7 +35,7 @@ public abstract class GameStateManager {
     public static SyncPlayerDrillingDataS2CPayload getPlayerMiningStatePacket(ServerPlayerEntity player) {
         ManagedPlayerState state = GameState.getPlayerState(player);
         return new SyncPlayerDrillingDataS2CPayload(
-            state.getPlayerXrayState()
+            state.getPlayerSecondAbility().equals(PlayerSecondAbilities.XRAY) && state.getPlayerSecondAbilityState()
         );
     }
 
@@ -162,21 +162,78 @@ public abstract class GameStateManager {
         setPlayerSecondAbility(player.getUuid(), player.getServer(), ability);
     }
 
-    public static boolean getPlayerXrayState(UUID uuid, MinecraftServer server) {
-        return GameState.getPlayerXrayState(uuid, server);
+    public static boolean getPlayerSecondAbilityState(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerSecondAbilityState(uuid, server);
     }
 
-    public static boolean getPlayerXrayState(ServerPlayerEntity player) {
-        return getPlayerXrayState(player.getUuid(), player.getServer());
+    public static boolean getPlayerSecondAbilityState(ServerPlayerEntity player) {
+        return getPlayerSecondAbilityState(player.getUuid(), player.getServer());
     }
 
-    public static void setPlayerXrayState(UUID uuid, MinecraftServer server, boolean xray_on) {
-        GameState.setPlayerXrayState(uuid, server, xray_on);
+    public static void setPlayerSecondAbilityState(UUID uuid, MinecraftServer server, boolean second_ability_active) {
+        GameState.setPlayerSecondAbilityState(uuid, server, second_ability_active);
         // TODO reset stuff here
     }
 
-    public static void setPlayerXrayState(ServerPlayerEntity player, boolean xray_on) {
-        setPlayerXrayState(player.getUuid(), player.getServer(), xray_on);
+    public static void setPlayerSecondAbilityState(ServerPlayerEntity player, boolean second_ability_active) {
+        setPlayerSecondAbilityState(player.getUuid(), player.getServer(), second_ability_active);
+    }
+
+    public static void togglePlayerSecondAbilityState(UUID uuid, MinecraftServer server) {
+        GameState.setPlayerSecondAbilityState(uuid, server, !GameState.getPlayerSecondAbilityState(uuid, server));
+        // TODO reset stuff here
+    }
+
+    public static void togglePlayerSecondAbilityState(ServerPlayerEntity player) {
+        togglePlayerSecondAbilityState(player.getUuid(), player.getServer());
+    }
+
+    public static double getPlayerDrillCharge(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerDrillCharge(uuid, server);
+    }
+
+    public static double getPlayerDrillCharge(ServerPlayerEntity player) {
+        return getPlayerDrillCharge(player.getUuid(), player.getServer());
+    }
+
+    public static void setPlayerDrillCharge(UUID uuid, MinecraftServer server, double new_drill_charge) {
+        GameState.setPlayerDrillCharge(uuid, server, new_drill_charge);
+    }
+
+    public static void setPlayerDrillCharge(ServerPlayerEntity player, double new_drill_charge) {
+        setPlayerDrillCharge(player.getUuid(), player.getServer(), new_drill_charge);
+    }
+
+    public static double getPlayerDrillHeat(UUID uuid, MinecraftServer server) {
+        return GameState.getPlayerDrillHeat(uuid, server);
+    }
+
+    public static double getPlayerDrillHeat(ServerPlayerEntity player) {
+        return getPlayerDrillHeat(player.getUuid(), player.getServer());
+    }
+
+    public static void setPlayerDrillHeat(UUID uuid, MinecraftServer server, double new_drill_heat) {
+        GameState.setPlayerDrillHeat(uuid, server, new_drill_heat);
+    }
+
+    public static void setPlayerDrillHeat(ServerPlayerEntity player, double new_drill_heat) {
+        setPlayerDrillHeat(player.getUuid(), player.getServer(), new_drill_heat);
+    }
+
+    public static void incrementPlayerDrillHeat(UUID uuid, MinecraftServer server, double added_drill_heat) {
+        GameState.incrementPlayerDrillHeat(uuid, server, added_drill_heat);
+    }
+
+    public static void incrementPlayerDrillHeat(ServerPlayerEntity player, double added_drill_heat) {
+        incrementPlayerDrillHeat(player.getUuid(), player.getServer(), added_drill_heat);
+    }
+
+    public static void decrementPlayerDrillHeat(UUID uuid, MinecraftServer server, double removed_drill_heat) {
+        GameState.decrementPlayerDrillHeat(uuid, server, removed_drill_heat);
+    }
+
+    public static void decrementPlayerDrillHeat(ServerPlayerEntity player, double removed_drill_heat) {
+        decrementPlayerDrillHeat(player.getUuid(), player.getServer(), removed_drill_heat);
     }
 
 
