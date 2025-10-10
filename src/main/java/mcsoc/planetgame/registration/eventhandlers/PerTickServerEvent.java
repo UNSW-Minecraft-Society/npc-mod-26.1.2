@@ -74,13 +74,13 @@ public abstract class PerTickServerEvent {
         GameStateManager.updateTickTimings(server);
         GameStateManager.tickGravityFieldTimer(server);
         GameStateManager.forEachPlayerEntry(server, e -> 
-                GameEffects.tickPlayerState(e.getKey(), server)
+                GameEffects.tick(e.getKey(), server)
         );
     }
     
     public static void registerEvent() {
-        ServerTickEvents.START_WORLD_TICK.register(serverworld -> {
-            MinecraftServer server = serverworld.getServer();
+        ServerTickEvents.START_SERVER_TICK.register(server -> {
+
             List<ServerPlayerEntity> player_list = server.getPlayerManager().getPlayerList();
             
             player_list.forEach(player -> {

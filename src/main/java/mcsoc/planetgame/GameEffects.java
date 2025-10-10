@@ -496,17 +496,17 @@ public abstract class GameEffects {
     }
 
 
-    public static void tickPlayerState(ServerPlayerEntity player) {
+    public static void tick(ServerPlayerEntity player) {
         GameStateManager.tickPlayerState(player);
         GameEffects.sendThirdAbilityPerTickActionbarText(player);
     }
 
-    public static void tickPlayerState(UUID uuid, MinecraftServer server) {
+    public static void tick(UUID uuid, MinecraftServer server) {
         ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
         if (Objects.isNull(player)) {
             GameStateManager.tickPlayerState(uuid, server);
         } else {
-            tickPlayerState(player);
+            tick(player);
         }
     }
 }
