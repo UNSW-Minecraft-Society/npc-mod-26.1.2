@@ -190,7 +190,8 @@ public abstract class GameStateManager {
 
     public static void setPlayerThirdAbility(UUID uuid, MinecraftServer server, PlayerThirdAbilities ability) {
         GameState.setPlayerThirdAbility(uuid, server, ability);
-        // reset stuff here
+        // TODO reset stuff here
+        setIfPlayerIsCarrying(uuid, server, false);
     }
 
     public static void setPlayerThirdAbility(ServerPlayerEntity player, PlayerThirdAbilities ability) {
