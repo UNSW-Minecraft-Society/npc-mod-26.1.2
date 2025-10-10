@@ -17,7 +17,7 @@ public class ManagedPlayerState {
     }
 
     ManagedPlayerState() {
-        this(PlayerState.getDefaultPlayerState());
+        this(PlayerState.withDefaultPlayerState());
     }
 
     private PlayerState getState() {
@@ -72,27 +72,27 @@ public class ManagedPlayerState {
 
 
     public void setPlayerFirstAbility(PlayerFirstAbilities new_first_ability) {
-        this.state = state.setPlayerFirstAbility(new_first_ability);
+        this.state = state.withPlayerFirstAbility(new_first_ability);
     }
 
     public void setPlayerGravityDirection(Direction new_grav_dir) {
-        this.state = state.setPlayerGravityDirection(new_grav_dir);
+        this.state = state.withPlayerGravityDirection(new_grav_dir);
     }
 
     public void setPlayerGravityStrengthModifier(GravityStrength new_grav_strength) {
-        this.state = state.setPlayerGravityStrengthModifier(new_grav_strength);
+        this.state = state.withPlayerGravityStrengthModifier(new_grav_strength);
     }
 
     public void setPlayerGravityModified() {
-        this.state = state.setPlayerGravityModified();
+        this.state = state.withPlayerGravityModified();
     }
 
     public void setPlayerInGravityField(boolean in_field) {
-        this.state = state.setPlayerInGravityField(in_field);
+        this.state = state.withPlayerInGravityField(in_field);
     }
 
     public void setPlayerSecondAbility(PlayerSecondAbilities new_second_ability) {
-        this.state = state.setPlayerSecondAbility(new_second_ability);
+        this.state = state.withPlayerSecondAbility(new_second_ability);
     }
 
     public void setPlayerXrayState(boolean xray_on) {
@@ -100,19 +100,19 @@ public class ManagedPlayerState {
     }
 
     public void setPlayerThirdAbility(PlayerThirdAbilities new_third_ability) {
-        this.state = state.setPlayerThirdAbility(new_third_ability);
+        this.state = state.withPlayerThirdAbility(new_third_ability);
     }
 
     public void setPlayerThirdAbilityCooldownTicks(int new_third_ability_cooldown) {
-        this.state = state.setPlayerThirdAbilityCooldownTicks(new_third_ability_cooldown);
+        this.state = state.withPlayerThirdAbilityCooldownTicks(new_third_ability_cooldown);
     }
 
     public void decrementPlayerThirdAbilityCooldown() {
-        this.state = state.decrementPlayerThirdAbilityCooldown();
+        this.state = state.withDecrementedPlayerThirdAbilityCooldown();
     }
 
     public void setIfPlayerIsCarrying(boolean carrying) {
-        this.state = state.setIfPlayerIsCarrying(carrying);
+        this.state = state.withIsPlayerCarrying(carrying);
     }
 
 
