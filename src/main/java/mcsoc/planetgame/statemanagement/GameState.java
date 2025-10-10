@@ -172,6 +172,25 @@ public class GameState extends PersistentState {
     }
 
 
+    protected static PlayerFirstAbilities getPlayerFirstAbility(UUID uuid, MinecraftServer server) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerFirstAbility();
+    }
+
+    protected static PlayerFirstAbilities getPlayerFirstAbility(ServerPlayerEntity player) {
+        return getPlayerFirstAbility(player.getUuid(), player.getServer());
+    }
+
+    protected static void setPlayerFirstAbility(UUID uuid, MinecraftServer server, PlayerFirstAbilities first_ability) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        player_state.setPlayerFirstAbility(first_ability);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerFirstAbility(ServerPlayerEntity player, PlayerFirstAbilities first_ability) {
+        setPlayerFirstAbility(player.getUuid(), player.getServer(), first_ability);
+    }
+
     protected static Direction getPlayerGravityDirection(UUID uuid, MinecraftServer server) {
         ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getCurrentPlayerGravityDirection();
@@ -190,7 +209,6 @@ public class GameState extends PersistentState {
     protected static void setPlayerGravityDirection(ServerPlayerEntity player, Direction grav_dir) {
         setPlayerGravityDirection(player.getUuid(), player.getServer(), grav_dir);
     }
-
 
     protected static GravityStrength getPlayerGravityStrengthModifier(UUID uuid, MinecraftServer server) {
         ManagedPlayerState player_state = getPlayerState(uuid, server);
@@ -230,7 +248,6 @@ public class GameState extends PersistentState {
         setPlayerInGravityField(player.getUuid(), player.getServer(), in_field);
     }
 
-
     protected static boolean getPlayerGravityModified(UUID uuid, MinecraftServer server) {
         ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerGravityModified();
@@ -248,26 +265,6 @@ public class GameState extends PersistentState {
 
     protected static void setPlayerGravityModified(ServerPlayerEntity player) {
         setPlayerGravityModified(player.getUuid(), player.getServer());
-    }
-
-
-    protected static PlayerFirstAbilities getPlayerFirstAbility(UUID uuid, MinecraftServer server) {
-        ManagedPlayerState player_state = getPlayerState(uuid, server);
-        return player_state.getPlayerFirstAbility();
-    }
-
-    protected static PlayerFirstAbilities getPlayerFirstAbility(ServerPlayerEntity player) {
-        return getPlayerFirstAbility(player.getUuid(), player.getServer());
-    }
-
-    protected static void setPlayerFirstAbility(UUID uuid, MinecraftServer server, PlayerFirstAbilities first_ability) {
-        ManagedPlayerState player_state = getPlayerState(uuid, server);
-        player_state.setPlayerFirstAbility(first_ability);
-        setPlayerState(uuid, server, player_state);
-    }
-
-    protected static void setPlayerFirstAbility(ServerPlayerEntity player, PlayerFirstAbilities first_ability) {
-        setPlayerFirstAbility(player.getUuid(), player.getServer(), first_ability);
     }
 
 
