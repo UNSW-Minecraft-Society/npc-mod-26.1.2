@@ -9,13 +9,13 @@ import mcsoc.planetgame.statemanagement.playerstate.ManagedPlayerState;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -44,24 +44,23 @@ public class GameState extends PersistentState {
     private PersistentGameData persistent_state_data = PersistentGameData.getEmpty();
 
     // data I don't care about
-    private Instant prev_tick_time;
+    private Instant prev_tick_time = Instant.now();
     private long pending_ticks = 0;
     private long pending_ticks_partial = 0;
     private long grav_field_update_tick_counter = 0;
-    private Set<BlockPos> gravity_generator_locations = new TreeSet<>();
+    private Set<BlockPos> gravity_generator_locations = new HashSet<>();
 
 
     private GameState(PersistentGameData data) {
         persistent_state_data.player_state_map().putAll(data.player_state_map());
-        this.prev_tick_time = Instant.now();
-    }
-
-    private Map<UUID, ManagedPlayerState> getStates() {
-        return persistent_state_data.player_state_map();
     }
 
     private PersistentGameData getPersistentData() {
         return persistent_state_data;
+    }
+
+    private Map<UUID, ManagedPlayerState> getStates() {
+        return getPersistentData().player_state_map();
     }
     
     public static final Codec<GameState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
@@ -142,22 +141,12 @@ public class GameState extends PersistentState {
         return this.getStates().entrySet().stream();
     }
 
-    private ManagedPlayerState getPlayerState(UUID uuid) throws NoSuchElementException {
-        ManagedPlayerState player_state = this.getStates().get(uuid);
-        if (Objects.isNull(player_state)) {
-            throw new NoSuchElementException("No player state entry associated with uuid!");
-        }
-        return player_state;
+    private Optional<ManagedPlayerState> getPlayerState(UUID uuid) {
+        return Optional.ofNullable(this.getStates().get(uuid));
     }
 
-    private ManagedPlayerState getOrCreatePlayerState(UUID uuid) throws NoSuchElementException {
-        ManagedPlayerState player_state;
-        try {
-            player_state = getPlayerState(uuid);
-        } catch (NoSuchElementException e) {
-            player_state = ManagedPlayerState.getDefaultPlayerState();
-        }
-        return player_state;
+    private ManagedPlayerState getOrCreatePlayerState(UUID uuid) {
+        return getPlayerState(uuid).orElse(ManagedPlayerState.getDefaultPlayerState());
     }
 
     private void setPlayerState(UUID uuid, ManagedPlayerState player_state) {
