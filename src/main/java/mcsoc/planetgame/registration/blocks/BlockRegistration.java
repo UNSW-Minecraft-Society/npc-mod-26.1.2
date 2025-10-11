@@ -65,7 +65,6 @@ public abstract class BlockRegistration {
 
     public static final Block ANDESITE_LADDER = register(
         new LadderBlock(AbstractBlock.Settings.create()
-            .notSolid()
             .strength(0.4F)
             .sounds(BlockSoundGroup.LADDER)
             .nonOpaque()
