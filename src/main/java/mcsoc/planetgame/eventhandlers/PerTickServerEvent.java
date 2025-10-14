@@ -8,7 +8,8 @@ import java.util.Set;
 import gravity_changer.api.GravityChangerAPI;
 import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlockEntity;
 import mcsoc.planetgame.entities.throwables.ThrowableRockEntity;
-import mcsoc.planetgame.gameeffects.GameEffects;
+import mcsoc.planetgame.gameeffects.CommonGameEffects;
+import mcsoc.planetgame.gameeffects.FirstAbilityGameEffects;
 import mcsoc.planetgame.networking.NetworkingIdentifiers;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 
@@ -56,7 +57,7 @@ public abstract class PerTickServerEvent {
         if (Objects.nonNull(closest_gen)) {
             ((GravityFieldBlockEntity)(world.getBlockEntity(closest_gen))).addTrackedPlayer(player);
         } else {
-            GameEffects.setPlayerInGravityField(player, false);
+            FirstAbilityGameEffects.setPlayerInGravityField(player, false);
         }
     }
 
@@ -75,7 +76,7 @@ public abstract class PerTickServerEvent {
         GameStateManager.updateTickTimings(server);
         GameStateManager.tickGravityFieldTimer(server);
         GameStateManager.forEachPlayerEntry(server, e -> 
-                GameEffects.tick(e.getKey(), server)
+                CommonGameEffects.tick(e.getKey(), server)
         );
     }
     
@@ -89,7 +90,7 @@ public abstract class PerTickServerEvent {
 
                 updateGravityEffects(player, GameStateManager.shouldUpdateGravityFields(server));
                 if (player.isSneaking()) {
-                    GameEffects.dropPassengerIntentionally(player);
+                    CommonGameEffects.dropPassengerIntentionally(player);
                 }
 
                 ServerPlayNetworking.send(player, GameStateManager.getPlayerMiningStatePacket(player));
@@ -103,7 +104,7 @@ public abstract class PerTickServerEvent {
             ServerPlayerEntity player = handler.getPlayer();
             if (GameStateManager.getIfPlayerIsCarrying(player)) {
                 GameStateManager.setIfPlayerIsCarrying(player, false);
-                GameEffects.attemptReturnPlayerInventory(player);
+                CommonGameEffects.attemptReturnPlayerInventory(player);
             }
             player.getWorld().getEntitiesByClass(ThrowableRockEntity.class, player.getBoundingBox().expand(1), rock -> true).forEach(rock -> rock.doDeathEffect());
         });

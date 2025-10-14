@@ -2,7 +2,7 @@ package mcsoc.planetgame.blocks.rockpile;
 
 import mcsoc.planetgame.entities.EntityRegistration;
 import mcsoc.planetgame.entities.throwables.ThrowableRockEntity;
-import mcsoc.planetgame.gameeffects.GameEffects;
+import mcsoc.planetgame.gameeffects.CommonGameEffects;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
 
@@ -36,7 +36,7 @@ public class RockPileBlock extends Block {
         rock_projectile.setPosition(player.getPos());
         rock_projectile.setOwner(server_player);
         world.spawnEntity(rock_projectile);
-        GameEffects.pickUpEntity(server_player, rock_projectile);
+        CommonGameEffects.pickUpEntity(server_player, rock_projectile);
         return ActionResult.SUCCESS;
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import mcsoc.planetgame.blocks.BlockEntityRegistration;
-import mcsoc.planetgame.gameeffects.GameEffects;
+import mcsoc.planetgame.gameeffects.FirstAbilityGameEffects;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 
 import net.minecraft.server.MinecraftServer;
@@ -33,7 +33,7 @@ public class GravityFieldBlockEntity extends BlockEntity {
         this(pos, state, DEFAULT_SIZE);
     }
 
-    public void resetTrackedPlayers() {
+    private void resetTrackedPlayers() {
         tracked_players.clear();
     }
 
@@ -41,8 +41,8 @@ public class GravityFieldBlockEntity extends BlockEntity {
         tracked_players.add(player);
     }
 
-    protected void setAllPlayersOutOfField() {
-        tracked_players.forEach(player -> GameEffects.setPlayerInGravityField(player, false));
+    protected void setAllTrackedPlayersOutOfField() {
+        tracked_players.forEach(player -> FirstAbilityGameEffects.setPlayerInGravityField(player, false));
     }
 
 
@@ -57,7 +57,7 @@ public class GravityFieldBlockEntity extends BlockEntity {
         if (!GameStateManager.shouldUpdateGravityFields(server)) return;
         
         entity.tracked_players.forEach(player -> 
-            GameEffects.setPlayerInGravityField(player, entity.gravity_field_box.contains(player.getPos()))
+            FirstAbilityGameEffects.setPlayerInGravityField(player, entity.gravity_field_box.contains(player.getPos()))
         );
         entity.resetTrackedPlayers();
     }

@@ -8,7 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
-import mcsoc.planetgame.gameeffects.GameEffects;
+import mcsoc.planetgame.gameeffects.FirstAbilityGameEffects;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
@@ -35,13 +35,13 @@ public abstract class CommandActions {
 
     public static int flipCallingPlayerCommand(CommandContext<ServerCommandSource> cxt) {
         ServerPlayerEntity player = cxt.getSource().getPlayer();
-        GameEffects.flipPlayerGravity(player);
+        FirstAbilityGameEffects.flipPlayerGravity(player);
         return 1;
     }
 
     public static int flipTargetPlayerCommand(CommandContext<ServerCommandSource> cxt) throws CommandSyntaxException {
         ServerPlayerEntity player = getPlayerFromName(cxt);
-        GameEffects.flipPlayerGravity(player);
+        FirstAbilityGameEffects.flipPlayerGravity(player);
         return 1;
     }
 

@@ -1,6 +1,6 @@
 package mcsoc.planetgame.networking.packethandlers;
 
-import mcsoc.planetgame.gameeffects.GameEffects;
+import mcsoc.planetgame.gameeffects.FirstAbilityGameEffects;
 import mcsoc.planetgame.networking.TriggerFirstAbilityC2SPayload;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -12,7 +12,7 @@ public class FirstAbilityTriggerPacketEvent {
     public static void registerHandler() {        
         ServerPlayNetworking.registerGlobalReceiver(TriggerFirstAbilityC2SPayload.ID, (payload, context) -> {
             ServerPlayerEntity player = context.player();
-            GameEffects.triggerFirstAbility(player);
+            FirstAbilityGameEffects.triggerFirstAbility(player);
         });
     }
 }
