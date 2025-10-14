@@ -1,6 +1,6 @@
 package mcsoc.planetgame.networking.packethandlers;
 
-import mcsoc.planetgame.GameEffects;
+import mcsoc.planetgame.gameeffects.GameEffects;
 import mcsoc.planetgame.networking.TriggerThirdAbilityC2SPayload;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

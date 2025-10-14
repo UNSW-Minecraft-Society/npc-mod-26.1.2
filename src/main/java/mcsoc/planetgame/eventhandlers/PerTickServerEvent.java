@@ -6,10 +6,9 @@ import java.util.Objects;
 import java.util.Set;
 
 import gravity_changer.api.GravityChangerAPI;
-
-import mcsoc.planetgame.GameEffects;
 import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlockEntity;
 import mcsoc.planetgame.entities.throwables.ThrowableRockEntity;
+import mcsoc.planetgame.gameeffects.GameEffects;
 import mcsoc.planetgame.networking.NetworkingIdentifiers;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 
@@ -104,7 +103,7 @@ public abstract class PerTickServerEvent {
             ServerPlayerEntity player = handler.getPlayer();
             if (GameStateManager.getIfPlayerIsCarrying(player)) {
                 GameStateManager.setIfPlayerIsCarrying(player, false);
-                GameEffects.returnPlayerInventory(player);
+                GameEffects.attemptReturnPlayerInventory(player);
             }
             player.getWorld().getEntitiesByClass(ThrowableRockEntity.class, player.getBoundingBox().expand(1), rock -> true).forEach(rock -> rock.doDeathEffect());
         });

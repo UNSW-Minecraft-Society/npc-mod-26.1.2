@@ -11,6 +11,7 @@ import mcsoc.planetgame.networking.packethandlers.SecondAbilityTriggerPacketEven
 import mcsoc.planetgame.networking.packethandlers.ThirdAbilityTriggerPacketEvent;
 import mcsoc.planetgame.blocks.BlockEntityRegistration;
 import mcsoc.planetgame.blocks.BlockRegistration;
+import mcsoc.planetgame.commands.CommandRegistrationHandler;
 import mcsoc.planetgame.entities.EntityRegistration;
 import mcsoc.planetgame.entities.damagesources.DamageSourceRegistration;
 import mcsoc.planetgame.eventhandlers.PerTickServerEvent;

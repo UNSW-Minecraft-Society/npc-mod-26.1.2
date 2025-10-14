@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import mcsoc.planetgame.GameEffects;
 import mcsoc.planetgame.blocks.BlockEntityRegistration;
+import mcsoc.planetgame.gameeffects.GameEffects;
 import mcsoc.planetgame.statemanagement.GameStateManager;
 
 import net.minecraft.server.MinecraftServer;
@@ -42,9 +42,7 @@ public class GravityFieldBlockEntity extends BlockEntity {
     }
 
     protected void setAllPlayersOutOfField() {
-        tracked_players.forEach(player -> {
-            GameEffects.setPlayerInGravityField(player, false);
-        });
+        tracked_players.forEach(player -> GameEffects.setPlayerInGravityField(player, false));
     }
 
 
