@@ -1,8 +1,8 @@
 package mcsoc.planetgame.statemanagement;
 
 import mcsoc.planetgame.PlanetGame;
-import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlockEntity;
-import mcsoc.planetgame.registration.eventhandlers.PerTickServerEvent;
+import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlockEntity;
+import mcsoc.planetgame.eventhandlers.PerTickServerEvent;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.*;
 import mcsoc.planetgame.statemanagement.playerstate.ManagedPlayerState;

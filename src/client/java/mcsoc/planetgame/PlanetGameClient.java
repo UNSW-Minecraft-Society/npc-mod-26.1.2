@@ -13,7 +13,7 @@ import mcsoc.planetgame.networking.SyncPlayerDrillingDataS2CPayload;
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import mcsoc.planetgame.networking.packethandlers.GravitySyncPacketEvent;
 import mcsoc.planetgame.networking.packethandlers.MiningSyncPacketEvent;
-import mcsoc.planetgame.registration.entities.EntityRegistration;
+import mcsoc.planetgame.entities.EntityRegistration;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;

@@ -1,7 +1,6 @@
 package mcsoc.planetgame.blocks;
 
 import mcsoc.planetgame.blocks.xrayblock.XrayBlockDynamicRenderer;
-import mcsoc.planetgame.registration.blocks.BlockEntityRegistration;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 
 public class BlockEntityRendererRegistration {

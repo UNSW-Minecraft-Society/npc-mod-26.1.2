@@ -5,8 +5,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.At;
 
-import com.llamalad7.mixinextras.sugar.Local;
-
 import mcsoc.planetgame.statemanagement.GameStateManager;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.listener.ServerPlayPacketListener;
@@ -21,19 +19,17 @@ import net.minecraft.util.math.Direction;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler implements ServerPlayPacketListener, PlayerAssociatedNetworkHandler, TickablePacketListener {
-
-    @Shadow
-    public ServerPlayerEntity player;
-
-    private ServerPlayNetworkHandlerMixin(MinecraftServer server, ClientConnection connection,
+    protected ServerPlayNetworkHandlerMixin(MinecraftServer server, ClientConnection connection,
             ConnectedClientData clientData) {
         super(server, connection, clientData);
     }
 
+    @Shadow
+    public ServerPlayerEntity player;
 
     @ModifyVariable(method = "onPlayerMove", at = @At("STORE"), ordinal = 1)
     private boolean modifyGroundCondition(boolean val) {
-        if (GameStateManager.getPlayerGravityDirection(player).equals(Direction.UP)) {
+        if (GameStateManager.getPlayerGravityDirection(this.player).equals(Direction.UP)) {
             return !val;
         }
         return val;

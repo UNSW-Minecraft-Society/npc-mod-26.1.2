@@ -1,7 +1,7 @@
 package mcsoc.planetgame.entities.throwablerock;
 
 import mcsoc.planetgame.PlanetGame;
-import mcsoc.planetgame.registration.entities.throwables.ThrowableRockEntity;
+import mcsoc.planetgame.entities.throwables.ThrowableRockEntity;
 import net.minecraft.client.model.ModelData;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.model.ModelPartBuilder;

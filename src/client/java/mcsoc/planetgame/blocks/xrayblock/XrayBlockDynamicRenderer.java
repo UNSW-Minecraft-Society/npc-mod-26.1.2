@@ -1,7 +1,6 @@
 package mcsoc.planetgame.blocks.xrayblock;
 
 import mcsoc.planetgame.PlanetGameClient;
-import mcsoc.planetgame.registration.blocks.xrayblock.XrayableBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;

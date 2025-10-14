@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import mcsoc.planetgame.networking.SyncPlayerDrillingDataS2CPayload;
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
-import mcsoc.planetgame.registration.blocks.gravityfieldblock.GravityFieldBlockEntity;
+import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlockEntity;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;

@@ -9,13 +9,12 @@ import mcsoc.planetgame.networking.NetworkingIdentifiers;
 import mcsoc.planetgame.networking.packethandlers.FirstAbilityTriggerPacketEvent;
 import mcsoc.planetgame.networking.packethandlers.SecondAbilityTriggerPacketEvent;
 import mcsoc.planetgame.networking.packethandlers.ThirdAbilityTriggerPacketEvent;
-import mcsoc.planetgame.registration.CommandRegistrationHandler;
-import mcsoc.planetgame.registration.blocks.BlockEntityRegistration;
-import mcsoc.planetgame.registration.blocks.BlockRegistration;
-import mcsoc.planetgame.registration.entities.EntityRegistration;
-import mcsoc.planetgame.registration.entities.damagesources.DamageSourceRegistration;
-import mcsoc.planetgame.registration.eventhandlers.PerTickServerEvent;
-import mcsoc.planetgame.registration.eventhandlers.PlayerJoinServerEvent;
+import mcsoc.planetgame.blocks.BlockEntityRegistration;
+import mcsoc.planetgame.blocks.BlockRegistration;
+import mcsoc.planetgame.entities.EntityRegistration;
+import mcsoc.planetgame.entities.damagesources.DamageSourceRegistration;
+import mcsoc.planetgame.eventhandlers.PerTickServerEvent;
+import mcsoc.planetgame.eventhandlers.PlayerJoinServerEvent;
 
 
 public class PlanetGame implements ModInitializer {
