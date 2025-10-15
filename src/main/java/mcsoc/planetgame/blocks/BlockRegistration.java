@@ -1,5 +1,10 @@
 package mcsoc.planetgame.blocks;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.blocks.crackedblocks.CrackedBricksBlock;
 import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlock;
@@ -7,6 +12,7 @@ import mcsoc.planetgame.blocks.rockpile.RockPileBlock;
 import mcsoc.planetgame.blocks.spikes.SpikeBlock;
 import mcsoc.planetgame.blocks.throwswitch.RockSwitch;
 import mcsoc.planetgame.blocks.weightedpressureplate.WeightedGravityPlate;
+import mcsoc.planetgame.blocks.xrayblock.XrayableBlock;
 import mcsoc.planetgame.blocks.xrayblock.XrayableSandBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -128,6 +134,24 @@ public abstract class BlockRegistration {
     );
 
 
+    private static final Block[] xrayable_blocks_list = new Block[] {
+        XRAYABLE_SAND_BLOCK,
+    };
+
+    private static final Block[] gravity_field_blocks_list = new Block[] {
+        GRAVITY_FIELD_BLOCK, 
+        CAVE_GRAVITY_FIELD_BLOCK
+    };
+
+    public static Block[] getXrayableBlocksArray() {
+        return xrayable_blocks_list;
+    }
+
+    public static Block[] getGravityFieldBlocksArray() {
+        return gravity_field_blocks_list;
+    }
+
+
     public static final RegistryKey<ItemGroup> PLANET_GAME_GROUP_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(PlanetGame.MOD_ID, "planet_game_group"));
     public static final ItemGroup PLANET_GAME_GROUP = FabricItemGroup.builder()
         .icon(() -> new ItemStack(GRAVITY_FIELD_BLOCK))
@@ -154,15 +178,15 @@ public abstract class BlockRegistration {
     public static void registerBlocks() {
         Registry.register(Registries.ITEM_GROUP, PLANET_GAME_GROUP_KEY, PLANET_GAME_GROUP);
 
-        ItemGroupEvents.modifyEntriesEvent(PLANET_GAME_GROUP_KEY).register(itemGroup -> {
-            itemGroup.add(GRAVITY_FIELD_BLOCK.asItem());
-            itemGroup.add(WEIGHTED_PRESSURE_PLATE.asItem());
-            itemGroup.add(P1_SPIKE_BLOCK.asItem());
-            itemGroup.add(XRAYABLE_SAND_BLOCK.asItem());
-            itemGroup.add(ROCK_PILE_BLOCK.asItem());
-            itemGroup.add(CRACKED_BRICKS_BLOCK.asItem());
-            itemGroup.add(ROCK_SWITCH_BLOCK.asItem());
-            itemGroup.add(CAVE_GRAVITY_FIELD_BLOCK.asItem());
+        ItemGroupEvents.modifyEntriesEvent(PLANET_GAME_GROUP_KEY).register(item_group -> {
+            item_group.add(GRAVITY_FIELD_BLOCK.asItem());
+            item_group.add(WEIGHTED_PRESSURE_PLATE.asItem());
+            item_group.add(P1_SPIKE_BLOCK.asItem());
+            item_group.add(XRAYABLE_SAND_BLOCK.asItem());
+            item_group.add(ROCK_PILE_BLOCK.asItem());
+            item_group.add(CRACKED_BRICKS_BLOCK.asItem());
+            item_group.add(ROCK_SWITCH_BLOCK.asItem());
+            item_group.add(CAVE_GRAVITY_FIELD_BLOCK.asItem());
         });
     }
 }

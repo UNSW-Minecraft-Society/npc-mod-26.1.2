@@ -15,13 +15,12 @@ public abstract class BlockEntityRegistration {
 
     public static final BlockEntityType<GravityFieldBlockEntity> GRAVITY_FIELD_BLOCK_ENTITY =
             register("gravity_field_generator_entity", GravityFieldBlockEntity::new, 
-        BlockRegistration.GRAVITY_FIELD_BLOCK, 
-        BlockRegistration.CAVE_GRAVITY_FIELD_BLOCK
+        BlockRegistration.getGravityFieldBlocksArray()
     );
 
     public static final BlockEntityType<XrayableBlockEntity> XRAYABLE_BLOCK_ENTITY =
-            register("xrayable_block_rendering_entity", XrayableBlockEntity::new, 
-        BlockRegistration.XRAYABLE_SAND_BLOCK
+            register("xrayable_block_rendering_entity", XrayableBlockEntity::new,
+        BlockRegistration.getXrayableBlocksArray()
     );
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String name,
