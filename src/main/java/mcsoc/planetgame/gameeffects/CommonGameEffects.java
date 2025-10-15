@@ -1,6 +1,5 @@
 package mcsoc.planetgame.gameeffects;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,9 +16,8 @@ public abstract class CommonGameEffects {
     private CommonGameEffects() { /* delete */ }
 
 
-    
-    public static ServerPlayerEntity getPlayerFromUuid(UUID uuid, MinecraftServer server) {
-        return server.getPlayerManager().getPlayer(uuid);
+    public static Optional<ServerPlayerEntity> getPlayerFromUuid(UUID uuid, MinecraftServer server) {
+        return Optional.ofNullable(server.getPlayerManager().getPlayer(uuid));
     }
 
     
@@ -51,19 +49,20 @@ public abstract class CommonGameEffects {
         CommonGameEffects.storePlayerInventory(player);
     }
 
-    public static Entity dropHeldEntity(ServerPlayerEntity player) {
-        Entity first_passenger = player.getFirstPassenger();
-        if (Objects.isNull(first_passenger)) return null;
-
-        first_passenger.dismountVehicle();
-        Vec3d dismount_offset = player.getRotationVector().multiply(1, 0, 1).normalize().multiply(0.5);
-        first_passenger.requestTeleportOffset(dismount_offset.getX(), dismount_offset.getY(), dismount_offset.getZ());
-        return first_passenger;
+    public static Optional<Entity> dropHeldEntity(ServerPlayerEntity player) {
+        Optional<Entity> first_passenger_optional = Optional.ofNullable(player.getFirstPassenger());
+        if (first_passenger_optional.isPresent()) {
+            Entity first_passenger = first_passenger_optional.get();
+            first_passenger.dismountVehicle();
+            Vec3d dismount_offset = player.getRotationVector().multiply(1, 0, 1).normalize().multiply(0.5);
+            first_passenger.requestTeleportOffset(dismount_offset.getX(), dismount_offset.getY(), dismount_offset.getZ());
+        }
+        return first_passenger_optional;
     }
 
     public static boolean dropPassengerIntentionally(ServerPlayerEntity player) {
-        Entity first_passenger = dropHeldEntity(player);
-        return !Objects.isNull(first_passenger);
+        Optional<Entity> first_passenger = dropHeldEntity(player);
+        return first_passenger.isPresent();
     }
 
     public static void throwHeldObject(ServerPlayerEntity player, double throw_strength) {
@@ -86,11 +85,11 @@ public abstract class CommonGameEffects {
     }
 
     public static void tick(UUID uuid, MinecraftServer server) {
-        ServerPlayerEntity player = getPlayerFromUuid(uuid, server);
-        if (Objects.isNull(player)) {
+        Optional<ServerPlayerEntity> player = getPlayerFromUuid(uuid, server);
+        if (player.isEmpty()) {
             GameStateManager.tickPlayerState(uuid, server);
         } else {
-            tick(player);
+            tick(player.get());
         }
     }
 }

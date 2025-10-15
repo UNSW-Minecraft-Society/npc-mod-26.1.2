@@ -2,7 +2,6 @@ package mcsoc.planetgame.blocks.gravityfieldblock;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import mcsoc.planetgame.blocks.BlockEntityRegistration;
 import mcsoc.planetgame.gameeffects.FirstAbilityGameEffects;
@@ -50,12 +49,9 @@ public class GravityFieldBlockEntity extends BlockEntity {
         if (world.isClient) return;
 
         MinecraftServer server = world.getServer();
-        if (Objects.isNull(world.getServer())) return;
-
         GameStateManager.registerGravityGeneratorPosition(server, entity);
-
         if (!GameStateManager.shouldUpdateGravityFields(server)) return;
-        
+
         entity.tracked_players.forEach(player -> 
             FirstAbilityGameEffects.setPlayerInGravityField(player, entity.gravity_field_box.contains(player.getPos()))
         );

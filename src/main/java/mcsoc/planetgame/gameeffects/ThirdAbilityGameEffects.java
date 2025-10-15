@@ -1,12 +1,10 @@
 package mcsoc.planetgame.gameeffects;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
-import net.minecraft.block.entity.VaultBlockEntity.Server;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
@@ -16,8 +14,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
-public class ThirdAbilityGameEffects {
-
+public abstract class ThirdAbilityGameEffects {
+    private ThirdAbilityGameEffects() { /* delete */ }
 
     private static final double DASH_STRENGTH = 0.8;
     private static final double PICKUP_DISTANCE = 1.5;
@@ -38,9 +36,8 @@ public class ThirdAbilityGameEffects {
     }
 
     private static void triggerPlayerDashAdditive(UUID uuid, MinecraftServer server) {
-        ServerPlayerEntity player = CommonGameEffects.getPlayerFromUuid(uuid, server);
-        if (Objects.isNull(player)) return;
-        triggerPlayerDashAdditive(player);
+        Optional<ServerPlayerEntity> player = CommonGameEffects.getPlayerFromUuid(uuid, server);
+        if (player.isPresent()) triggerPlayerDashAdditive(player.get());
     }
 
     public static void attemptPickUpNearbyPlayer(ServerPlayerEntity player, double pickup_range) {
@@ -58,9 +55,8 @@ public class ThirdAbilityGameEffects {
     }
 
     private static void triggerPlayerThrow(UUID uuid, MinecraftServer server) {
-        ServerPlayerEntity player = CommonGameEffects.getPlayerFromUuid(uuid, server);
-        if (Objects.isNull(player)) return;
-        triggerPlayerThrow(player);
+        Optional<ServerPlayerEntity> player = CommonGameEffects.getPlayerFromUuid(uuid, server);
+        if (player.isPresent()) triggerPlayerThrow(player.get());
     }
 
     public static void triggerPlayerThrow(ServerPlayerEntity player) {

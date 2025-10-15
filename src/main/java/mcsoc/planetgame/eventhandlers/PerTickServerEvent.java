@@ -2,7 +2,7 @@ package mcsoc.planetgame.eventhandlers;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import gravity_changer.api.GravityChangerAPI;
@@ -45,24 +45,25 @@ public abstract class PerTickServerEvent {
 
         Set<BlockPos> relevant_grav_blocks = new HashSet<>();
         GameStateManager.forEachGravityGenerator(world.getServer(), gen_pos -> {
-            BlockEntity be = world.getBlockEntity(gen_pos);
-            if (Objects.isNull(be) || !(be instanceof GravityFieldBlockEntity)) return;
-            relevant_grav_blocks.add(gen_pos);
+            Optional<BlockEntity> block_entity_optional = Optional.ofNullable(world.getBlockEntity(gen_pos));
+            if (block_entity_optional.isPresent() && 
+                    block_entity_optional.get() instanceof GravityFieldBlockEntity) {
+                relevant_grav_blocks.add(gen_pos);
+            }
         });
         
-        BlockPos closest_gen = relevant_grav_blocks.stream()
+        Optional<BlockPos> closest_gen_optional = relevant_grav_blocks.stream()
         .sorted((pos1, pos2) -> pos1.getSquaredDistance(player_pos) > (pos2.getSquaredDistance(player_pos)) ? 1 : -1)
-        .findFirst().orElse(null);
+        .findFirst();
 
-        if (Objects.nonNull(closest_gen)) {
-            ((GravityFieldBlockEntity)(world.getBlockEntity(closest_gen))).addTrackedPlayer(player);
-        } else {
+        if (closest_gen_optional.isEmpty()) {
             FirstAbilityGameEffects.setPlayerInGravityField(player, false);
+        } else {
+            ((GravityFieldBlockEntity)(world.getBlockEntity(closest_gen_optional.get()))).addTrackedPlayer(player);
         }
     }
 
-
-    private static void updateGravityEffects(ServerPlayerEntity player, boolean should_update_gravity_fields) {
+    private static void updateGravityAction(ServerPlayerEntity player, boolean should_update_gravity_fields) {
         if (should_update_gravity_fields) {
             updateClosestGravityGenerator(player);
         }
@@ -88,7 +89,7 @@ public abstract class PerTickServerEvent {
             player_list.forEach(player -> {
                 if (!ServerPlayNetworking.canSend(player, NetworkingIdentifiers.PLAYER_SYNC_GRAVITY_PACKET_ID)) return;
 
-                updateGravityEffects(player, GameStateManager.shouldUpdateGravityFields(server));
+                updateGravityAction(player, GameStateManager.shouldUpdateGravityFields(server));
                 if (player.isSneaking()) {
                     CommonGameEffects.dropPassengerIntentionally(player);
                 }

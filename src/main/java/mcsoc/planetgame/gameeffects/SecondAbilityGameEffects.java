@@ -1,6 +1,6 @@
 package mcsoc.planetgame.gameeffects;
 
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import mcsoc.planetgame.statemanagement.GameStateManager;
@@ -23,18 +23,19 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class SecondAbilityGameEffects {
+public abstract class SecondAbilityGameEffects {
+    private SecondAbilityGameEffects() { /* delete */ }
 
     public static final double XRAY_RANGE = 5;
     public static final int DIG_SIZE = 3/2;
 
     public static void togglePlayerSecondAbilityState(UUID uuid, MinecraftServer server) {
-        ServerPlayerEntity player = CommonGameEffects.getPlayerFromUuid(uuid, server);
-        if (Objects.isNull(player)) {
+        Optional<ServerPlayerEntity> player = CommonGameEffects.getPlayerFromUuid(uuid, server);
+        if (player.isEmpty()) {
             GameStateManager.togglePlayerSecondAbilityState(uuid, server);
-            return;
+        } else {
+            togglePlayerSecondAbilityState(player.get());
         }
-        togglePlayerSecondAbilityState(player);
     }
 
     public static void togglePlayerSecondAbilityState(ServerPlayerEntity player) {

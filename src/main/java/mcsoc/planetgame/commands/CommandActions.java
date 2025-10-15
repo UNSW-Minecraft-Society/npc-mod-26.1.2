@@ -1,6 +1,6 @@
 package mcsoc.planetgame.commands;
 
-import java.util.Objects;
+import java.util.Optional;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -25,11 +25,11 @@ public abstract class CommandActions {
 
     private static ServerPlayerEntity getPlayerFromName(CommandContext<ServerCommandSource> cxt) throws CommandSyntaxException {
         String target_player_name = StringArgumentType.getString(cxt, CommandRegistrationHandler.PLAYER_NAME_ARGUMENT);
-        ServerPlayerEntity player = cxt.getSource().getServer().getPlayerManager().getPlayer(target_player_name);
-        if (Objects.isNull(player)) {
+        Optional<ServerPlayerEntity> player_optional = Optional.ofNullable(cxt.getSource().getServer().getPlayerManager().getPlayer(target_player_name));
+        if (player_optional.isEmpty()) {
             throw COULD_NOT_FIND_PLAYER.create(target_player_name);
         }
-        return player;
+        return player_optional.get();
     }
 
 

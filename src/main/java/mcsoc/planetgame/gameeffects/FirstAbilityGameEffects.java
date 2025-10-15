@@ -1,6 +1,6 @@
 package mcsoc.planetgame.gameeffects;
 
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import mcsoc.planetgame.statemanagement.GameStateManager;
@@ -32,12 +32,12 @@ public abstract class FirstAbilityGameEffects {
 
 
     protected static void flipPlayerGravity(UUID uuid, MinecraftServer server) {
-        ServerPlayerEntity player = CommonGameEffects.getPlayerFromUuid(uuid, server);
-        if (Objects.isNull(player)) {
+        Optional<ServerPlayerEntity> player = CommonGameEffects.getPlayerFromUuid(uuid, server);
+        if (player.isEmpty()) {
             GameStateManager.flipPlayerGravity(uuid, server);
-            return;
+        } else {
+            flipPlayerGravity(player.get());
         }
-        flipPlayerGravity(player);
     }
 
     public static void flipPlayerGravity(ServerPlayerEntity player) {
