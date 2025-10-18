@@ -1,4 +1,4 @@
-package mcsoc.planetgame.statemanagement;
+package mcsoc.planetgame.statemanagement.gamestate;
 
 import java.time.Instant;
 import java.util.Map.Entry;
@@ -9,11 +9,11 @@ import java.util.function.Consumer;
 import mcsoc.planetgame.networking.SyncPlayerDrillingDataS2CPayload;
 import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlockEntity;
+import mcsoc.planetgame.statemanagement.ManagedPlayerState;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
-import mcsoc.planetgame.statemanagement.playerstate.ManagedPlayerState;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.server.MinecraftServer;
@@ -35,7 +35,7 @@ public abstract class GameStateManager {
     public static SyncPlayerDrillingDataS2CPayload getPlayerMiningStatePacket(ServerPlayerEntity player) {
         ManagedPlayerState state = GameState.getPlayerState(player);
         return new SyncPlayerDrillingDataS2CPayload(
-            state.getPlayerSecondAbility().equals(PlayerSecondAbilities.XRAY) && state.getPlayerSecondAbilityState()
+            state.getPlayerSecondAbility().equals(PlayerSecondAbilities.XRAY) && state.getPlayerSecondAbilityActive()
         );
     }
 

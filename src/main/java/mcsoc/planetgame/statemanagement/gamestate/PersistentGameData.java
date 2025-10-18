@@ -1,4 +1,4 @@
-package mcsoc.planetgame.statemanagement;
+package mcsoc.planetgame.statemanagement.gamestate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import mcsoc.planetgame.statemanagement.playerstate.ManagedPlayerState;
+import mcsoc.planetgame.statemanagement.ManagedPlayerState;
 import net.minecraft.util.Uuids;
 
 public record PersistentGameData(Map<UUID, ManagedPlayerState> player_state_map) {

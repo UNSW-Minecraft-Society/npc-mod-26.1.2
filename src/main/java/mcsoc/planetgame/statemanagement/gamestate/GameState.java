@@ -1,11 +1,11 @@
-package mcsoc.planetgame.statemanagement;
+package mcsoc.planetgame.statemanagement.gamestate;
 
 import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlockEntity;
 import mcsoc.planetgame.eventhandlers.PerTickServerEvent;
+import mcsoc.planetgame.statemanagement.ManagedPlayerState;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.*;
-import mcsoc.planetgame.statemanagement.playerstate.ManagedPlayerState;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -292,7 +292,7 @@ public class GameState extends PersistentState {
 
     protected static boolean getPlayerSecondAbilityState(UUID uuid, MinecraftServer server) {
         ManagedPlayerState player_state = getPlayerState(uuid, server);
-        return player_state.getPlayerSecondAbilityState();
+        return player_state.getPlayerSecondAbilityActive();
     }
 
     protected static boolean getPlayerSecondAbilityState(ServerPlayerEntity player) {
