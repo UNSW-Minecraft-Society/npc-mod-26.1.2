@@ -46,38 +46,49 @@ public class ManagedPlayerState {
         ).apply(inst, P1PlayerState::new));
     }
     
-    private record P2PlayerState(PlayerSecondAbilities second_ability, boolean second_ability_active, double drill_charge, double drill_heat) {
+    
+    private record P2PlayerState(PlayerSecondAbilities second_ability, boolean ability_active, int ability_cooldown, double drill_charge, double drill_heat) {
+
         public static P2PlayerState withDefaultPlayerState() {
-            return new P2PlayerState(PlayerSecondAbilities.getDefault(), false, 100, 0);
+            return new P2PlayerState(PlayerSecondAbilities.getDefault(), false, 0, 100, 0);
         }
 
         public P2PlayerState withPlayerSecondAbility(PlayerSecondAbilities new_second_ability) {
-            return new P2PlayerState(new_second_ability, second_ability_active(), drill_charge(), drill_heat()); 
+            return new P2PlayerState(new_second_ability, ability_active(), ability_cooldown(), drill_charge(), drill_heat()); 
         }
 
         public P2PlayerState withPlayerSecondAbilityState(boolean ability_active) {
-            return new P2PlayerState(second_ability(), ability_active, drill_charge(), drill_heat());
+            return new P2PlayerState(second_ability(), ability_active, ability_cooldown(),  drill_charge(), drill_heat());
+        }
+
+        public P2PlayerState withPlayerAbilityCooldown(int new_ability_cooldown) {
+            return new P2PlayerState(second_ability(), ability_active(), new_ability_cooldown,  drill_charge(), drill_heat());
+        }
+
+        public P2PlayerState withDecrementedPlayerAbilityCooldown() {
+            return new P2PlayerState(second_ability(), ability_active(), ability_cooldown() - 1,  drill_charge(), drill_heat());
         }
 
         public P2PlayerState withPlayerDrillCharge(double new_drill_charge) {
-            return new P2PlayerState(second_ability(), second_ability_active(), new_drill_charge, drill_heat());
+            return new P2PlayerState(second_ability(), ability_active(), ability_cooldown(),  new_drill_charge, drill_heat());
         }
 
         public P2PlayerState withPlayerDrillHeat(double new_drill_heat) {
-            return new P2PlayerState(second_ability(), second_ability_active(), drill_charge(), new_drill_heat);
+            return new P2PlayerState(second_ability(), ability_active(), ability_cooldown(),  drill_charge(), new_drill_heat);
         }
 
         public P2PlayerState withIncrementedPlayerDrillHeat(double added_drill_heat) {
-            return new P2PlayerState(second_ability(), second_ability_active(), drill_charge(), drill_heat() + added_drill_heat);
+            return new P2PlayerState(second_ability(), ability_active(), ability_cooldown(),  drill_charge(), drill_heat() + added_drill_heat);
         }
 
         public P2PlayerState withDecrementedPlayerDrillHeat(double removed_drill_heat) {
-            return new P2PlayerState(second_ability(), second_ability_active(), drill_charge(), drill_heat() - removed_drill_heat);
+            return new P2PlayerState(second_ability(), ability_active(), ability_cooldown(),  drill_charge(), drill_heat() - removed_drill_heat);
         }
 
         public static Codec<P2PlayerState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             PlayerSecondAbilities.CODEC.fieldOf("player_second_ability").forGetter(P2PlayerState::second_ability),
-            Codec.BOOL.fieldOf("ability_active").forGetter(P2PlayerState::second_ability_active),
+            Codec.BOOL.fieldOf("ability_active").forGetter(P2PlayerState::ability_active),
+            Codec.INT.fieldOf("ability_cooldown").forGetter(P2PlayerState::ability_cooldown),
             Codec.DOUBLE.fieldOf("drill_charge").forGetter(P2PlayerState::drill_charge),
             Codec.DOUBLE.fieldOf("drill_heat").forGetter(P2PlayerState::drill_heat)
         ).apply(inst, P2PlayerState::new));
@@ -179,7 +190,11 @@ public class ManagedPlayerState {
     }
 
     public boolean getPlayerSecondAbilityActive() {
-        return p2_state.second_ability_active();
+        return p2_state.ability_active();
+    }
+
+    public int getPlayerSecondAbilityCooldownTicks() {
+        return p2_state.ability_cooldown();
     }
 
     public double getPlayerDrillCharge() {
@@ -233,7 +248,7 @@ public class ManagedPlayerState {
         this.p1_state = p1_state.withPlayerInGravityField(in_field);
     }
 
-
+    
     public void setPlayerSecondAbility(PlayerSecondAbilities new_second_ability) {
         this.p2_state = p2_state.withPlayerSecondAbility(new_second_ability);
     }

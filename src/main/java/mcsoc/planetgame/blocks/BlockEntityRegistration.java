@@ -13,13 +13,13 @@ import net.minecraft.util.Identifier;
 public abstract class BlockEntityRegistration {
     private BlockEntityRegistration() { /* delete */ }
 
-    public static final BlockEntityType<GravityFieldBlockEntity> GRAVITY_FIELD_BLOCK_ENTITY =
-            register("gravity_field_generator_entity", GravityFieldBlockEntity::new, 
+    public static final BlockEntityType<GravityFieldBlockEntity> GRAVITY_FIELD_BLOCK_ENTITY = register(
+        "gravity_field_generator_entity", GravityFieldBlockEntity::new, 
         BlockRegistration.getGravityFieldBlocksArray()
     );
 
-    public static final BlockEntityType<XrayableBlockEntity> XRAYABLE_BLOCK_ENTITY =
-            register("xrayable_block_rendering_entity", XrayableBlockEntity::new,
+    public static final BlockEntityType<XrayableBlockEntity> XRAYABLE_BLOCK_ENTITY = register(
+        "xrayable_block_rendering_entity", XrayableBlockEntity::new,
         BlockRegistration.getXrayableBlocksArray()
     );
 
