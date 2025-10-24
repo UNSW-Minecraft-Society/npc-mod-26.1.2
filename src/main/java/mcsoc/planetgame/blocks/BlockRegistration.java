@@ -1,10 +1,5 @@
 package mcsoc.planetgame.blocks;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.blocks.crackedblocks.CrackedBricksBlock;
 import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlock;
@@ -12,18 +7,12 @@ import mcsoc.planetgame.blocks.rockpile.RockPileBlock;
 import mcsoc.planetgame.blocks.spikes.SpikeBlock;
 import mcsoc.planetgame.blocks.throwswitch.RockSwitch;
 import mcsoc.planetgame.blocks.weightedpressureplate.WeightedGravityPlate;
-import mcsoc.planetgame.blocks.xrayblock.XrayableBlock;
 import mcsoc.planetgame.blocks.xrayblock.XrayableSandBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockSetType;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.LadderBlock;
-import net.minecraft.block.TrapdoorBlock;
-import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -32,53 +21,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public abstract class BlockRegistration {
     private BlockRegistration() { /* delete */ }
-
-    public static final Block ANDESITE_CASING = register(
-        new Block(AbstractBlock.Settings.create()),
-        "andesite_casing",
-        true
-    );
-
-    public static final Block ANDESITE_ALLOY_BLOCK = register(
-        new Block(AbstractBlock.Settings.create()),
-        "andesite_alloy_block",
-        true
-    );
-
-    public static final Block TRAIN_CASING = register(
-        new Block(AbstractBlock.Settings.create()),
-        "train_casing",
-        true
-    );
-
-    public static final Block TRAIN_TRAPDOOR = register(
-        new TrapdoorBlock(BlockSetType.DARK_OAK, AbstractBlock.Settings.create()),
-        "train_trapdoor",
-        true
-    );
-
-    public static final Block TRAIN_DOOR = register(
-        new DoorBlock(BlockSetType.DARK_OAK, AbstractBlock.Settings.create()),
-        "train_door",
-        true
-    );
-
-    public static final Block ANDESITE_LADDER = register(
-        new LadderBlock(AbstractBlock.Settings.create()
-            .strength(0.4F)
-            .sounds(BlockSoundGroup.LADDER)
-            .nonOpaque()
-            .pistonBehavior(PistonBehavior.DESTROY)
-        ),
-        "andesite_ladder",
-        true
-    );
 
 
     public static final Block WEIGHTED_PRESSURE_PLATE = register(
@@ -105,8 +52,6 @@ public abstract class BlockRegistration {
         "xrayable_sand", 
         true
     );
-
-    
 
 
     public static final Block ROCK_PILE_BLOCK = register(
