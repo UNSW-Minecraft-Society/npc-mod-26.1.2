@@ -9,11 +9,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
 import mcsoc.planetgame.gameeffects.FirstAbilityGameEffects;
-import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;

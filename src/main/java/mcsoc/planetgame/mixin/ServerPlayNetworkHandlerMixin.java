@@ -3,9 +3,11 @@ package mcsoc.planetgame.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
+
 import org.spongepowered.asm.mixin.injection.At;
 
-import mcsoc.planetgame.statemanagement.GameStateManager;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.network.listener.TickablePacketListener;

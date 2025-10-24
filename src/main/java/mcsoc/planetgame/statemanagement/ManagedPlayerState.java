@@ -298,19 +298,6 @@ public class ManagedPlayerState {
         this.p3_state = p3_state.withDashTicksRemaining(ticks);
     }
 
-    public void decrementDashTicksRemaining() {
-        this.p3_state = p3_state.withDashTicksRemaining(p3_state.dash_ticks_remaining() - 1);
-    }
-
-
-    public void tick() {
-        if (getDashTicksRemaining() > 0) {
-            decrementDashTicksRemaining();
-        }
-        if (getPlayerThirdAbilityCooldownTicks() > 0) {
-            decrementPlayerThirdAbilityCooldown();
-        }
-    }
 
     public static final Codec<ManagedPlayerState> CODEC = RecordCodecBuilder.create(inst -> inst.group(
         P1PlayerState.CODEC.fieldOf("p1_state").forGetter(ManagedPlayerState::getP1State),

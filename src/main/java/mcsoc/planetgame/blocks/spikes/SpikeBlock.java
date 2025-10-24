@@ -1,7 +1,7 @@
 package mcsoc.planetgame.blocks.spikes;
 
 import mcsoc.planetgame.entities.damagesources.DamageSourceRegistration;
-import mcsoc.planetgame.statemanagement.GameStateManager;
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PointedDripstoneBlock;
 import net.minecraft.block.enums.Thickness;

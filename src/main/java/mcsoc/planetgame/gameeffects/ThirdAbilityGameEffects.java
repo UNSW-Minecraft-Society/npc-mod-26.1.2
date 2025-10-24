@@ -3,8 +3,8 @@ package mcsoc.planetgame.gameeffects;
 import java.util.Optional;
 import java.util.UUID;
 
-import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;

@@ -5,8 +5,7 @@ import java.util.List;
 
 import mcsoc.planetgame.blocks.BlockEntityRegistration;
 import mcsoc.planetgame.gameeffects.FirstAbilityGameEffects;
-import mcsoc.planetgame.statemanagement.GameStateManager;
-
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.block.BlockState;

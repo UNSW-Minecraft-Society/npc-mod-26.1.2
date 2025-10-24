@@ -1,7 +1,7 @@
 package mcsoc.planetgame.eventhandlers;
 
 import mcsoc.planetgame.PlanetGame;
-import mcsoc.planetgame.statemanagement.GameStateManager;
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 public abstract class PlayerJoinServerEvent {

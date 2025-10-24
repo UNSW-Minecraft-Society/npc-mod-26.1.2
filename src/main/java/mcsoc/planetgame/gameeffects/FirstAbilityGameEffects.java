@@ -3,9 +3,9 @@ package mcsoc.planetgame.gameeffects;
 import java.util.Optional;
 import java.util.UUID;
 
-import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities;
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;

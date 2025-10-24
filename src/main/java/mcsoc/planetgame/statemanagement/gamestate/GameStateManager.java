@@ -288,14 +288,10 @@ public abstract class GameStateManager {
     }
 
 
-    public static void tickPlayerState(UUID uuid, MinecraftServer server) {
-
-        GameState.tickPlayerState(uuid, server);
+    public static void tickPlayerStates(MinecraftServer server) {
+        GameState.tickPlayerStates(server);
     }
-
-    public static void tickPlayerState(ServerPlayerEntity player) {
-        GameState.tickPlayerState(player.getUuid(), player.getServer());
-    }
+    
 
     public static void tickGravityFieldTimer(MinecraftServer server) {
         if (shouldUpdateGravityFields(server)) {

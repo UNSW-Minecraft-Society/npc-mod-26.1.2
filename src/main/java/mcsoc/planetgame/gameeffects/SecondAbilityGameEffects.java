@@ -3,8 +3,8 @@ package mcsoc.planetgame.gameeffects;
 import java.util.Optional;
 import java.util.UUID;
 
-import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerSecondAbilities;
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

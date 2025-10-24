@@ -3,6 +3,7 @@ package mcsoc.planetgame.statemanagement.gamestate;
 import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlockEntity;
 import mcsoc.planetgame.eventhandlers.PerTickServerEvent;
+import mcsoc.planetgame.gameeffects.CommonGameEffects;
 import mcsoc.planetgame.statemanagement.ManagedPlayerState;
 import mcsoc.planetgame.statemanagement.enums.GravityStrength;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.*;
@@ -36,6 +37,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
@@ -436,17 +438,13 @@ public class GameState extends PersistentState {
         state.prev_tick_time = Instant.now();
     }
 
-    protected static void tickPlayerState(UUID uuid, MinecraftServer server) {
+    protected static void tickPlayerStates(MinecraftServer server) {
         GameState state = getServerState(server);
-        ManagedPlayerState player_state = getPlayerState(uuid, server);
-        for (int i = 0; i < state.pending_ticks; i++) {
-            player_state.tick();
-        }
-        setPlayerState(uuid, server, player_state);
-    }
-
-    protected static void tickPlayerState(ServerPlayerEntity player) {
-        tickPlayerState(player.getUuid(), player.getServer());
+        state.getPlayerEntryStream().forEach(e -> {
+            for (int i = 0; i < state.pending_ticks; i++) {
+                CommonGameEffects.tick(e.getKey(), server);
+            }
+        });
     }
 
     protected static void tickGravityFieldTimer(MinecraftServer server) {

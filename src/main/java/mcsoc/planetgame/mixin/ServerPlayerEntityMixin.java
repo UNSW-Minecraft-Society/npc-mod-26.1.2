@@ -1,7 +1,7 @@
 package mcsoc.planetgame.mixin;
 
 import mcsoc.planetgame.MixinUtils;
-import mcsoc.planetgame.statemanagement.GameStateManager;
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;

@@ -11,8 +11,7 @@ import mcsoc.planetgame.entities.throwables.ThrowableRockEntity;
 import mcsoc.planetgame.gameeffects.CommonGameEffects;
 import mcsoc.planetgame.gameeffects.FirstAbilityGameEffects;
 import mcsoc.planetgame.networking.NetworkingIdentifiers;
-import mcsoc.planetgame.statemanagement.GameStateManager;
-
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -76,9 +75,7 @@ public abstract class PerTickServerEvent {
     private static void updateTickTimings(MinecraftServer server) {
         GameStateManager.updateTickTimings(server);
         GameStateManager.tickGravityFieldTimer(server);
-        GameStateManager.forEachPlayerEntry(server, e -> 
-                CommonGameEffects.tick(e.getKey(), server)
-        );
+        GameStateManager.tickPlayerStates(server);
     }
     
     public static void registerEvent() {

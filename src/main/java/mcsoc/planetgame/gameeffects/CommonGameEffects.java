@@ -3,7 +3,7 @@ package mcsoc.planetgame.gameeffects;
 import java.util.Optional;
 import java.util.UUID;
 
-import mcsoc.planetgame.statemanagement.GameStateManager;
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -77,8 +77,6 @@ public abstract class CommonGameEffects {
 
 
     public static void tick(ServerPlayerEntity player) {
-        GameStateManager.tickPlayerState(player);
-        
         FirstAbilityGameEffects.firstAbilityTickAction(player);
         SecondAbilityGameEffects.secondAbilityTickAction(player);
         ThirdAbilityGameEffects.thirdAbilityTickAction(player);
@@ -86,9 +84,7 @@ public abstract class CommonGameEffects {
 
     public static void tick(UUID uuid, MinecraftServer server) {
         Optional<ServerPlayerEntity> player = getPlayerFromUuid(uuid, server);
-        if (player.isEmpty()) {
-            GameStateManager.tickPlayerState(uuid, server);
-        } else {
+        if (player.isPresent()) {
             tick(player.get());
         }
     }

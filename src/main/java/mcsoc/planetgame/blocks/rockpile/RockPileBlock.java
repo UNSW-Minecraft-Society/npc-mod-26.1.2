@@ -3,9 +3,8 @@ package mcsoc.planetgame.blocks.rockpile;
 import mcsoc.planetgame.entities.EntityRegistration;
 import mcsoc.planetgame.entities.throwables.ThrowableRockEntity;
 import mcsoc.planetgame.gameeffects.CommonGameEffects;
-import mcsoc.planetgame.statemanagement.GameStateManager;
 import mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerThirdAbilities;
-
+import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
