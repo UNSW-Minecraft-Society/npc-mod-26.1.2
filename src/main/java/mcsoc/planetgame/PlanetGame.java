@@ -15,7 +15,7 @@ import mcsoc.planetgame.commands.CommandRegistrationHandler;
 import mcsoc.planetgame.entities.EntityRegistration;
 import mcsoc.planetgame.entities.damagesources.DamageSourceRegistration;
 import mcsoc.planetgame.eventhandlers.PerTickServerEvent;
-import mcsoc.planetgame.eventhandlers.PlayerJoinServerEvent;
+import mcsoc.planetgame.eventhandlers.PlayerServerConnectionEvent;
 
 
 public class PlanetGame implements ModInitializer {
@@ -44,7 +44,7 @@ public class PlanetGame implements ModInitializer {
 		CommandRegistrationHandler.registerCommands();
 
 		// event handlers
-		PlayerJoinServerEvent.registerEvent();
+		PlayerServerConnectionEvent.registerEvent();
 		PerTickServerEvent.registerEvent();
 
 		// blocks, items, potions ect
