@@ -1,6 +1,8 @@
 package mcsoc.planetgame.blocks.crackedblocks;
 
-public class CrackedBricksBlock extends CrackedBlock {
+import net.minecraft.block.Block;
+
+public class CrackedBricksBlock extends Block implements CrackedBlock {
 
     public CrackedBricksBlock(Settings settings) {
         super(settings);

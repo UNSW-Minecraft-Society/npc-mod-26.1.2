@@ -54,7 +54,7 @@ public class WeightedGravityPlate extends AbstractPressurePlateBlock {
             ServerPlayerEntity.class, 
             BOX.offset(pos).offset(0, 2, 0), 
             EntityPredicates.EXCEPT_SPECTATOR.and(entity -> !entity.canAvoidTraps())
-        ).stream().map(player -> player.getVelocity().getY()).max(Double::compare).orElse(0D);
+        ).stream().map(player -> player.getVelocity().getY()).min(Double::compare).orElse(0D);
 
         if (Math.abs(max_velocity) > 1E-5) {
             PlanetGame.LOGGER.info("max velocity: {}", max_velocity);
@@ -79,5 +79,4 @@ public class WeightedGravityPlate extends AbstractPressurePlateBlock {
         // TODO implement some method to change velocity threshold
         return super.onUse(state, world, pos, player, hit);
     }
-
 }

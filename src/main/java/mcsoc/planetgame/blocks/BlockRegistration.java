@@ -4,6 +4,7 @@ import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.blocks.crackedblocks.CrackedBricksBlock;
 import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlock;
 import mcsoc.planetgame.blocks.rockpile.RockPileBlock;
+import mcsoc.planetgame.blocks.slammableblocks.SlammableBricksBlock;
 import mcsoc.planetgame.blocks.spikes.SpikeBlock;
 import mcsoc.planetgame.blocks.throwswitch.RockSwitch;
 import mcsoc.planetgame.blocks.weightedpressureplate.WeightedGravityPlate;
@@ -11,7 +12,6 @@ import mcsoc.planetgame.blocks.xrayblock.XrayableSandBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.item.BlockItem;
@@ -29,53 +29,53 @@ public abstract class BlockRegistration {
 
 
     public static final Block WEIGHTED_PRESSURE_PLATE = register(
-            new WeightedGravityPlate(AbstractBlock.Settings.create()),
+            new WeightedGravityPlate(Settings.create()),
             "weighted_pressure_plate",
             true
     );
 
     public static final Block GRAVITY_FIELD_BLOCK = register(
-            new GravityFieldBlock(AbstractBlock.Settings.create()),
+            new GravityFieldBlock(Settings.create()),
             "gravity_field_generator",
             true
     );
 
     public static final Block P1_SPIKE_BLOCK = register(
-        new SpikeBlock(AbstractBlock.Settings.create()), 
-        "spike",
-        true
+            new SpikeBlock(Settings.create()), 
+            "spike",
+            true
     );
 
 
     public static final Block XRAYABLE_SAND_BLOCK = register(
-        new XrayableSandBlock(Settings.create()), 
-        "xrayable_sand", 
-        true
+            new XrayableSandBlock(Settings.create()), 
+            "xrayable_sand", 
+            true
     );
 
 
     public static final Block ROCK_PILE_BLOCK = register(
-        new RockPileBlock(AbstractBlock.Settings.create()),
-        "rock_pile",
-        true
+            new RockPileBlock(Settings.create()),
+            "rock_pile",
+            true
     );
 
     public static final Block CRACKED_BRICKS_BLOCK = register(
-        new CrackedBricksBlock(AbstractBlock.Settings.create()),
-        "cracked_bricks",
-        true
+            new CrackedBricksBlock(Settings.create()),
+            "cracked_bricks",
+            true
     );
 
     public static final Block ROCK_SWITCH_BLOCK = register(
-        new RockSwitch(AbstractBlock.Settings.create()),
-        "rock_switch",
-        true
+            new RockSwitch(Settings.create()),
+            "rock_switch",
+            true
     );
     
     public static final Block CAVE_GRAVITY_FIELD_BLOCK = register(
-        new GravityFieldBlock(AbstractBlock.Settings.create(), 200),
-        "cave_gravity_field_generator",
-        true
+            new GravityFieldBlock(Settings.create(), 200),
+            "cave_gravity_field_generator",
+            true
     );
 
 
