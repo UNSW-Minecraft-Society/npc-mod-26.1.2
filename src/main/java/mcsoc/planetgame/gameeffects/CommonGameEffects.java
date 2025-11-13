@@ -3,14 +3,21 @@ package mcsoc.planetgame.gameeffects;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.jetbrains.annotations.Nullable;
+
 import mcsoc.planetgame.statemanagement.gamestate.GameStateManager;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public abstract class CommonGameEffects {    
     private CommonGameEffects() { /* delete */ }
@@ -73,6 +80,20 @@ public abstract class CommonGameEffects {
 
         GameStateManager.setIfPlayerIsCarrying(player, false);
         CommonGameEffects.attemptReturnPlayerInventory(player);
+    }
+
+    public static void attemptBlockBreak(World world, ServerPlayerEntity player, BlockPos pos, boolean do_drops) {
+        BlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock();
+        
+        BlockState blockState2 = block.onBreak(world, pos, blockState, player);
+        if (world.breakBlock(pos, do_drops)) {
+            block.onBroken(world, pos, blockState2);
+        }
+
+        world.getServer().getPlayerManager().getPlayerList().forEach(p ->
+            p.networkHandler.sendPacket(new BlockUpdateS2CPacket(pos, world.getBlockState(pos)))
+        );
     }
 
 

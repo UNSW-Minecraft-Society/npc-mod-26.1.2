@@ -37,6 +37,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
@@ -310,6 +311,35 @@ public class GameState extends PersistentState {
         setPlayerSecondAbilityState(player.getUuid(), player.getServer(), xray_on);
     }
 
+    protected static int getPlayerSecondAbilityCooldownTicks(UUID uuid, MinecraftServer server) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getPlayerSecondAbilityCooldown();
+    }
+
+    protected static int getPlayerSecondAbilityCooldown(ServerPlayerEntity player) {
+        return getPlayerSecondAbilityCooldownTicks(player.getUuid(), player.getServer());
+    }
+    
+    protected static void setPlayerSecondAbilityCooldown(UUID uuid, MinecraftServer server, int new_ability_cooldown) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        player_state.setPlayerSecondAbilityCooldownTicks(new_ability_cooldown);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setPlayerSecondAbilityCooldown(ServerPlayerEntity player, int new_ability_cooldown) {
+        setPlayerSecondAbilityCooldown(player.getUuid(), player.getServer(), new_ability_cooldown);
+    }
+
+    protected static void decrementPlayerSecondAbilityCooldownTicks(UUID uuid, MinecraftServer server) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        player_state.decrementPlayerSecondAbilityCooldown();
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void decrementPlayerAbilityCooldown(ServerPlayerEntity player) {
+        decrementPlayerSecondAbilityCooldownTicks(player.getUuid(), player.getServer());
+    }
+
     protected static double getPlayerDrillCharge(UUID uuid, MinecraftServer server) {
         ManagedPlayerState player_state = getPlayerState(uuid, server);
         return player_state.getPlayerDrillCharge();
@@ -388,7 +418,7 @@ public class GameState extends PersistentState {
 
     protected static int getPlayerThirdAbilityCooldownTicks(UUID uuid, MinecraftServer server) {
         ManagedPlayerState player_state = getPlayerState(uuid, server);
-        return player_state.getPlayerThirdAbilityCooldownTicks();
+        return player_state.getPlayerThirdAbilityCooldown();
     }
 
     protected static int getPlayerThirdAbilityCooldownTicks(ServerPlayerEntity player) {
@@ -496,5 +526,44 @@ public class GameState extends PersistentState {
 
     protected static Optional<Inventory> retrieveInventoryFromHeap(ServerPlayerEntity player) {
         return retrieveInventoryFromHeap(player.getUuid(), player.getServer());
+    }
+
+
+    protected static Vec3d getDashVelocity(UUID uuid, MinecraftServer server) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getDashVelocity();
+    }
+
+    protected static Vec3d getDashVelocity(ServerPlayerEntity player) {
+        return getDashVelocity(player.getUuid(), player.getServer());
+    }
+
+    protected static void setDashVelocity(UUID uuid, MinecraftServer server, Vec3d velocity) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        player_state.setDashVelocity(velocity);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setDashVelocity(ServerPlayerEntity player, Vec3d velocity) {
+        setDashVelocity(player.getUuid(), player.getServer(), velocity);
+    }
+
+    protected static int getDashTicksRemaining(UUID uuid, MinecraftServer server) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        return player_state.getDashTicksRemaining();
+    }
+
+    protected static int getDashTicksRemaining(ServerPlayerEntity player) {
+        return getDashTicksRemaining(player.getUuid(), player.getServer());
+    }
+    
+    protected static void setDashTicksRemaining(UUID uuid, MinecraftServer server, int ticks) {
+        ManagedPlayerState player_state = getPlayerState(uuid, server);
+        player_state.setDashTicksRemaining(ticks);
+        setPlayerState(uuid, server, player_state);
+    }
+
+    protected static void setDashTicksRemaining(ServerPlayerEntity player, int ticks) {
+        setDashTicksRemaining(player.getUuid(), player.getServer(), ticks);
     }
 }
