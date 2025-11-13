@@ -26,6 +26,6 @@ public enum PlayerFirstAbilities implements IntIdentifiable {
         return NONE;
     }
 
-    public static final Codec<mcsoc.planetgame.statemanagement.enums.playerabilities.PlayerFirstAbilities> CODEC = IntIdentifiable.getCodec(PlayerFirstAbilities.class);
+    public static final Codec<PlayerFirstAbilities> CODEC = IntIdentifiable.getCodec(PlayerFirstAbilities.class);
     public static final PacketCodec<ByteBuf, PlayerFirstAbilities> PACKET_CODEC = IntIdentifiable.getPacketCodec(PlayerFirstAbilities.class);
 }
