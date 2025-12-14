@@ -313,7 +313,7 @@ public class GameState extends PersistentState {
 
     protected static int getPlayerSecondAbilityCooldownTicks(UUID uuid, MinecraftServer server) {
         ManagedPlayerState player_state = getPlayerState(uuid, server);
-        return player_state.getPlayerSecondAbilityCooldown();
+        return player_state.getPlayerSecondAbilityCooldownTicks();
     }
 
     protected static int getPlayerSecondAbilityCooldown(ServerPlayerEntity player) {
@@ -418,7 +418,7 @@ public class GameState extends PersistentState {
 
     protected static int getPlayerThirdAbilityCooldownTicks(UUID uuid, MinecraftServer server) {
         ManagedPlayerState player_state = getPlayerState(uuid, server);
-        return player_state.getPlayerThirdAbilityCooldown();
+        return player_state.getPlayerThirdAbilityCooldownTicks();
     }
 
     protected static int getPlayerThirdAbilityCooldownTicks(ServerPlayerEntity player) {

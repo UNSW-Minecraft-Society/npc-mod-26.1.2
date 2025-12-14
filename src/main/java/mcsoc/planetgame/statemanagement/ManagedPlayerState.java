@@ -257,6 +257,14 @@ public class ManagedPlayerState {
         this.p2_state = p2_state.withPlayerSecondAbilityState(xray_on);
     }
 
+    public void setPlayerSecondAbilityCooldownTicks(int new_second_ability_cooldown) {
+        this.p2_state = p2_state.withPlayerAbilityCooldown(new_second_ability_cooldown);
+    }
+
+    public void decrementPlayerSecondAbilityCooldown() {
+        this.p2_state = p2_state.withDecrementedPlayerAbilityCooldown();
+    }
+
     public void setPlayerDrillCharge(double new_drill_charge) {
         this.p2_state = p2_state.withPlayerDrillCharge(new_drill_charge);
     }

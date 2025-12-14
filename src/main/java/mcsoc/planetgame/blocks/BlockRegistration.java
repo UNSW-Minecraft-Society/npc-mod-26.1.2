@@ -4,7 +4,6 @@ import mcsoc.planetgame.PlanetGame;
 import mcsoc.planetgame.blocks.crackedblocks.CrackedBricksBlock;
 import mcsoc.planetgame.blocks.gravityfieldblock.GravityFieldBlock;
 import mcsoc.planetgame.blocks.rockpile.RockPileBlock;
-import mcsoc.planetgame.blocks.slammableblocks.SlammableBricksBlock;
 import mcsoc.planetgame.blocks.spikes.SpikeBlock;
 import mcsoc.planetgame.blocks.throwswitch.RockSwitch;
 import mcsoc.planetgame.blocks.weightedpressureplate.WeightedGravityPlate;
