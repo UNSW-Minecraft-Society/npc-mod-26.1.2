@@ -29,9 +29,6 @@ repositories {
 			}
 		}
 	}
-	dependencies {
-		modImplementation "maven.modrinth:gravity-changer-unofficial-port:1.4.1-beta+mc1.21.1"
-	}
 }
 
 loom {

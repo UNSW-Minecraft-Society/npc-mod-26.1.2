@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-		"all": "planet-game:block/gravity_field_generator"
-  }
-}

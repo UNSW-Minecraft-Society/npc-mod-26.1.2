@@ -1,6 +1,0 @@
-{
-  "parent": "planet-game:stonepile",
-  "textures": {
-		"3": "planet-game:block/rock_pile"
-  }
-}
