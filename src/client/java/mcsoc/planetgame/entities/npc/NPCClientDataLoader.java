@@ -21,7 +21,6 @@ public class NPCClientDataLoader {
 
     private void fetchSkin(UUID uuid) {
         if (this.skin_data.containsKey(uuid)) return;
-        PlanetGameClient.LOGGER.info("fetching: {}", uuid);
         this.skin_data.put(uuid, DefaultSkinHelper.getSkinTextures(UUID.randomUUID()));
         
         CompletableFuture.runAsync(() -> {

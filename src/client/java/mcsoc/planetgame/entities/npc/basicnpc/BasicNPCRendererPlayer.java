@@ -43,7 +43,6 @@ public class BasicNPCRendererPlayer extends LivingEntityRenderer<BasicNPC, Playe
         NPCClientDataLoader skin_data_loader = NPCClientDataLoader.getInstance();
         ModelData npc_model = NPCServerDataLoader.getInstance().getModel(npc_entity);
         UUID to_display = npc_model.uuid();
-        PlanetGameClient.LOGGER.info("fetched uuid: {}", to_display);
         SkinTextures skin_to_render = skin_data_loader.getSkin(to_display);
         return skin_to_render.texture();
     }
