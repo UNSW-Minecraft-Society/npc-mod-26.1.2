@@ -44,6 +44,11 @@ public class BasicNPC extends PathAwareEntity implements VillagerDataContainer {
     }
 
     @Override
+    public boolean isPersistent() {
+        return true;
+    }
+
+    @Override
     public Text getCustomName() {
         return NPCServerDataLoader.getInstance().getDialogue(this).display_name();
     }
