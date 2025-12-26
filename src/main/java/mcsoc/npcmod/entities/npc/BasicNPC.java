@@ -1,5 +1,6 @@
 package mcsoc.npcmod.entities.npc;
 
+import mcsoc.npcmod.entities.npc.NPCServerDataLoader.DialogueData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -12,6 +13,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
 import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
@@ -34,6 +36,16 @@ public class BasicNPC extends PathAwareEntity implements VillagerDataContainer {
 
     public String getID() {
         return this.dataTracker.get(NPC_ID);
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        return true;
+    }
+
+    @Override
+    public Text getCustomName() {
+        return NPCServerDataLoader.getInstance().getDialogue(this).display_name();
     }
 
     public static DefaultAttributeContainer.Builder createNPCAttributes() {
