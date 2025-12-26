@@ -14,6 +14,8 @@ import mcsoc.planetgame.blocks.BlockRegistration;
 import mcsoc.planetgame.commands.CommandRegistrationHandler;
 import mcsoc.planetgame.entities.EntityRegistration;
 import mcsoc.planetgame.entities.damagesources.DamageSourceRegistration;
+import mcsoc.planetgame.entities.npc.NPCServerDataLoader;
+import mcsoc.planetgame.eventhandlers.NPCInteractEvent;
 import mcsoc.planetgame.eventhandlers.PerTickServerEvent;
 import mcsoc.planetgame.eventhandlers.PlayerServerConnectionEvent;
 
@@ -46,6 +48,7 @@ public class PlanetGame implements ModInitializer {
 		// event handlers
 		PlayerServerConnectionEvent.registerEvent();
 		PerTickServerEvent.registerEvent();
+		NPCInteractEvent.registerEvent();
 
 		// blocks, items, potions ect
 		BlockRegistration.registerBlocks();
@@ -54,5 +57,7 @@ public class PlanetGame implements ModInitializer {
 		EntityRegistration.registerEntities();
 
 		DamageSourceRegistration.registerDamageSources();
+
+		NPCServerDataLoader.getInstance();
 	}
 }

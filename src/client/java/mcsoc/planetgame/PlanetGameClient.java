@@ -14,7 +14,8 @@ import mcsoc.planetgame.networking.SyncPlayerGravityDataS2CPayload;
 import mcsoc.planetgame.networking.packethandlers.GravitySyncPacketEvent;
 import mcsoc.planetgame.networking.packethandlers.MiningSyncPacketEvent;
 import mcsoc.planetgame.entities.EntityRegistration;
-import mcsoc.planetgame.entities.npc.basicnpc.BasicNPCRenderer;
+import mcsoc.planetgame.entities.npc.NPCClientDataLoader;
+import mcsoc.planetgame.entities.npc.basicnpc.BasicNPCRendererPlayer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -56,8 +57,10 @@ public class PlanetGameClient implements ClientModInitializer {
 		EntityModelLayerRegistry.registerModelLayer(ThrowableRockModel.ROCK, ThrowableRockModel::getTexturedModelData);
         EntityRendererRegistry.register(EntityRegistration.ROCK, ThrowableRockRenderer::new);
 
-        EntityRendererRegistry.register(EntityRegistration.BASIC_NPC, BasicNPCRenderer::new);
+        EntityRendererRegistry.register(EntityRegistration.BASIC_NPC, BasicNPCRendererPlayer::new);
 
 		BlockEntityRendererRegistration.register();
+
+		NPCClientDataLoader.getInstance();
 	}
 }
