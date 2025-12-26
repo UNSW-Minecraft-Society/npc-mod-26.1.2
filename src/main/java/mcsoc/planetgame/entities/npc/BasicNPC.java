@@ -70,7 +70,7 @@ public class BasicNPC extends PathAwareEntity implements VillagerDataContainer {
     @Override
     protected void initGoals() {
         super.initGoals();
-        this.goalSelector.add(10, new LookAtEntityGoal(this, PlayerEntity.class, 5.0F));
+        this.goalSelector.add(100, new LookAtEntityGoal(this, PlayerEntity.class, 20.0F));
     }
     
     @Override
