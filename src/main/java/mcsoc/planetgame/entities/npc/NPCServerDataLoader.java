@@ -4,13 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import mcsoc.planetgame.PlanetGame;
-import net.minecraft.registry.entry.RegistryEntry.Reference;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import oshi.hardware.SoundCard;
 
 public class NPCServerDataLoader {
     public static record NPCData(String model_id, String dialogue_id, Mode mode) {}
