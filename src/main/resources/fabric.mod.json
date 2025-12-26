@@ -16,7 +16,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"mcsoc.npcmod.PlanetGame"
+			"mcsoc.npcmod.NPCMod"
 		],
 		"client": [
 			"mcsoc.npcmod.NPCModClient"
