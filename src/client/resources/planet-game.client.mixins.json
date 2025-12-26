@@ -1,11 +1,8 @@
 {
 	"required": true,
-	"package": "mcsoc.planetgame.mixin.client",
+	"package": "mcsoc.npcmod.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"EntityMixin",
-		"LivingEntityMixin",
-		"PlayerEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
