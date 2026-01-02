@@ -1,6 +1,6 @@
 package mcsoc.npcmod.entities.npc;
 
-import mcsoc.npcmod.entities.npc.NPCServerDataLoader.DialogueData;
+import mcsoc.npcmod.dataloader.NPCServerDataLoader;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;

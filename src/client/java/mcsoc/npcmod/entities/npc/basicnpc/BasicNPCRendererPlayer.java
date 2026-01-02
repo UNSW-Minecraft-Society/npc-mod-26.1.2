@@ -2,10 +2,10 @@ package mcsoc.npcmod.entities.npc.basicnpc;
 
 import java.util.UUID;
 
+import mcsoc.npcmod.dataloader.NPCServerDataLoader;
+import mcsoc.npcmod.dataloader.NPCServerDataLoader.ModelData;
 import mcsoc.npcmod.entities.npc.BasicNPC;
 import mcsoc.npcmod.entities.npc.NPCClientDataLoader;
-import mcsoc.npcmod.entities.npc.NPCServerDataLoader;
-import mcsoc.npcmod.entities.npc.NPCServerDataLoader.ModelData;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;

@@ -1,14 +1,15 @@
 package mcsoc.npcmod.eventhandlers;
 
+import mcsoc.npcmod.dataloader.NPCServerDataLoader;
+import mcsoc.npcmod.dataloader.NPCServerDataLoader.DialogueData;
 import mcsoc.npcmod.entities.npc.BasicNPC;
-import mcsoc.npcmod.entities.npc.NPCServerDataLoader;
-import mcsoc.npcmod.entities.npc.NPCServerDataLoader.DialogueData;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 
 public class NPCInteractEvent {
+    private NPCInteractEvent() { /* delete */ }
 
     public static void registerEvent() {
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {

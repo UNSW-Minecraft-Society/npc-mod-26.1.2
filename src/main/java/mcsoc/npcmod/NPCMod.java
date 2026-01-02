@@ -2,17 +2,21 @@ package mcsoc.npcmod;
 
 import net.fabricmc.api.ModInitializer;
 
+import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcsoc.npcmod.commands.CommandRegistrationHandler;
+import mcsoc.npcmod.dataloader.NPCJsonDataParser;
+import mcsoc.npcmod.dataloader.NPCServerDataLoader;
 import mcsoc.npcmod.entities.EntityRegistration;
-import mcsoc.npcmod.entities.npc.NPCServerDataLoader;
 import mcsoc.npcmod.eventhandlers.NPCInteractEvent;
 
 
 public class NPCMod implements ModInitializer {
 	public static final String MOD_ID = "npc-mod";
+	public static final Random rand = new Random(1);
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
@@ -35,6 +39,7 @@ public class NPCMod implements ModInitializer {
 		
 		EntityRegistration.registerEntities();
 
+		NPCJsonDataParser.getInstance();
 		NPCServerDataLoader.getInstance();
 	}
 }
