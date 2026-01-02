@@ -186,14 +186,13 @@ public class NPCServerDataLoader {
     private final NPCJsonDataParser parser = NPCJsonDataParser.getInstance();
 
     private NPCServerDataLoader() {
-        
-        this.registerStoryNPC("john planet", "john", "john");
-        this.registerBackgroundNPC("game and watch", "gw", "gw");
-        this.registerBackgroundNPC("L", "gw", "l");
+        this.loadData();
+    }
 
+    public void loadData() {
         this.model_data_map.putAll(parser.loadModelData(MODEL_DATA_PATH));
         this.dialogue_data_map.putAll(parser.loadDialogueData(DIALOGUE_DATA_PATH));
-        this.npc_data_map.putAll(parser.loadNPCData(NPC_DATA_PATH));        
+        this.npc_data_map.putAll(parser.loadNPCData(NPC_DATA_PATH));      
     }
 
     public static NPCServerDataLoader getInstance() {
