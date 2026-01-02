@@ -26,7 +26,7 @@ public class NPCJsonDataParser {
             .registerTypeAdapter(ModelData.class, new ModelData.JsonSerialiser())
             .registerTypeAdapter(NPCData.class, new NPCData.JsonSerialiser())
             .setPrettyPrinting()
-    .create();
+            .create();
     private static final Type model_map_type = new TypeToken<Map<String, ModelData>>(){}.getType();
     private static final Type dialogue_map_type = new TypeToken<Map<String, DialogueData>>(){}.getType();
     private static final Type npc_map_type = new TypeToken<Map<String, NPCData>>(){}.getType();
@@ -45,7 +45,6 @@ public class NPCJsonDataParser {
         Path config_path = FabricLoader.getInstance().getConfigDir().resolve(filename);
         try {
             Files.createDirectories(config_path.getParent());
-            Files.createFile(config_path);
         } catch (IOException e) {
             e.printStackTrace();
         }
