@@ -4,11 +4,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -124,12 +122,11 @@ public class NPCServerDataLoader {
         @Override
         public abstract String toString();
 
-        @Nullable
-        public static Mode fromString(String string) {
+        public static Optional<Mode> fromString(String string) {
             for (Mode mode: Mode.values()) {
-                if (mode.toString().equals(string)) return mode;
+                if (mode.toString().equals(string)) return Optional.of(mode);
             }
-            return null;
+            return Optional.empty();
         }
     }
     protected static record NPCData(String model_id, String dialogue_id, Mode mode) {
@@ -148,8 +145,7 @@ public class NPCServerDataLoader {
         public static NPCData fromJson(JsonObject json) {
             String model_id = json.get(MODEL_ID_KEY).getAsString();
             String dialogue_id = json.get(DIALOGUE_ID_KEY).getAsString();
-            Mode mode = Mode.fromString(json.get(MODE_KEY).getAsString());
-            if (Objects.isNull(mode)) mode = Mode.BACKGROUND;
+            Mode mode = Mode.fromString(json.get(MODE_KEY).getAsString()).orElse(Mode.BACKGROUND);
 
             return new NPCData(model_id, dialogue_id, mode);
         }
