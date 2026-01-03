@@ -7,17 +7,21 @@ import java.util.concurrent.CompletableFuture;
 
 import com.mojang.authlib.yggdrasil.ProfileResult;
 
+import mcsoc.npcmod.dataloader.NPCDataStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.SkinTextures;
 
 
-public class NPCClientDataLoader {   
+public class NPCClientDataLoader extends NPCDataStorage {   
 
     private final Map<UUID, SkinTextures> skin_data = new HashMap<>();
     private static final NPCClientDataLoader INSTANCE = new NPCClientDataLoader();
 
     private NPCClientDataLoader() {}
+    public static NPCClientDataLoader getInstance() {
+        return INSTANCE;
+    }
 
     private void fetchSkin(UUID uuid) {
         if (this.skin_data.containsKey(uuid)) return;
@@ -27,18 +31,12 @@ public class NPCClientDataLoader {
             ProfileResult result = MinecraftClient.getInstance().getSessionService().fetchProfile(uuid, true);
     
             MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(result.profile())
-                    .thenAccept(skin -> {
-                        this.skin_data.put(uuid, skin);
-                    });
+                    .thenAccept(skin -> this.skin_data.put(uuid, skin));
         });
     }
 
-    public static NPCClientDataLoader getInstance() {
-        return INSTANCE;
-    }
-
     public SkinTextures getSkin(UUID uuid) {
-        fetchSkin(uuid);
+        this.fetchSkin(uuid);
         return this.skin_data.get(uuid);
     }
 }

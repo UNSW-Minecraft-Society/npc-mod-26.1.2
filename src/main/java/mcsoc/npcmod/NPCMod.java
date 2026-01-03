@@ -1,7 +1,6 @@
 package mcsoc.npcmod;
 
 import net.fabricmc.api.ModInitializer;
-
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -12,6 +11,8 @@ import mcsoc.npcmod.dataloader.NPCJsonDataParser;
 import mcsoc.npcmod.dataloader.NPCServerDataLoader;
 import mcsoc.npcmod.entities.EntityRegistration;
 import mcsoc.npcmod.eventhandlers.NPCInteractEvent;
+import mcsoc.npcmod.eventhandlers.PlayerJoinEvent;
+import mcsoc.npcmod.networking.NetworkingIdentifiers;
 
 
 public class NPCMod implements ModInitializer {
@@ -35,9 +36,9 @@ public class NPCMod implements ModInitializer {
 		CommandRegistrationHandler.registerCommands();
 
 		// event handlers
-		NPCInteractEvent.registerEvent();
+		PlayerJoinEvent.registerHandler();
 		
-		EntityRegistration.registerEntities();
+		NetworkingIdentifiers.registerPackets();
 
 		NPCJsonDataParser.getInstance();
 		NPCServerDataLoader.getInstance();

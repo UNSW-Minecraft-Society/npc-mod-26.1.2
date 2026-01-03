@@ -2,8 +2,7 @@ package mcsoc.npcmod.entities.npc.basicnpc;
 
 import java.util.UUID;
 
-import mcsoc.npcmod.dataloader.NPCServerDataLoader;
-import mcsoc.npcmod.dataloader.NPCServerDataLoader.ModelData;
+import mcsoc.npcmod.dataloader.NPCDataStorage.ModelData;
 import mcsoc.npcmod.entities.npc.BasicNPC;
 import mcsoc.npcmod.entities.npc.NPCClientDataLoader;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -39,10 +38,10 @@ public class BasicNPCRendererPlayer extends LivingEntityRenderer<BasicNPC, Playe
     }
 
     public Identifier getTexture(BasicNPC npc_entity) {
-        NPCClientDataLoader skin_data_loader = NPCClientDataLoader.getInstance();
-        ModelData npc_model = NPCServerDataLoader.getInstance().getModel(npc_entity);
+        NPCClientDataLoader npc_data_loader = NPCClientDataLoader.getInstance();
+        ModelData npc_model = npc_data_loader.getModel(npc_entity);
         UUID to_display = npc_model.uuid();
-        SkinTextures skin_to_render = skin_data_loader.getSkin(to_display);
+        SkinTextures skin_to_render = npc_data_loader.getSkin(to_display);
         return skin_to_render.texture();
     }
 }

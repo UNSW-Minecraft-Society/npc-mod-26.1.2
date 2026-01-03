@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import mcsoc.npcmod.dataloader.NPCServerDataLoader.DialogueData;
-import mcsoc.npcmod.dataloader.NPCServerDataLoader.ModelData;
-import mcsoc.npcmod.dataloader.NPCServerDataLoader.NPCData;
+import mcsoc.npcmod.dataloader.NPCDataStorage.DialogueData;
+import mcsoc.npcmod.dataloader.NPCDataStorage.ModelData;
+import mcsoc.npcmod.dataloader.NPCDataStorage.NPCData;
 import net.fabricmc.loader.api.FabricLoader;
 import java.io.File;
 import java.io.FileReader;
