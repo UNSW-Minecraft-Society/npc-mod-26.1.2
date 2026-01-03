@@ -22,6 +22,8 @@ public class NPCModClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
         EntityRendererRegistry.register(EntityRegistration.BASIC_NPC, BasicNPCRendererPlayer::new);
+		EntityRendererRegistry.register(EntityRegistration.MOVING_NPC, BasicNPCRendererPlayer::new);
+
 		NPCClientDataLoader.getInstance();
 		SyncDialogueDataPacketEvent.registerHandler();
 		SyncModelDataPacketEvent.registerHandler();

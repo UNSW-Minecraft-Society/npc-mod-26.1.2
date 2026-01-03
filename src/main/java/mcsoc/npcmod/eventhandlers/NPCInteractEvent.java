@@ -1,7 +1,7 @@
 package mcsoc.npcmod.eventhandlers;
 
+import mcsoc.npcmod.dataloader.NPCDataStorage.DialogueData;
 import mcsoc.npcmod.dataloader.NPCServerDataLoader;
-import mcsoc.npcmod.dataloader.NPCServerDataLoader.DialogueData;
 import mcsoc.npcmod.entities.npc.BasicNPC;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.sound.SoundCategory;
@@ -11,7 +11,7 @@ import net.minecraft.util.ActionResult;
 public class NPCInteractEvent {
     private NPCInteractEvent() { /* delete */ }
 
-    public static void registerEvent() {
+    public static void registerHandler() {
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof BasicNPC npc) {
                 DialogueData npc_dialogue = NPCServerDataLoader.getInstance().getDialogue(npc);

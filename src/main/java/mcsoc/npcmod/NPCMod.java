@@ -35,7 +35,10 @@ public class NPCMod implements ModInitializer {
 		// register commands
 		CommandRegistrationHandler.registerCommands();
 
+		EntityRegistration.registerEntities();
+
 		// event handlers
+		NPCInteractEvent.registerHandler();
 		PlayerJoinEvent.registerHandler();
 		
 		NetworkingIdentifiers.registerPackets();
