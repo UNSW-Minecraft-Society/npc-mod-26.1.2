@@ -2,7 +2,6 @@ package mcsoc.npcmod.commands;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
