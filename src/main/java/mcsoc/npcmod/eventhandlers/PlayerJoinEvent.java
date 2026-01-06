@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 public class PlayerJoinEvent {
     public static void registerHandler() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			NPCServerDataLoader.getInstance().syncClientData(server, handler.getPlayer());
+			NPCServerDataLoader.getInstance().syncClientData(handler.getPlayer());
 		});
     }
 }

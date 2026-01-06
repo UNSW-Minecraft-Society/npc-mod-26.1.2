@@ -5,7 +5,6 @@ import mcsoc.npcmod.networking.SyncDialogueDataS2CPayload;
 import mcsoc.npcmod.networking.SyncModelDataS2CPayload;
 import mcsoc.npcmod.networking.SyncNPCDataS2CPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class NPCServerDataLoader extends NPCDataStorage {
@@ -37,9 +36,7 @@ public class NPCServerDataLoader extends NPCDataStorage {
         parser.saveNPCData(NPC_DATA_PATH, this.getNPCMap());
     }
 
-    public void syncClientData(MinecraftServer server, ServerPlayerEntity player) {
-        NPCMod.LOGGER.info("sending packet to {}", player.getDisplayName());
-        NPCMod.LOGGER.info("map len {}", this.getDialogueMap().size());
+    public void syncClientData(ServerPlayerEntity player) {
         this.getModelMap().forEach((id, data) -> 
             ServerPlayNetworking.send(player, new SyncModelDataS2CPayload(id, data))
         );
