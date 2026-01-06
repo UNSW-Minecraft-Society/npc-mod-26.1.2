@@ -1,6 +1,6 @@
 package mcsoc.npcmod.networking.packethandlers;
 
-import mcsoc.npcmod.dataloader.NPCDataStorage.ModelData;
+import mcsoc.npcmod.dataloader.datastorage.datatypes.ModelData;
 import mcsoc.npcmod.entities.npc.NPCClientDataLoader;
 import mcsoc.npcmod.networking.SyncModelDataS2CPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.mojang.authlib.yggdrasil.ProfileResult;
 
-import mcsoc.npcmod.dataloader.NPCDataStorage;
+import mcsoc.npcmod.dataloader.datastorage.NPCDataStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.SkinTextures;

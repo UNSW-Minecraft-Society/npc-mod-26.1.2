@@ -2,8 +2,8 @@ package mcsoc.npcmod.entities.npc.basicnpc;
 
 import java.util.UUID;
 
-import mcsoc.npcmod.dataloader.NPCDataStorage.ModelData;
-import mcsoc.npcmod.entities.npc.BasicNPC;
+import mcsoc.npcmod.dataloader.datastorage.datatypes.ModelData;
+import mcsoc.npcmod.entities.npc.BaseNPC;
 import mcsoc.npcmod.entities.npc.NPCClientDataLoader;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -20,9 +20,9 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.util.Identifier;
 
-public class BasicNPCRendererPlayer extends LivingEntityRenderer<BasicNPC, PlayerEntityModel<BasicNPC>> {
+public class BaseNPCRendererPlayer extends LivingEntityRenderer<BaseNPC, PlayerEntityModel<BaseNPC>> {
 
-    public BasicNPCRendererPlayer(EntityRendererFactory.Context ctx, boolean slim) {
+    public BaseNPCRendererPlayer(EntityRendererFactory.Context ctx, boolean slim) {
         super(ctx, new PlayerEntityModel<>(ctx.getPart(slim ? EntityModelLayers.PLAYER_SLIM : EntityModelLayers.PLAYER), slim), 0.5F);
         this.addFeature(new ArmorFeatureRenderer<>(this, new ArmorEntityModel<>(ctx.getPart(slim ? EntityModelLayers.PLAYER_SLIM_INNER_ARMOR : EntityModelLayers.PLAYER_INNER_ARMOR)), new ArmorEntityModel<>(ctx.getPart(slim ? EntityModelLayers.PLAYER_SLIM_OUTER_ARMOR : EntityModelLayers.PLAYER_OUTER_ARMOR)), ctx.getModelManager()));
         this.addFeature(new HeldItemFeatureRenderer<>(this, ctx.getHeldItemRenderer()));
@@ -33,11 +33,11 @@ public class BasicNPCRendererPlayer extends LivingEntityRenderer<BasicNPC, Playe
         this.addFeature(new StuckStingersFeatureRenderer<>(this));
     }
 
-    public BasicNPCRendererPlayer(EntityRendererFactory.Context ctx) {
+    public BaseNPCRendererPlayer(EntityRendererFactory.Context ctx) {
         this(ctx, false);
     }
 
-    public Identifier getTexture(BasicNPC npc_entity) {
+    public Identifier getTexture(BaseNPC npc_entity) {
         NPCClientDataLoader npc_data_loader = NPCClientDataLoader.getInstance();
         ModelData npc_model = npc_data_loader.getModel(npc_entity);
         UUID to_display = npc_model.uuid();

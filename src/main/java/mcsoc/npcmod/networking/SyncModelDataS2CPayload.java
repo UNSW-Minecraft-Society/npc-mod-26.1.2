@@ -1,10 +1,11 @@
 package mcsoc.npcmod.networking;
 
-import mcsoc.npcmod.dataloader.NPCDataStorage.ModelData;
+import mcsoc.npcmod.dataloader.datastorage.datatypes.ModelData;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
+
 
 public record SyncModelDataS2CPayload(String id, ModelData data) implements CustomPayload {
     

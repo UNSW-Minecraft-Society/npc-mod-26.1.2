@@ -1,6 +1,6 @@
 package mcsoc.npcmod.eventhandlers;
 
-import mcsoc.npcmod.dataloader.NPCServerDataLoader;
+import mcsoc.npcmod.dataloader.datastorage.NPCServerDataLoader;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 public class PlayerJoinEvent {

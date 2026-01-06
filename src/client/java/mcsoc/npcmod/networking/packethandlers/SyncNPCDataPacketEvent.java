@@ -1,6 +1,6 @@
 package mcsoc.npcmod.networking.packethandlers;
 
-import mcsoc.npcmod.dataloader.NPCDataStorage.NPCData;
+import mcsoc.npcmod.dataloader.datastorage.datatypes.NPCData;
 import mcsoc.npcmod.entities.npc.NPCClientDataLoader;
 import mcsoc.npcmod.networking.SyncNPCDataS2CPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -16,6 +16,8 @@ public class SyncNPCDataPacketEvent {
                     break;
                 case MAIN:
                     NPCClientDataLoader.getInstance().registerStoryNPC(payload.id(), data.model_id(), data.dialogue_id());
+                    break;
+                default:
                     break;
             }
         });

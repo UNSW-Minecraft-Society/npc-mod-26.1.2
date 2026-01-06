@@ -2,8 +2,7 @@ package mcsoc.npcmod.commands;
 
 import com.mojang.brigadier.context.CommandContext;
 
-import mcsoc.npcmod.dataloader.NPCServerDataLoader;
-import net.minecraft.server.MinecraftServer;
+import mcsoc.npcmod.dataloader.datastorage.NPCServerDataLoader;
 import net.minecraft.server.command.ServerCommandSource;
 
 public abstract class CommandActions {
@@ -13,10 +12,7 @@ public abstract class CommandActions {
         NPCServerDataLoader loader = NPCServerDataLoader.getInstance();
         loader.loadData();
 
-        MinecraftServer server = ctx.getSource().getServer();
-        server.getPlayerManager().getPlayerList().forEach(player -> {
-            loader.syncClientData(server, player);
-        });
+        ctx.getSource().getServer().getPlayerManager().getPlayerList().forEach(loader::syncClientData);
         return 1;
     }
 }

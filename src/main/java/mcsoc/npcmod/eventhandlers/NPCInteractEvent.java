@@ -1,8 +1,8 @@
 package mcsoc.npcmod.eventhandlers;
 
-import mcsoc.npcmod.dataloader.NPCDataStorage.DialogueData;
-import mcsoc.npcmod.dataloader.NPCServerDataLoader;
-import mcsoc.npcmod.entities.npc.BasicNPC;
+import mcsoc.npcmod.dataloader.datastorage.NPCServerDataLoader;
+import mcsoc.npcmod.dataloader.datastorage.datatypes.DialogueData;
+import mcsoc.npcmod.entities.npc.BaseNPC;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;

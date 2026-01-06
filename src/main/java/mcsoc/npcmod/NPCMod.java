@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcsoc.npcmod.commands.CommandRegistrationHandler;
-import mcsoc.npcmod.dataloader.NPCJsonDataParser;
-import mcsoc.npcmod.dataloader.NPCServerDataLoader;
+import mcsoc.npcmod.dataloader.datastorage.NPCServerDataLoader;
+import mcsoc.npcmod.dataloader.jsonparser.NPCJsonDataParser;
 import mcsoc.npcmod.entities.EntityRegistration;
 import mcsoc.npcmod.eventhandlers.NPCInteractEvent;
 import mcsoc.npcmod.eventhandlers.PlayerJoinEvent;

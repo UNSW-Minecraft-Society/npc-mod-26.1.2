@@ -18,6 +18,7 @@ public abstract class EntityRegistration {
         Registries.ENTITY_TYPE,
         Identifier.of(NPCMod.MOD_ID, "basic_npc"),
         EntityType.Builder.create(BasicNPC::new, SpawnGroup.CREATURE)
+        .alwaysUpdateVelocity(false)
         .build("basic_npc")
     );
 
@@ -25,6 +26,7 @@ public abstract class EntityRegistration {
         Registries.ENTITY_TYPE,
         Identifier.of(NPCMod.MOD_ID, "moving_npc"),
         EntityType.Builder.create(MovingNPC::new, SpawnGroup.CREATURE)
+        .alwaysUpdateVelocity(true)
         .build("moving_npc")
     );
 

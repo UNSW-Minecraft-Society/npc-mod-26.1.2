@@ -1,6 +1,6 @@
 package mcsoc.npcmod.networking;
 
-import mcsoc.npcmod.dataloader.NPCDataStorage.NPCData;
+import mcsoc.npcmod.dataloader.datastorage.datatypes.NPCData;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
