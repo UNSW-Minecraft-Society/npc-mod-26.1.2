@@ -13,7 +13,7 @@ public class NPCInteractEvent {
 
     public static void registerHandler() {
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (entity instanceof BasicNPC npc) {
+            if (entity instanceof BaseNPC npc) {
                 DialogueData npc_dialogue = NPCServerDataLoader.getInstance().getDialogue(npc);
                 player.sendMessage(npc_dialogue.getFormattedMessage());
                 world.playSoundFromEntity(player, npc, SoundEvent.of(npc_dialogue.voice()), SoundCategory.PLAYERS, 1, 1);
