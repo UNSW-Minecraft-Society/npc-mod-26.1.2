@@ -2,6 +2,7 @@ package mcsoc.npcmod.commands;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -35,6 +36,22 @@ public abstract class CommandRegistrationHandler {
             dispatcher.register(CommandManager.literal("reload_npc_data")
                     .requires(source -> source.hasPermissionLevel(2))
                     .executes(CommandActions::reloadNPCData)
+            );
+
+            dispatcher.register(
+                CommandManager.literal("cutscene")
+                //.requires(source -> source.hasPermissionLevel(2))
+                .then(CommandManager.literal("trigger")
+                    .then(CommandManager.argument("cutscene_id", StringArgumentType.string())
+                        .executes(CommandActions::triggerCutscene)
+                    )
+                )
+                .then(CommandManager.literal("resume")
+                    .executes(CommandActions::resumeCutscene)
+                )
+                .then(CommandManager.literal("stop")
+                    .executes(CommandActions::stopCutscene)
+                )
             );
         });
     }
