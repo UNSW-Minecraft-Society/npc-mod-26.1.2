@@ -1,21 +1,25 @@
 package mcsoc.npcmod;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+
 import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcsoc.npcmod.commands.CommandRegistrationHandler;
-import mcsoc.npcmod.dataloader.datastorage.NPCServerDataLoader;
-import mcsoc.npcmod.dataloader.jsonparser.NPCJsonDataParser;
+import mcsoc.npcmod.cutscenes.CutsceneHandler;
+import mcsoc.npcmod.dataloader.datastorage.NpcModServerDataStorage;
+import mcsoc.npcmod.dataloader.jsonparser.NpcModJsonDataLoader;
 import mcsoc.npcmod.entities.EntityRegistration;
 import mcsoc.npcmod.eventhandlers.NPCInteractEvent;
+import mcsoc.npcmod.eventhandlers.PerServerTickEvent;
 import mcsoc.npcmod.eventhandlers.PlayerJoinEvent;
 import mcsoc.npcmod.networking.NetworkingIdentifiers;
 
 
-public class NPCMod implements ModInitializer {
+public class NpcMod implements ModInitializer {
 	public static final String MOD_ID = "npc-mod";
 	public static final Random rand = new Random(1);
 
@@ -38,12 +42,17 @@ public class NPCMod implements ModInitializer {
 		EntityRegistration.registerEntities();
 
 		// event handlers
-		NPCInteractEvent.registerHandler();
-		PlayerJoinEvent.registerHandler();
+		NPCInteractEvent.registerEvent();
+		PlayerJoinEvent.registerEvent();
+		PerServerTickEvent.registerEvent();
 		
 		NetworkingIdentifiers.registerPackets();
 
-		NPCJsonDataParser.getInstance();
-		NPCServerDataLoader.getInstance();
+		NpcModServerDataStorage.getInstance();
+		CutsceneHandler.getInstance();
+
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			CutsceneHandler.getInstance().setWorld(server.getOverworld());
+		});
 	}
 }

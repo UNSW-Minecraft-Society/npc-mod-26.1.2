@@ -14,7 +14,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import mcsoc.npcmod.NPCMod;
+import mcsoc.npcmod.NpcMod;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -31,7 +31,7 @@ public record DialogueData(Text display_name, List<Text> dialogue, Identifier vo
     
 
     public Text getFormattedMessage() {
-        return display_name.copy().append(": ").append(dialogue.get(NPCMod.rand.nextInt(dialogue.size())));
+        return display_name.copy().append(": ").append(dialogue.get(NpcMod.rand.nextInt(dialogue.size())));
     }
 
     public JsonObject toJson() {

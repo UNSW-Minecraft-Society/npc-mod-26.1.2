@@ -1,6 +1,6 @@
 package mcsoc.npcmod.entities;
 
-import mcsoc.npcmod.NPCMod;
+import mcsoc.npcmod.NpcMod;
 import mcsoc.npcmod.entities.npc.BasicNPC;
 import mcsoc.npcmod.entities.npc.MovingNPC;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -16,7 +16,7 @@ public abstract class EntityRegistration {
 
     public static final EntityType<BasicNPC> BASIC_NPC = Registry.register(
         Registries.ENTITY_TYPE,
-        Identifier.of(NPCMod.MOD_ID, "basic_npc"),
+        Identifier.of(NpcMod.MOD_ID, "basic_npc"),
         EntityType.Builder.create(BasicNPC::new, SpawnGroup.CREATURE)
         .alwaysUpdateVelocity(false)
         .build("basic_npc")
@@ -24,7 +24,7 @@ public abstract class EntityRegistration {
 
     public static final EntityType<MovingNPC> MOVING_NPC = Registry.register(
         Registries.ENTITY_TYPE,
-        Identifier.of(NPCMod.MOD_ID, "moving_npc"),
+        Identifier.of(NpcMod.MOD_ID, "moving_npc"),
         EntityType.Builder.create(MovingNPC::new, SpawnGroup.CREATURE)
         .alwaysUpdateVelocity(true)
         .build("moving_npc")

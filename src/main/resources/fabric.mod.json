@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"mcsoc.npcmod.NPCMod"
+			"mcsoc.npcmod.NpcMod"
 		],
 		"client": [
-			"mcsoc.npcmod.NPCModClient"
+			"mcsoc.npcmod.NpcModClient"
 		]
 	},
 	"mixins": [

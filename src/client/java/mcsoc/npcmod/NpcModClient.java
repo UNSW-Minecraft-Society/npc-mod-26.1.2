@@ -11,9 +11,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 
 
-public class NPCModClient implements ClientModInitializer {
+public class NpcModClient implements ClientModInitializer {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(NPCMod.MOD_ID);
+	public static final Logger LOGGER = LoggerFactory.getLogger(NpcMod.MOD_ID);
 
 	@Override
 	public void onInitializeClient() {
