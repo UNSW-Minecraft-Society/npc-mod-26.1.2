@@ -24,7 +24,7 @@ import mcsoc.npcmod.networking.SyncNPCDataS2CPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataStorage {
+public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataStorage, CutsceneDataStorage {
 
     private static final NpcModServerDataStorage INSTANCE = new NpcModServerDataStorage();
 
@@ -40,6 +40,10 @@ public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataSto
     private final Map<String, MovementData> movement_data_map = new HashMap<>();
     private static final String MOVEMENT_DATA_PATH = NpcMod.MOD_ID + "/movement_data.json";
     private static final String MOVING_NPC_DATA_PATH = NpcMod.MOD_ID + "/moving_npc_data.json";
+
+
+    private final Map<String, CutsceneData> cutscene_data_map = new HashMap<>();
+    private static final String CUTSCENE_DATA_PATH = NpcMod.MOD_ID + "/cutscene_data.json";
 
 
     private final NpcModJsonDataLoader parser = NpcModJsonDataLoader.getInstance();
@@ -74,6 +78,11 @@ public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataSto
         return movement_data_map;
     }
 
+    @Override
+    public Map<String, CutsceneData> getCutsceneMap() {
+        return cutscene_data_map;
+    }
+
 
     @Override
     public NPCData getNPCData(BaseNPC npc) {
@@ -91,6 +100,8 @@ public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataSto
 
         this.getMovementMap().putAll(parser.loadMovementData(MOVEMENT_DATA_PATH));
         this.getMovingNPCMap().putAll(parser.loadMovingNPCData(MOVING_NPC_DATA_PATH));
+
+        this.getCutsceneMap().putAll(parser.loadCutsceneData(CUTSCENE_DATA_PATH));
     }
     public void saveData() {
         parser.saveModelData(MODEL_DATA_PATH, this.getModelMap());
@@ -99,6 +110,8 @@ public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataSto
 
         parser.saveMovementData(MOVEMENT_DATA_PATH, this.getMovementMap());
         parser.saveMovingNPCData(MOVING_NPC_DATA_PATH, this.getMovingNPCMap());
+
+        parser.saveCutsceneData(CUTSCENE_DATA_PATH, this.getCutsceneMap());
     }
 
     public void syncClientData(ServerPlayerEntity player) {

@@ -17,12 +17,16 @@ import net.minecraft.world.World;
 
 public abstract class BaseNPC extends PathAwareEntity implements VillagerDataContainer {
 
-    protected static final TrackedData<String> NPC_ID = DataTracker.registerData(BaseNPC.class, TrackedDataHandlerRegistry.STRING);
+    public static final TrackedData<String> NPC_ID = DataTracker.registerData(BaseNPC.class, TrackedDataHandlerRegistry.STRING);
 
     protected BaseNPC(EntityType<? extends BaseNPC> entityType, World world) {
         super(entityType, world);
     }
 
+    @Override
+    public void setRotation(float yaw, float pitch) {
+        super.setRotation(yaw, pitch);
+    }
 
     @Override
     protected void initDataTracker(Builder builder) {
@@ -46,7 +50,7 @@ public abstract class BaseNPC extends PathAwareEntity implements VillagerDataCon
 
     @Override
     public Text getCustomName() {
-        return NPCServerDataLoader.getInstance().getDialogue(this).display_name();
+        return NpcModServerDataStorage.getInstance().getDialogue(this).display_name();
     }
 
     @Override
