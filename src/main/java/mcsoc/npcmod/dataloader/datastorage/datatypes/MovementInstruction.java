@@ -10,10 +10,11 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import io.netty.buffer.ByteBuf;
+import mcsoc.npcmod.util.Instruction;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 
-public sealed interface MovementInstruction {
+public sealed interface MovementInstruction extends Instruction {
     static final String TYPE_KEY = "type";
     static final String WALK_TYPE_NAME = "walk";
     static final String SWIM_TYPE_NAME = "swim";
@@ -152,40 +153,5 @@ public sealed interface MovementInstruction {
         public MovementInstruction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             return MovementInstruction.fromJson(json.getAsJsonObject());
         }
-    }     
-
-    public static final PacketCodec<ByteBuf, MovementInstruction> PACKET_CODEC = new PacketCodec<>() {
-        @Override
-        public MovementInstruction decode(ByteBuf buf) {
-            int id = buf.readByte();
-            return switch (id) {
-                case 0 -> Walk.PACKET_CODEC.decode(buf);
-                case 1 -> Swim.PACKET_CODEC.decode(buf);
-                case 2 -> Turn.PACKET_CODEC.decode(buf);
-                case 3 -> Stop.PACKET_CODEC.decode(buf);
-                case 4 -> Jump.PACKET_CODEC.decode(buf);
-                default -> throw new IllegalArgumentException("Unknown movement type ID: " + id);
-            };
-        }
-
-        @Override
-        public void encode(ByteBuf buf, MovementInstruction value) {
-            if (value instanceof Walk) {
-                buf.writeByte(0);
-                Walk.PACKET_CODEC.encode(buf, value);
-            } else if (value instanceof Swim) {
-                buf.writeByte(1);
-                Swim.PACKET_CODEC.encode(buf, value);
-            } else if (value instanceof Turn) {
-                buf.writeByte(2);
-                Turn.PACKET_CODEC.encode(buf, value);
-            } else if (value instanceof Stop) {
-                buf.writeByte(3);
-                Stop.PACKET_CODEC.encode(buf, value);
-            } else if (value instanceof Jump) {
-                buf.writeByte(4);
-                Jump.PACKET_CODEC.encode(buf, value);
-            }
-        }
-    };
+    }        
 }

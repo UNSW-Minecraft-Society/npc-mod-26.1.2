@@ -6,13 +6,14 @@ import java.util.Queue;
 
 import mcsoc.npcmod.dataloader.datastorage.NpcModServerDataStorage;
 import mcsoc.npcmod.dataloader.datastorage.datatypes.MovementInstruction;
+import mcsoc.npcmod.util.InstructionReader;
 import net.minecraft.command.argument.EntityAnchorArgumentType.EntityAnchor;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 
-public class MovingNPC extends BaseNPC {
+public class MovingNPC extends BaseNPC implements InstructionReader<MovementInstruction> {
 
     private Queue<MovementInstruction> movements_queue = new ArrayDeque<>();
     private int current_operation_ticks_remaining = 0;
@@ -22,7 +23,7 @@ public class MovingNPC extends BaseNPC {
     }
 
 
-    protected void loadInstruction(MovementInstruction instruction) {
+    public void loadInstruction(MovementInstruction instruction) {
         switch (instruction) {
             case MovementInstruction.Walk(int ticks, double speed): {
                 this.current_operation_ticks_remaining = ticks;
@@ -57,7 +58,7 @@ public class MovingNPC extends BaseNPC {
         }
     }
 
-    protected void tickInstruction(MovementInstruction instruction) {
+    public void tickInstruction(MovementInstruction instruction) {
         switch (instruction) {
             case MovementInstruction.Turn(int ticks, double degrees): {
                 float rotation_rate = (float)degrees / ticks;
@@ -70,28 +71,44 @@ public class MovingNPC extends BaseNPC {
             default:
         }
     }
+    
+
+    @Override
+    public boolean shouldRepeat() {
+        return true;
+    }
 
     @Override
     public void tick() {
         super.tick();
         if (this.getWorld().isClient) return;
 
-        if (current_operation_ticks_remaining == 0) {
-            this.movements_queue.poll();
-
-            if (this.movements_queue.isEmpty()) {
-                this.movements_queue.addAll(NPCServerDataLoader.getInstance().getMovements(this).movements());
-            }
-            this.loadInstruction(this.movements_queue.peek());
-        } else {
-            current_operation_ticks_remaining--;
-            this.tickInstruction(this.movements_queue.peek());
-        }
+        this.tickReader();
     }
 
 
     @Override
     protected void initGoals() {
         // don't init goals
+    }
+
+
+    @Override
+    public int getRemainingTicks() {
+        return this.current_operation_ticks_remaining;
+    }
+    @Override
+    public void decrementRemainingTicks() {
+        this.current_operation_ticks_remaining--;
+    }
+
+    @Override
+    public Queue<MovementInstruction> getInstructionQueue() {
+        return this.movements_queue;
+    }
+
+    @Override
+    public List<MovementInstruction> getNewInstructions() {
+        return NpcModServerDataStorage.getInstance().getMovements(this).movements();
     }
 }
