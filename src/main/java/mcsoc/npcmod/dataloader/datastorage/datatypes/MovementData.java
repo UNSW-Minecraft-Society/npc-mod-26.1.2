@@ -1,7 +1,6 @@
 package mcsoc.npcmod.dataloader.datastorage.datatypes;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -12,9 +11,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
 
 public record MovementData(List<MovementInstruction> movements) {
     private static final String MOVEMENTS_KEY = "move_list";
@@ -47,9 +43,4 @@ public record MovementData(List<MovementInstruction> movements) {
             return MovementData.fromJson(json.getAsJsonObject());
         }
     }
-
-    public static final PacketCodec<RegistryByteBuf, MovementData> PACKET_CODEC = PacketCodec.tuple(
-        PacketCodecs.collection(ArrayList::new, MovementInstruction.PACKET_CODEC), MovementData::movements,
-        MovementData::new
-    );
-}   
+}

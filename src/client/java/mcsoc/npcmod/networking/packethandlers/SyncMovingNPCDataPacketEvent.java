@@ -10,7 +10,16 @@ public class SyncMovingNPCDataPacketEvent {
     public static void registerHandler() {
         ClientPlayNetworking.registerGlobalReceiver(SyncMovingNPCDataS2CPayload.ID, (payload, context) -> {
             NPCData data = payload.data();
-            NPCClientDataLoader.getInstance().registerMovingNPC(payload.id(), data.model_id(), data.dialogue_id(), null);
+            switch (data.mode()) {
+                case BACKGROUND:
+                    NPCClientDataLoader.getInstance().registerBackgroundNPC(payload.id(), data.model_id(), data.dialogue_id());
+                    break;
+                case MAIN:
+                    NPCClientDataLoader.getInstance().registerStoryNPC(payload.id(), data.model_id(), data.dialogue_id());
+                    break;
+                default:
+                    break;
+            }
         });
     }
 }
