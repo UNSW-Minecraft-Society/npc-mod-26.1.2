@@ -1,6 +1,6 @@
 package mcsoc.npcmod.entities.npc;
 
-import mcsoc.npcmod.dataloader.datastorage.NPCServerDataLoader;
+import mcsoc.npcmod.dataloader.datastorage.NpcModServerDataStorage;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;

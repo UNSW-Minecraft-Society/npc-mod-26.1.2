@@ -13,11 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public abstract class JsonDataParser {
+public interface JsonDataParser {
 
-    protected JsonDataParser() {}
-
-    protected abstract Gson getGsonParser();
+    abstract Gson getGsonParser();
 
     private File openFileChecked(String filename) {
         Path config_path = FabricLoader.getInstance().getConfigDir().resolve(filename);
@@ -30,7 +28,7 @@ public abstract class JsonDataParser {
         return config_path.toFile();
     }
 
-    protected <K, V> void writeToFileFromMap(String filename, Map<K, V> map, Type data_type) {
+    default <K, V> void writeToFileFromMap(String filename, Map<K, V> map, Type data_type) {
         File file = openFileChecked(filename);
         
         try (FileWriter writer = new FileWriter(file)) {
@@ -39,7 +37,7 @@ public abstract class JsonDataParser {
             e.printStackTrace();
         }
     }
-    protected <K, V> Map<K, V> readFromFileToMap(String filename, Type data_type) {
+    default <K, V> Map<K, V> readFromFileToMap(String filename, Type data_type) {
         File file = openFileChecked(filename);
         
         Map<K, V> map = new HashMap<>();

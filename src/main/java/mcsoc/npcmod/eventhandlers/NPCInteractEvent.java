@@ -1,6 +1,6 @@
 package mcsoc.npcmod.eventhandlers;
 
-import mcsoc.npcmod.dataloader.datastorage.NPCServerDataLoader;
+import mcsoc.npcmod.dataloader.datastorage.NpcModServerDataStorage;
 import mcsoc.npcmod.dataloader.datastorage.datatypes.DialogueData;
 import mcsoc.npcmod.entities.npc.BaseNPC;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;

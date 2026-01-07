@@ -7,13 +7,20 @@ import java.util.concurrent.CompletableFuture;
 
 import com.mojang.authlib.yggdrasil.ProfileResult;
 
-import mcsoc.npcmod.dataloader.datastorage.NPCDataStorage;
+import mcsoc.npcmod.dataloader.datastorage.datatypes.DialogueData;
+import mcsoc.npcmod.dataloader.datastorage.datatypes.ModelData;
+import mcsoc.npcmod.dataloader.datastorage.datatypes.NPCData;
+import mcsoc.npcmod.dataloader.datastorage.npc.NPCDataStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.SkinTextures;
 
 
-public class NPCClientDataLoader extends NPCDataStorage {   
+public class NPCClientDataLoader implements NPCDataStorage {
+
+    private final Map<String, NPCData> npc_data_map = new HashMap<>();
+    private final Map<String, ModelData> model_data_map = new HashMap<>();
+    private final Map<String, DialogueData> dialogue_data_map = new HashMap<>();
 
     private final Map<UUID, SkinTextures> skin_data = new HashMap<>();
     private static final NPCClientDataLoader INSTANCE = new NPCClientDataLoader();
@@ -38,5 +45,22 @@ public class NPCClientDataLoader extends NPCDataStorage {
     public SkinTextures getSkin(UUID uuid) {
         this.fetchSkin(uuid);
         return this.skin_data.get(uuid);
+    }
+
+    @Override
+    public Map<String, DialogueData> getDialogueMap() {
+        return dialogue_data_map;
+    }
+    @Override
+    public Map<String, ModelData> getModelMap() {
+        return model_data_map;
+    }
+    @Override
+    public Map<String, NPCData> getNPCMap() {
+        return npc_data_map;
+    }
+    @Override
+    public NPCData getNPCData(BaseNPC npc) {
+        return this.getNPCMap().getOrDefault(npc.getID(), NPC_NOT_FOUND);
     }
 }
