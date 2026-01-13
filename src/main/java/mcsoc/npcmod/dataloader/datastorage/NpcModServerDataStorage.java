@@ -27,6 +27,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataStorage, CutsceneDataStorage {
 
     private static final NpcModServerDataStorage INSTANCE = new NpcModServerDataStorage();
+    private boolean has_updated = false;
 
     private final Map<String, NPCData> npc_data_map = new HashMap<>();
     private final Map<String, ModelData> model_data_map = new HashMap<>();
@@ -35,16 +36,13 @@ public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataSto
     private static final String DIALOGUE_DATA_PATH = NpcMod.MOD_ID + "/dialogue_data.json";
     private static final String NPC_DATA_PATH = NpcMod.MOD_ID + "/npc_data.json";
 
-
     private final Map<String, MovingNPCData> moving_npc_data_map = new HashMap<>();
     private final Map<String, MovementData> movement_data_map = new HashMap<>();
     private static final String MOVEMENT_DATA_PATH = NpcMod.MOD_ID + "/movement_data.json";
     private static final String MOVING_NPC_DATA_PATH = NpcMod.MOD_ID + "/moving_npc_data.json";
 
-
     private final Map<String, CutsceneData> cutscene_data_map = new HashMap<>();
     private static final String CUTSCENE_DATA_PATH = NpcMod.MOD_ID + "/cutscene_data.json";
-
 
     private final NpcModJsonDataLoader parser = NpcModJsonDataLoader.getInstance();
 
@@ -54,6 +52,12 @@ public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataSto
     }
     public static NpcModServerDataStorage getInstance() {
         return INSTANCE;
+    }
+    public boolean hasUpdated() {
+        return this.has_updated;
+    }
+    public void tick() {
+        if (this.has_updated) this.has_updated = false;
     }
 
     @Override
@@ -127,5 +131,7 @@ public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataSto
         this.getMovingNPCMap().forEach((id, data) -> 
             ServerPlayNetworking.send(player, new SyncMovingNPCDataS2CPayload(id, data.base_data()))
         );
+
+        this.has_updated = true;
     }
 }
