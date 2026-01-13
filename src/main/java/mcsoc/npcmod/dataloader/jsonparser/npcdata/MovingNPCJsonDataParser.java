@@ -3,14 +3,22 @@ package mcsoc.npcmod.dataloader.jsonparser.npcdata;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import mcsoc.npcmod.dataloader.datastorage.datatypes.MovementData;
+import mcsoc.npcmod.dataloader.datastorage.datatypes.MovementInstruction;
 import mcsoc.npcmod.dataloader.datastorage.datatypes.MovingNPCData;
 import mcsoc.npcmod.dataloader.jsonparser.JsonDataParser;
 
 
-public interface MovingNPCJsonDataLoader extends JsonDataParser {
+public interface MovingNPCJsonDataParser extends JsonDataParser {
+
+    static GsonBuilder registerGsonTypes(GsonBuilder builder) {
+        return builder.registerTypeAdapter(MovementInstruction.class, new MovementInstruction.JsonSerialiser())
+        .registerTypeAdapter(MovementData.class, new MovementData.JsonSerialiser())
+        .registerTypeAdapter(MovingNPCData.class, new MovingNPCData.JsonSerialiser());
+    }
 
     static final Type movement_map_type = new TypeToken<Map<String, MovementData>>(){}.getType();
     static final Type moving_npc_map_type = new TypeToken<Map<String, MovingNPCData>>(){}.getType();

@@ -1,5 +1,6 @@
 package mcsoc.npcmod.dataloader.jsonparser.npcdata;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import mcsoc.npcmod.dataloader.datastorage.datatypes.DialogueData;
@@ -11,7 +12,13 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 
-public interface BasicNPCJsonDataLoader extends JsonDataParser {
+public interface BasicNPCJsonDataParser extends JsonDataParser {
+
+    static GsonBuilder registerGsonTypes(GsonBuilder builder) {
+        return builder.registerTypeAdapter(DialogueData.class, new DialogueData.JsonSerialiser())
+        .registerTypeAdapter(ModelData.class, new ModelData.JsonSerialiser())
+        .registerTypeAdapter(NPCData.class, new NPCData.JsonSerialiser());
+    }
 
     static final Type model_map_type = new TypeToken<Map<String, ModelData>>(){}.getType();
     static final Type dialogue_map_type = new TypeToken<Map<String, DialogueData>>(){}.getType();
