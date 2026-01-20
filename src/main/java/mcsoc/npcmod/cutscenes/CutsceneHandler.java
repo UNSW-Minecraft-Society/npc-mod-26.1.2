@@ -14,7 +14,10 @@ import mcsoc.npcmod.entities.EntityRegistration;
 import mcsoc.npcmod.entities.npc.BaseNPC;
 import mcsoc.npcmod.entities.npc.BasicNPC;
 import mcsoc.npcmod.entities.npc.MovingNPC;
+import mcsoc.npcmod.networking.SyncCameraModeS2CPayload;
+import mcsoc.npcmod.networking.SyncCameraPositionS2CPayload;
 import mcsoc.npcmod.util.InstructionReader;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 
@@ -84,12 +87,12 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
             }
             case CutsceneInstruction.PositionCamera(PositionData position_data) -> {
                 this.world.getPlayers().forEach(player -> {
-                    // TODO: send packets
+                    ServerPlayNetworking.send(player, new SyncCameraPositionS2CPayload(position_data));
                 });
             }
             case CutsceneInstruction.SetCameraMode(CameraMode mode) -> {
                 this.world.getPlayers().forEach(player -> {
-                    // TODO: send packets
+                    ServerPlayNetworking.send(player, new SyncCameraModeS2CPayload(mode));
                 });
             }
             default -> {}

@@ -21,6 +21,10 @@ public record PositionData(double x, double y, double z, float pitch, float yaw)
         return new Vec3d(x, y, z);
     }
 
+    public PositionData addPos(Vec3d offset) {
+        return new PositionData(x + offset.x, y + offset.y, z + offset.z, pitch, yaw);
+    }
+
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("x", this.x());
