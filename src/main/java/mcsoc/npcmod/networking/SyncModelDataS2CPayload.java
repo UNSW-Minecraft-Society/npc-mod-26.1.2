@@ -9,7 +9,7 @@ import net.minecraft.network.packet.CustomPayload;
 
 public record SyncModelDataS2CPayload(String id, ModelData data) implements CustomPayload {
     
-    public static final CustomPayload.Id<SyncModelDataS2CPayload> ID = new CustomPayload.Id<>(NetworkingIdentifiers.MODEL_DATA_REGISTER);
+    public static final CustomPayload.Id<SyncModelDataS2CPayload> ID = new CustomPayload.Id<>(NetworkingIdentifiers.MODEL_DATA_REGISTER_ID);
     public static final PacketCodec<RegistryByteBuf, SyncModelDataS2CPayload> CODEC = PacketCodec.tuple(
         PacketCodecs.STRING, SyncModelDataS2CPayload::id,
         ModelData.PACKET_CODEC, SyncModelDataS2CPayload::data,

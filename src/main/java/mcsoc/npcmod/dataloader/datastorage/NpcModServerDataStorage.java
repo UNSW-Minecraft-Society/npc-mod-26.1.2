@@ -21,8 +21,10 @@ import mcsoc.npcmod.networking.SyncDialogueDataS2CPayload;
 import mcsoc.npcmod.networking.SyncModelDataS2CPayload;
 import mcsoc.npcmod.networking.SyncMovingNPCDataS2CPayload;
 import mcsoc.npcmod.networking.SyncNPCDataS2CPayload;
+
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
+
 
 public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataStorage, CutsceneDataStorage {
 
