@@ -15,9 +15,11 @@ import java.util.Map;
 public interface BasicNPCJsonDataParser extends JsonDataParser {
 
     static GsonBuilder registerGsonTypes(GsonBuilder builder) {
-        return builder.registerTypeAdapter(DialogueData.class, new DialogueData.JsonSerialiser())
-        .registerTypeAdapter(ModelData.class, new ModelData.JsonSerialiser())
-        .registerTypeAdapter(NPCData.class, new NPCData.JsonSerialiser());
+        return builder
+            .registerTypeAdapter(DialogueData.class, new DialogueData.JsonSerialiser())
+            .registerTypeAdapter(ModelData.class, new ModelData.JsonSerialiser())
+            .registerTypeAdapter(NPCData.class, new NPCData.JsonSerialiser())
+        ;
     }
 
     static final Type model_map_type = new TypeToken<Map<String, ModelData>>(){}.getType();

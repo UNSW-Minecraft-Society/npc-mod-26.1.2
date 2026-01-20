@@ -23,7 +23,7 @@ public record NPCData(String model_id, String dialogue_id, NPCMode mode) {
         JsonObject json = new JsonObject();
         json.addProperty(MODEL_ID_KEY, model_id);
         json.addProperty(DIALOGUE_ID_KEY, dialogue_id);
-        json.addProperty(MODE_KEY, mode.toString());
+        json.addProperty(MODE_KEY, mode.asString());
         return json;
     }
 

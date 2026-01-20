@@ -15,9 +15,11 @@ import mcsoc.npcmod.datatypes.npcs.MovingNPCData;
 public interface MovingNPCJsonDataParser extends JsonDataParser {
 
     static GsonBuilder registerGsonTypes(GsonBuilder builder) {
-        return builder.registerTypeAdapter(MovementInstruction.class, new MovementInstruction.JsonSerialiser())
-        .registerTypeAdapter(MovementData.class, new MovementData.JsonSerialiser())
-        .registerTypeAdapter(MovingNPCData.class, new MovingNPCData.JsonSerialiser());
+        return builder
+            .registerTypeAdapter(MovementData.class, new MovementData.JsonSerialiser())
+            .registerTypeAdapter(MovementInstruction.class, new MovementInstruction.JsonSerialiser())
+            .registerTypeAdapter(MovingNPCData.class, new MovingNPCData.JsonSerialiser())
+        ;
     }
 
     static final Type movement_map_type = new TypeToken<Map<String, MovementData>>(){}.getType();

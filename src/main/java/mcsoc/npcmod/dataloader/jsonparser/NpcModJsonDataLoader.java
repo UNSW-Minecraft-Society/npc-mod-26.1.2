@@ -12,9 +12,14 @@ public class NpcModJsonDataLoader implements BasicNPCJsonDataParser, MovingNPCJs
 
     private static final NpcModJsonDataLoader INSTANCE = new NpcModJsonDataLoader();
 
-    static final Gson mapper = CutsceneJsonDataParser.registerGsonTypes(MovingNPCJsonDataParser.registerGsonTypes(BasicNPCJsonDataParser.registerGsonTypes(new GsonBuilder())))
-        .setPrettyPrinting()
-        .create();
+    static final Gson mapper;
+    static {
+        GsonBuilder builder = new GsonBuilder();
+        builder = BasicNPCJsonDataParser.registerGsonTypes(builder);
+        builder = MovingNPCJsonDataParser.registerGsonTypes(builder);
+        builder = CutsceneJsonDataParser.registerGsonTypes(builder);
+        mapper = builder.setPrettyPrinting().create();
+    }
 
 
     private NpcModJsonDataLoader() { /* delete */ }
