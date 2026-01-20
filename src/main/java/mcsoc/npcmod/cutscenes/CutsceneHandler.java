@@ -15,9 +15,9 @@ import mcsoc.npcmod.entities.npc.BaseNPC;
 import mcsoc.npcmod.entities.npc.BasicNPC;
 import mcsoc.npcmod.entities.npc.MovingNPC;
 import mcsoc.npcmod.util.InstructionReader;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+
 
 public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
 
@@ -26,14 +26,14 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
     private String cutscene_id = "";
     private Queue<CutsceneInstruction> actions_queue = new ArrayDeque<>();
     private int current_operation_ticks_remaining = 0;
-    private World world = null;
+    private ServerWorld world = null;
     private boolean should_play = false;
+
 
     private CutsceneHandler() {}
     public static CutsceneHandler getInstance() {
         return INSTANCE;
     }
-
 
     public void loadCutscene(String cutscene_id) {
         this.cutscene_id = cutscene_id;
@@ -41,7 +41,7 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
         this.actions_queue.addAll(this.getNewInstructions());
     }
 
-    public void setWorld(World world) {
+    public void setWorld(ServerWorld world) {
         this.world = world;
     }
 
@@ -56,9 +56,9 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
     }
 
 
-    private static BaseNPC applyNpcAttributes(BaseNPC npc, String npc_id, BlockPos position, FacingData facing) {
-        npc.setPosition(position.toCenterPos());
-        npc.setRotation(facing.yaw(), facing.pitch());
+    private static BaseNPC applyNPCAttributes(BaseNPC npc, String npc_id, PositionData position_data) {
+        npc.setPosition(position_data.x(), position_data.y(), position_data.z());
+        npc.setRotation(position_data.yaw(), position_data.pitch());
         npc.getDataTracker().set(BaseNPC.NPC_ID, npc_id);
         return npc;
     }
@@ -66,14 +66,14 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
 
     public void loadInstruction(CutsceneInstruction instruction) {
         switch (instruction) {
-            case CutsceneInstruction.SpawnNPC(String npc_id, BlockPos position, FacingData facing) -> {
+            case CutsceneInstruction.SpawnNPC(String npc_id, PositionData position_data) -> {
                 BasicNPC npc = new BasicNPC(EntityRegistration.BASIC_NPC, this.world);
-                applyNpcAttributes(npc, npc_id, position, facing);
+                applyNPCAttributes(npc, npc_id, position_data);
                 this.world.spawnEntity(npc);
             }
-            case CutsceneInstruction.SpawnMovingNPC(String npc_id, BlockPos position, FacingData facing) -> {
+            case CutsceneInstruction.SpawnMovingNPC(String npc_id, PositionData position_data) -> {
                 MovingNPC npc = new MovingNPC(EntityRegistration.MOVING_NPC, this.world);
-                applyNpcAttributes(npc, npc_id, position, facing);
+                applyNPCAttributes(npc, npc_id, position_data);
                 this.world.spawnEntity(npc);
             }
             case CutsceneInstruction.Dialogue(Text text) -> {
@@ -81,6 +81,16 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
             }
             case CutsceneInstruction.Delay(int ticks) -> {
                 this.current_operation_ticks_remaining = ticks;
+            }
+            case CutsceneInstruction.PositionCamera(PositionData position_data) -> {
+                this.world.getPlayers().forEach(player -> {
+                    // TODO: send packets
+                });
+            }
+            case CutsceneInstruction.SetCameraMode(CameraMode mode) -> {
+                this.world.getPlayers().forEach(player -> {
+                    // TODO: send packets
+                });
             }
             default -> {}
         }

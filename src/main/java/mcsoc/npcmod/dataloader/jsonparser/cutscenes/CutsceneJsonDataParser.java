@@ -15,8 +15,11 @@ import java.util.Map;
 public interface CutsceneJsonDataParser extends JsonDataParser {
 
     static GsonBuilder registerGsonTypes(GsonBuilder builder) {
-        return builder.registerTypeAdapter(CutsceneInstruction.class, new CutsceneInstruction.JsonSerialiser())
-        .registerTypeAdapter(CutsceneData.class, new CutsceneData.JsonSerialiser());
+        return builder
+            .registerTypeAdapter(CutsceneInstruction.class, new CutsceneInstruction.JsonSerialiser())
+            .registerTypeAdapter(CutsceneData.class, new CutsceneData.JsonSerialiser())
+            .registerTypeAdapter(PositionData.class, new PositionData.JsonSerialiser())
+        ;
     }
 
     static final Type cutscene_map_type = new TypeToken<Map<String, CutsceneData>>(){}.getType();
