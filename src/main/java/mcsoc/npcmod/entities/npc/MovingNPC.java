@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Queue;
 
 import mcsoc.npcmod.dataloader.datastorage.NpcModServerDataStorage;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.MovementInstruction;
+import mcsoc.npcmod.datatypes.npcs.MovementInstruction;
 import mcsoc.npcmod.util.InstructionReader;
 import net.minecraft.command.argument.EntityAnchorArgumentType.EntityAnchor;
 import net.minecraft.entity.EntityType;

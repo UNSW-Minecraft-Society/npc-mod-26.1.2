@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import mcsoc.npcmod.entities.EntityRegistration;
 import mcsoc.npcmod.entities.npc.basicnpc.BaseNPCRendererPlayer;
 import mcsoc.npcmod.entities.npc.NPCClientDataLoader;
-import mcsoc.npcmod.networking.packethandlers.SyncNPCDataPacketHandlers;
+import mcsoc.npcmod.networking.packethandlers.PacketHandlers;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 
@@ -23,6 +23,6 @@ public class NpcModClient implements ClientModInitializer {
 		EntityRendererRegistry.register(EntityRegistration.MOVING_NPC, BaseNPCRendererPlayer::new);
 
 		NPCClientDataLoader.getInstance();
-		SyncNPCDataPacketHandlers.registerHandlers();
+		PacketHandlers.registerHandlers();
 	}
 }

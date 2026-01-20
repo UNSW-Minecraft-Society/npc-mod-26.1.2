@@ -3,10 +3,10 @@ package mcsoc.npcmod.dataloader.jsonparser.npcdata;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import mcsoc.npcmod.dataloader.datastorage.datatypes.DialogueData;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.ModelData;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.NPCData;
 import mcsoc.npcmod.dataloader.jsonparser.JsonDataParser;
+import mcsoc.npcmod.datatypes.npcs.DialogueData;
+import mcsoc.npcmod.datatypes.npcs.ModelData;
+import mcsoc.npcmod.datatypes.npcs.NPCData;
 
 import java.lang.reflect.Type;
 import java.util.Map;

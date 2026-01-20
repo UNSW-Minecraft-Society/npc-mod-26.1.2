@@ -2,7 +2,7 @@ package mcsoc.npcmod.entities.npc.basicnpc;
 
 import java.util.UUID;
 
-import mcsoc.npcmod.dataloader.datastorage.datatypes.ModelData;
+import mcsoc.npcmod.datatypes.npcs.ModelData;
 import mcsoc.npcmod.entities.npc.BaseNPC;
 import mcsoc.npcmod.entities.npc.NPCClientDataLoader;
 import net.minecraft.client.render.entity.EntityRendererFactory;

@@ -3,9 +3,10 @@ package mcsoc.npcmod.dataloader.jsonparser.cutscenes;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import mcsoc.npcmod.dataloader.datastorage.datatypes.CutsceneData;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.CutsceneInstruction;
 import mcsoc.npcmod.dataloader.jsonparser.JsonDataParser;
+import mcsoc.npcmod.datatypes.cutscenes.CutsceneData;
+import mcsoc.npcmod.datatypes.cutscenes.CutsceneInstruction;
+import mcsoc.npcmod.datatypes.cutscenes.PositionData;
 
 import java.lang.reflect.Type;
 import java.util.Map;

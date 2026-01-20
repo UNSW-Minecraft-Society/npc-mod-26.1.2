@@ -1,4 +1,4 @@
-package mcsoc.npcmod.dataloader.datastorage.datatypes;
+package mcsoc.npcmod.datatypes.npcs;
 
 import java.util.Optional;
 
@@ -9,7 +9,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.StringIdentifiable;
 
-public enum Mode implements StringIdentifiable {
+public enum NPCMode implements StringIdentifiable {
     BACKGROUND {
         @Override
         public String toString() {
@@ -37,13 +37,13 @@ public enum Mode implements StringIdentifiable {
         return this.toString();
     }
 
-    public static Optional<Mode> fromString(String string) {
-        for (Mode mode: Mode.values()) {
-            if (mode.toString().equals(string)) return Optional.of(mode);
+    public static Optional<NPCMode> fromString(String string) {
+        for (NPCMode mode: NPCMode.values()) {
+            if (mode.asString().equals(string)) return Optional.of(mode);
         }
         return Optional.empty();
     }
 
-    public static final Codec<Mode> CODEC = StringIdentifiable.createCodec(Mode::values);
-    public static final PacketCodec<ByteBuf, Mode> PACKET_CODEC = PacketCodecs.codec(Mode.CODEC);
+    public static final Codec<NPCMode> CODEC = StringIdentifiable.createCodec(NPCMode::values);
+    public static final PacketCodec<ByteBuf, NPCMode> PACKET_CODEC = PacketCodecs.codec(NPCMode.CODEC);
 }

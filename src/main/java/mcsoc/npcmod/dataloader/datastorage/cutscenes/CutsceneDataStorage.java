@@ -3,8 +3,8 @@ package mcsoc.npcmod.dataloader.datastorage.cutscenes;
 import java.util.List;
 import java.util.Map;
 
-import mcsoc.npcmod.dataloader.datastorage.datatypes.CutsceneData;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.CutsceneInstruction;
+import mcsoc.npcmod.datatypes.cutscenes.CutsceneData;
+import mcsoc.npcmod.datatypes.cutscenes.CutsceneInstruction;
 import net.minecraft.text.Text;
 
 

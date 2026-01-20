@@ -3,11 +3,11 @@ package mcsoc.npcmod.dataloader.datastorage.npc;
 import java.util.List;
 import java.util.Map;
 
-import mcsoc.npcmod.dataloader.datastorage.datatypes.Mode;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.MovementData;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.MovementInstruction;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.MovingNPCData;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.NPCData;
+import mcsoc.npcmod.datatypes.MovementData;
+import mcsoc.npcmod.datatypes.npcs.NPCMode;
+import mcsoc.npcmod.datatypes.npcs.MovementInstruction;
+import mcsoc.npcmod.datatypes.npcs.MovingNPCData;
+import mcsoc.npcmod.datatypes.npcs.NPCData;
 import mcsoc.npcmod.entities.npc.BaseNPC;
 import mcsoc.npcmod.entities.npc.MovingNPC;
 
@@ -33,6 +33,6 @@ public interface MovingNPCDataStorage {
         this.getMovementMap().put(id, movements);
     }
     public default void registerMovingNPC(String id, String model_id, String dialogue_id, String movement_id) {
-        this.getMovingNPCMap().put(id, new MovingNPCData(new NPCData(model_id, dialogue_id, Mode.MOVING), movement_id));
+        this.getMovingNPCMap().put(id, new MovingNPCData(new NPCData(model_id, dialogue_id, NPCMode.MOVING), movement_id));
     }
 }

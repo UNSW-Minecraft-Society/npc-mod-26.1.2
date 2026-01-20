@@ -1,6 +1,6 @@
 package mcsoc.npcmod.networking;
 
-import mcsoc.npcmod.dataloader.datastorage.datatypes.DialogueData;
+import mcsoc.npcmod.datatypes.npcs.DialogueData;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;

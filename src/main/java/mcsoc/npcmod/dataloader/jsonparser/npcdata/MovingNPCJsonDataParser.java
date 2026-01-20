@@ -6,10 +6,10 @@ import java.util.Map;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import mcsoc.npcmod.dataloader.datastorage.datatypes.MovementData;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.MovementInstruction;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.MovingNPCData;
 import mcsoc.npcmod.dataloader.jsonparser.JsonDataParser;
+import mcsoc.npcmod.datatypes.MovementData;
+import mcsoc.npcmod.datatypes.npcs.MovementInstruction;
+import mcsoc.npcmod.datatypes.npcs.MovingNPCData;
 
 
 public interface MovingNPCJsonDataParser extends JsonDataParser {

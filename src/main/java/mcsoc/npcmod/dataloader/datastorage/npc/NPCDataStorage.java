@@ -3,10 +3,11 @@ package mcsoc.npcmod.dataloader.datastorage.npc;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.DialogueData;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.Mode;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.ModelData;
-import mcsoc.npcmod.dataloader.datastorage.datatypes.NPCData;
+
+import mcsoc.npcmod.datatypes.npcs.DialogueData;
+import mcsoc.npcmod.datatypes.npcs.NPCMode;
+import mcsoc.npcmod.datatypes.npcs.ModelData;
+import mcsoc.npcmod.datatypes.npcs.NPCData;
 import mcsoc.npcmod.entities.npc.BaseNPC;
 import mcsoc.npcmod.entities.npc.BasicNPC;
 import net.minecraft.text.Text;
@@ -18,7 +19,7 @@ public interface NPCDataStorage {
     static final ModelData MODEL_NOT_FOUND = new ModelData(UUID.fromString("e2d03233-e72a-4389-9b41-12a9ff98bf3d"));
     static final DialogueData DIALOGUE_NOT_FOUND = new DialogueData(Text.of("DEFAULT"), List.of(Text.of("Dialogue not found.")), Identifier.ofVanilla("music_disc.far"));
     static final String MISSING_KEY = "mssngn";
-    static final NPCData NPC_NOT_FOUND = new NPCData(MISSING_KEY, MISSING_KEY, Mode.BACKGROUND);
+    static final NPCData NPC_NOT_FOUND = new NPCData(MISSING_KEY, MISSING_KEY, NPCMode.BACKGROUND);
 
 
     abstract Map<String, NPCData> getNPCMap();
@@ -46,9 +47,9 @@ public interface NPCDataStorage {
         this.getDialogueMap().put(id, new DialogueData(display_name, dialogue, voice));
     }
     public default void registerBackgroundNPC(String id, String model_id, String dialogue_id) {
-        this.getNPCMap().put(id, new NPCData(model_id, dialogue_id, Mode.BACKGROUND));
+        this.getNPCMap().put(id, new NPCData(model_id, dialogue_id, NPCMode.BACKGROUND));
     }
     public default void registerStoryNPC(String id, String model_id, String dialogue_id) {
-        this.getNPCMap().put(id, new NPCData(model_id, dialogue_id, Mode.MAIN));
+        this.getNPCMap().put(id, new NPCData(model_id, dialogue_id, NPCMode.MAIN));
     }
 }

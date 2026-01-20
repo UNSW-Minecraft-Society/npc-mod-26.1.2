@@ -1,4 +1,4 @@
-package mcsoc.npcmod.dataloader.datastorage.datatypes;
+package mcsoc.npcmod.datatypes.npcs;
 
 import java.lang.reflect.Type;
 import java.util.List;

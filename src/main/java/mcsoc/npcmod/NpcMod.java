@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import mcsoc.npcmod.commands.CommandRegistrationHandler;
 import mcsoc.npcmod.cutscenes.CutsceneHandler;
 import mcsoc.npcmod.dataloader.datastorage.NpcModServerDataStorage;
-import mcsoc.npcmod.dataloader.jsonparser.NpcModJsonDataLoader;
 import mcsoc.npcmod.entities.EntityRegistration;
 import mcsoc.npcmod.eventhandlers.NPCInteractEvent;
 import mcsoc.npcmod.eventhandlers.PerServerTickEvent;

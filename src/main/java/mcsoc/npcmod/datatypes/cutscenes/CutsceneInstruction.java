@@ -1,4 +1,4 @@
-package mcsoc.npcmod.dataloader.datastorage.datatypes;
+package mcsoc.npcmod.datatypes.cutscenes;
 
 import java.lang.reflect.Type;
 import com.google.gson.JsonDeserializationContext;

@@ -1,6 +1,6 @@
 package mcsoc.npcmod.networking.packethandlers;
 
-import mcsoc.npcmod.dataloader.datastorage.datatypes.DialogueData;
+import mcsoc.npcmod.datatypes.npcs.DialogueData;
 import mcsoc.npcmod.entities.npc.NPCClientDataLoader;
 import mcsoc.npcmod.networking.SyncDialogueDataS2CPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
