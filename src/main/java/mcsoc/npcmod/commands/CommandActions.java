@@ -20,7 +20,7 @@ public abstract class CommandActions {
 
     protected static int triggerCutscene(CommandContext<ServerCommandSource> ctx) {
         String cutscene_id = StringArgumentType.getString(ctx, "cutscene_id");
-        CutsceneHandler.getInstance().loadCutscene(cutscene_id);
+        CutsceneHandler.getInstance().loadCutscene(cutscene_id, ctx.getSource().getPosition());
         CutsceneHandler.getInstance().start();
         return 1;
     }

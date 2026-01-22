@@ -2,7 +2,8 @@ package mcsoc.npcmod.cutscenes;
 
 import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Objects;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Queue;
 
 import mcsoc.npcmod.NpcMod;
@@ -20,17 +21,19 @@ import mcsoc.npcmod.util.InstructionReader;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
 
 
 public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
 
     private static final CutsceneHandler INSTANCE = new CutsceneHandler();
 
-    private String cutscene_id = "";
     private Queue<CutsceneInstruction> actions_queue = new ArrayDeque<>();
     private int current_operation_ticks_remaining = 0;
-    private ServerWorld world = null;
     private boolean should_play = false;
+    private Optional<String> cutscene_id;
+    private Optional<ServerWorld> world;
+    private Vec3d call_position;
 
 
     private CutsceneHandler() {}
@@ -38,14 +41,17 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
         return INSTANCE;
     }
 
-    public void loadCutscene(String cutscene_id) {
-        this.cutscene_id = cutscene_id;
+    public void loadCutscene(String cutscene_id, Vec3d call_position) {
+        if (world.isEmpty()) throw new NoSuchElementException("world was not initialised");
+
+        this.cutscene_id = Optional.of(cutscene_id);
         this.actions_queue.clear();
         this.actions_queue.addAll(this.getNewInstructions());
+        this.call_position = call_position;
     }
 
     public void setWorld(ServerWorld world) {
-        this.world = world;
+        this.world = Optional.of(world);
     }
 
     public void start() {
@@ -68,30 +74,32 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
 
 
     public void loadInstruction(CutsceneInstruction instruction) {
+        ServerWorld loaded_world = this.world.orElseThrow();
+
         switch (instruction) {
             case CutsceneInstruction.SpawnNPC(String npc_id, PositionData position_data) -> {
-                BasicNPC npc = new BasicNPC(EntityRegistration.BASIC_NPC, this.world);
+                BasicNPC npc = new BasicNPC(EntityRegistration.BASIC_NPC, loaded_world);
                 applyNPCAttributes(npc, npc_id, position_data);
-                this.world.spawnEntity(npc);
+                loaded_world.spawnEntity(npc);
             }
             case CutsceneInstruction.SpawnMovingNPC(String npc_id, PositionData position_data) -> {
-                MovingNPC npc = new MovingNPC(EntityRegistration.MOVING_NPC, this.world);
+                MovingNPC npc = new MovingNPC(EntityRegistration.MOVING_NPC, loaded_world);
                 applyNPCAttributes(npc, npc_id, position_data);
-                this.world.spawnEntity(npc);
+                loaded_world.spawnEntity(npc);
             }
             case CutsceneInstruction.Dialogue(Text text) -> {
-                this.world.getPlayers().forEach(player -> player.sendMessage(text));
+                loaded_world.getPlayers().forEach(player -> player.sendMessage(text));
             }
             case CutsceneInstruction.Delay(int ticks) -> {
                 this.current_operation_ticks_remaining = ticks;
             }
             case CutsceneInstruction.PositionCamera(PositionData position_data) -> {
-                this.world.getPlayers().forEach(player -> {
-                    ServerPlayNetworking.send(player, new SyncCameraPositionS2CPayload(position_data));
+                loaded_world.getPlayers().forEach(player -> {
+                    ServerPlayNetworking.send(player, new SyncCameraPositionS2CPayload(position_data.addPos(call_position)));
                 });
             }
             case CutsceneInstruction.SetCameraMode(CameraMode mode) -> {
-                this.world.getPlayers().forEach(player -> {
+                loaded_world.getPlayers().forEach(player -> {
                     ServerPlayNetworking.send(player, new SyncCameraModeS2CPayload(mode));
                 });
             }
@@ -107,7 +115,7 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
 
     @Override
     public boolean tickReader() {
-        if (!this.should_play || Objects.isNull(world)) {
+        if (!this.should_play || world.isEmpty()) {
             return false;
         }
         if (!InstructionReader.super.tickReader()) {
@@ -134,6 +142,6 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
 
     @Override
     public List<CutsceneInstruction> getNewInstructions() {
-        return NpcModServerDataStorage.getInstance().getCutscene(this.cutscene_id).actions();
+        return NpcModServerDataStorage.getInstance().getCutscene(this.cutscene_id.orElseThrow()).actions();
     }
 }

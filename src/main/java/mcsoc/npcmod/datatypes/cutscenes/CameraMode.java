@@ -3,12 +3,12 @@ package mcsoc.npcmod.datatypes.cutscenes;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
-
 import io.netty.buffer.ByteBuf;
-import mcsoc.npcmod.datatypes.npcs.NPCMode;
+
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.StringIdentifiable;
+
 
 public enum CameraMode implements StringIdentifiable {
     NORMAL {

@@ -17,12 +17,14 @@ import mcsoc.npcmod.util.Instruction;
 public sealed interface CutsceneInstruction extends Instruction {
 
     static final String TYPE_KEY = "type";
+
+    static final String ERROR_TYPE_NAME = "error";
     static final String SPAWN_NPC_TYPE_NAME = "spawn_npc";
     static final String SPAWN_MOVING_NPC_TYPE_NAME = "spawn_moving_npc";
     static final String DIALOGUE_TYPE_NAME = "dialogue";
     static final String DELAY_TYPE_NAME = "wait";
-    static final String CAMERA_POSITION_TYPE_NAME = "cam_set";
-    static final String CAMERA_MODE_TYPE_NAME = "lock";
+    static final String CAMERA_POSITION_TYPE_NAME = "position_camera";
+    static final String CAMERA_MODE_TYPE_NAME = "modify_camera";
 
     static final String PROPERTIES_KEY = "properties";
     static final String NPC_ID_PROPERTY_KEY = "npc_id";
@@ -30,8 +32,19 @@ public sealed interface CutsceneInstruction extends Instruction {
     static final String TEXT_PROPERTY_KEY = "text";
     static final String TICKS_PROPERTY_KEY = "ticks";
     static final String SPEED_PROPERTY_KEY = "speed";
-    static final String MODE_PROPERTY_KEY = "lock";
+    static final String MODE_PROPERTY_KEY = "mode";
 
+    record ParseError() implements CutsceneInstruction {
+        @Override
+        public JsonObject toJson() {
+            JsonObject json = new JsonObject();
+            json.addProperty(TYPE_KEY, ERROR_TYPE_NAME);
+            JsonObject properties_json = new JsonObject();
+            json.add(PROPERTIES_KEY, properties_json);
+
+            return json;
+        }
+    }
     record SpawnNPC(String id, PositionData position_data) implements CutsceneInstruction {
         @Override
         public JsonObject toJson() {
@@ -113,38 +126,42 @@ public sealed interface CutsceneInstruction extends Instruction {
         }
     }
 
-
     public abstract JsonObject toJson();
 
 
     public static CutsceneInstruction fromJson(JsonObject json) throws JsonParseException {
         String type_name = json.get(TYPE_KEY).getAsString();
         JsonObject properties = json.get(PROPERTIES_KEY).getAsJsonObject();
-        return (
-            switch (type_name) {
-                case SPAWN_NPC_TYPE_NAME -> new CutsceneInstruction.SpawnNPC(
-                    properties.get(NPC_ID_PROPERTY_KEY).getAsString(), 
-                    PositionData.fromJson(properties.get(POSITION_PROPERTY_KEY).getAsJsonObject())
-                );
-                case SPAWN_MOVING_NPC_TYPE_NAME -> new CutsceneInstruction.SpawnMovingNPC(
-                    properties.get(NPC_ID_PROPERTY_KEY).getAsString(), 
-                    PositionData.fromJson(properties.get(POSITION_PROPERTY_KEY).getAsJsonObject())
-                );
-                case DIALOGUE_TYPE_NAME -> new CutsceneInstruction.Dialogue(
-                    Text.of(properties.get(TEXT_PROPERTY_KEY).getAsString())
-                );
-                case DELAY_TYPE_NAME -> new CutsceneInstruction.Delay(
-                    properties.get(TICKS_PROPERTY_KEY).getAsInt()
-                );
-                case CAMERA_POSITION_TYPE_NAME -> new CutsceneInstruction.PositionCamera(
-                    PositionData.fromJson(properties.get(POSITION_PROPERTY_KEY).getAsJsonObject())
-                );
-                case CAMERA_MODE_TYPE_NAME -> new CutsceneInstruction.SetCameraMode(
-                    CameraMode.fromString(properties.get(MODE_PROPERTY_KEY).getAsString()).orElseThrow()
-                );
-                default -> throw new JsonParseException(String.format("\"%s\" is not valid for MovementInstruction type name", type_name));
-            }
-        );
+        try {
+            return (
+                switch (type_name) {
+                    case SPAWN_NPC_TYPE_NAME -> new CutsceneInstruction.SpawnNPC(
+                        properties.get(NPC_ID_PROPERTY_KEY).getAsString(), 
+                        PositionData.fromJson(properties.get(POSITION_PROPERTY_KEY).getAsJsonObject())
+                    );
+                    case SPAWN_MOVING_NPC_TYPE_NAME -> new CutsceneInstruction.SpawnMovingNPC(
+                        properties.get(NPC_ID_PROPERTY_KEY).getAsString(), 
+                        PositionData.fromJson(properties.get(POSITION_PROPERTY_KEY).getAsJsonObject())
+                    );
+                    case DIALOGUE_TYPE_NAME -> new CutsceneInstruction.Dialogue(
+                        Text.of(properties.get(TEXT_PROPERTY_KEY).getAsString())
+                    );
+                    case DELAY_TYPE_NAME -> new CutsceneInstruction.Delay(
+                        properties.get(TICKS_PROPERTY_KEY).getAsInt()
+                    );
+                    case CAMERA_POSITION_TYPE_NAME -> new CutsceneInstruction.PositionCamera(
+                        PositionData.fromJson(properties.get(POSITION_PROPERTY_KEY).getAsJsonObject())
+                    );
+                    case CAMERA_MODE_TYPE_NAME -> new CutsceneInstruction.SetCameraMode(
+                        CameraMode.fromString(properties.get(MODE_PROPERTY_KEY).getAsString()).orElseThrow()
+                    );
+                    case ERROR_TYPE_NAME -> new CutsceneInstruction.ParseError();
+                    default -> throw new JsonParseException(String.format("\"%s\" is not valid for MovementInstruction type name", type_name));
+                }
+            );
+        } catch (Exception e) {
+            return new CutsceneInstruction.ParseError();
+        }
     }
 
     public static class JsonSerialiser implements JsonSerializer<CutsceneInstruction>, JsonDeserializer<CutsceneInstruction> {

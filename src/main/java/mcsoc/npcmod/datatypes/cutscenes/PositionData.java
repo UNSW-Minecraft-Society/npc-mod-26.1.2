@@ -11,18 +11,19 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.math.Vec3d;
 
-public record PositionData(double x, double y, double z, float pitch, float yaw) {
+public record PositionData(double x, double y, double z, float yaw, float pitch) {
 
     public Vec3d getPos() {
         return new Vec3d(x, y, z);
     }
 
     public PositionData addPos(Vec3d offset) {
-        return new PositionData(x + offset.x, y + offset.y, z + offset.z, pitch, yaw);
+        return new PositionData(x + offset.x, y + offset.y, z + offset.z, yaw, pitch);
     }
 
     public JsonObject toJson() {
@@ -35,13 +36,18 @@ public record PositionData(double x, double y, double z, float pitch, float yaw)
         return json;
     }
 
+
+    public static PositionData fromEntity(Entity e) {
+        return new PositionData(e.getX(), e.getY(), e.getZ(), e.getYaw(), e.getPitch());
+    }
+
     public static PositionData fromJson(JsonObject json) {
         return new PositionData(
             json.get("x").getAsFloat(),
             json.get("y").getAsFloat(),
             json.get("z").getAsFloat(),
-            json.get("pitch").getAsFloat(),
-            json.get("yaw").getAsFloat()
+            json.get("yaw").getAsFloat(),
+            json.get("pitch").getAsFloat()
         );
     }
 
@@ -61,8 +67,8 @@ public record PositionData(double x, double y, double z, float pitch, float yaw)
         PacketCodecs.DOUBLE, PositionData::x,
         PacketCodecs.DOUBLE, PositionData::y,
         PacketCodecs.DOUBLE, PositionData::z,
-        PacketCodecs.FLOAT, PositionData::pitch,
         PacketCodecs.FLOAT, PositionData::yaw,
+        PacketCodecs.FLOAT, PositionData::pitch,
         PositionData::new
     );
 }
