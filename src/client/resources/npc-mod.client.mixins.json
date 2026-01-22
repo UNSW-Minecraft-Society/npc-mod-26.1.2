@@ -3,8 +3,6 @@
 	"package": "mcsoc.npcmod.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"EntityCameraMixin",
-		"PlayerCameraPositionMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
