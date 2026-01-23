@@ -9,10 +9,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import io.netty.buffer.ByteBuf;
+import mcsoc.npcmod.datatypes.PositionData;
 import mcsoc.npcmod.util.Instruction;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
+
 
 public sealed interface MovementInstruction extends Instruction {
     static final String TYPE_KEY = "type";
@@ -23,49 +22,38 @@ public sealed interface MovementInstruction extends Instruction {
     static final String JUMP_TYPE_NAME = "jump";
     static final String TICKS_PROPERTY_KEY = "ticks";
     static final String SPEED_PROPERTY_KEY = "speed";
+    static final String POSITION_PROPERTY_KEY = "position";
     static final String PROPERTIES_KEY = "properties";
 
-    record Walk(int ticks, double speed) implements MovementInstruction {
+    record Walk(PositionData pos, double speed) implements MovementInstruction {
         @Override
         public JsonObject toJson() {
             JsonObject json = new JsonObject();
             json.addProperty(TYPE_KEY, WALK_TYPE_NAME);
 
             JsonObject properties = new JsonObject();
-            properties.addProperty(TICKS_PROPERTY_KEY, this.ticks);
+            properties.add(POSITION_PROPERTY_KEY, this.pos.toJson());
             properties.addProperty(SPEED_PROPERTY_KEY, this.speed);
             json.add(PROPERTIES_KEY, properties);
 
             return json;
         }
-
-        public static PacketCodec<ByteBuf, MovementInstruction> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.INTEGER, Walk::ticks,
-            PacketCodecs.DOUBLE, Walk::speed,
-            Walk::new
-        ).<MovementInstruction>xmap(w -> w, i -> (Walk) i);
     }
-    record Swim(int ticks, double speed) implements MovementInstruction {
+    record Swim(PositionData pos, double speed) implements MovementInstruction {
         @Override
         public JsonObject toJson() {
             JsonObject json = new JsonObject();
             json.addProperty(TYPE_KEY, SWIM_TYPE_NAME);
 
             JsonObject properties = new JsonObject();
-            properties.addProperty(TICKS_PROPERTY_KEY, this.ticks);
+            properties.add(POSITION_PROPERTY_KEY, this.pos.toJson());
             properties.addProperty(SPEED_PROPERTY_KEY, this.speed);
             json.add(PROPERTIES_KEY, properties);
             
             return json;
         }
-
-        public static PacketCodec<ByteBuf, MovementInstruction> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.INTEGER, Swim::ticks,
-            PacketCodecs.DOUBLE, Swim::speed,
-            Swim::new
-        ).<MovementInstruction>xmap(s -> s, i -> (Swim)i);
     }
-    record Turn(int ticks, double degrees) implements MovementInstruction {
+    record Turn(int ticks, float target_degrees) implements MovementInstruction {
         @Override
         public JsonObject toJson() {
             JsonObject json = new JsonObject();
@@ -73,17 +61,11 @@ public sealed interface MovementInstruction extends Instruction {
 
             JsonObject properties = new JsonObject();
             properties.addProperty(TICKS_PROPERTY_KEY, this.ticks);
-            properties.addProperty("degrees", this.degrees);
+            properties.addProperty("degrees", this.target_degrees);
             json.add(PROPERTIES_KEY, properties);
             
             return json;
         }
-
-        public static PacketCodec<ByteBuf, MovementInstruction> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.INTEGER, Turn::ticks,
-            PacketCodecs.DOUBLE, Turn::degrees,
-            Turn::new
-        ).<MovementInstruction>xmap(t -> t, i -> (Turn) i);
     }
     record Stop(int ticks) implements MovementInstruction {
         @Override
@@ -97,11 +79,6 @@ public sealed interface MovementInstruction extends Instruction {
             
             return json;
         }
-
-        public static PacketCodec<ByteBuf, MovementInstruction> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.INTEGER, Stop::ticks,
-            Stop::new
-        ).<MovementInstruction>xmap(s -> s, i -> (Stop) i);
     }
     record Jump() implements MovementInstruction {
         @Override
@@ -111,8 +88,6 @@ public sealed interface MovementInstruction extends Instruction {
             json.add(PROPERTIES_KEY, new JsonObject());
             return json;
         }
-
-        public static PacketCodec<ByteBuf, MovementInstruction> PACKET_CODEC = PacketCodec.unit(new Jump());
     }
 
     public abstract JsonObject toJson();
@@ -123,16 +98,16 @@ public sealed interface MovementInstruction extends Instruction {
         return (
             switch (type_name) {
                 case WALK_TYPE_NAME -> new MovementInstruction.Walk(
-                    properties.get(TICKS_PROPERTY_KEY).getAsInt(), 
+                    PositionData.fromJson(properties.get(POSITION_PROPERTY_KEY).getAsJsonObject()), 
                     properties.get(SPEED_PROPERTY_KEY).getAsDouble()
                 );
                 case SWIM_TYPE_NAME -> new MovementInstruction.Swim(
-                    properties.get(TICKS_PROPERTY_KEY).getAsInt(), 
+                    PositionData.fromJson(properties.get(POSITION_PROPERTY_KEY).getAsJsonObject()), 
                     properties.get(SPEED_PROPERTY_KEY).getAsDouble()
                 );
                 case TURN_TYPE_NAME -> new MovementInstruction.Turn(
                     properties.get(TICKS_PROPERTY_KEY).getAsInt(), 
-                    properties.get("degrees").getAsDouble()
+                    properties.get("degrees").getAsFloat()
                 );
                 case STOP_TYPE_NAME -> new MovementInstruction.Stop(
                     properties.get(TICKS_PROPERTY_KEY).getAsInt()

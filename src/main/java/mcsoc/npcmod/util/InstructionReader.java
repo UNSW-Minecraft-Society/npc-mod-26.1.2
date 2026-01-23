@@ -27,8 +27,6 @@ public interface InstructionReader<T extends Instruction> {
         if (this.getRemainingTicks() == 0) {
             while (this.getRemainingTicks() == 0) {
                 
-                instruction_queue.poll();
-                
                 if (instruction_queue.isEmpty()) {
                     if (this.shouldRepeat()) {
                         instruction_queue.addAll(this.getNewInstructions());
@@ -36,7 +34,7 @@ public interface InstructionReader<T extends Instruction> {
                         break;
                     }
                 }
-                this.loadInstruction(instruction_queue.peek());
+                this.loadInstruction(instruction_queue.poll());
             }
         } else {
             this.decrementRemainingTicks();

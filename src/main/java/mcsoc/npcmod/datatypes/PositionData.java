@@ -14,12 +14,16 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public record PositionData(double x, double y, double z, float yaw, float pitch) {
 
     public Vec3d getPos() {
         return new Vec3d(x, y, z);
+    }
+    public BlockPos getBlockPos() {
+        return BlockPos.ofFloored(getPos());
     }
 
     public PositionData addPos(Vec3d offset) {

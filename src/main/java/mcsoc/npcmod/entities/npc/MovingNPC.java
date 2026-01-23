@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Queue;
 
 import mcsoc.npcmod.dataloader.datastorage.NpcModServerDataStorage;
+import mcsoc.npcmod.datatypes.PositionData;
 import mcsoc.npcmod.datatypes.npcs.MovementInstruction;
 import mcsoc.npcmod.util.InstructionReader;
 import net.minecraft.command.argument.EntityAnchorArgumentType.EntityAnchor;
@@ -25,22 +26,23 @@ public class MovingNPC extends BaseNPC implements InstructionReader<MovementInst
 
     public void loadInstruction(MovementInstruction instruction) {
         switch (instruction) {
-            case MovementInstruction.Walk(int ticks, double speed): {
-                this.current_operation_ticks_remaining = ticks;
-                Vec3d target = this.getPos().add(this.getRotationVector().multiply(20));
-                this.lookAt(EntityAnchor.EYES, target);
+            case MovementInstruction.Walk(PositionData pos, double speed): {
+                this.current_operation_ticks_remaining = 1;
+                Vec3d target = pos.getPos();
+                this.setAngles(pos.yaw(), pos.pitch());
                 this.getNavigation().startMovingTo(target.x, target.y, target.z, speed);
                 break;
             }
-            case MovementInstruction.Turn(int ticks, double degrees): {
-                this.current_operation_ticks_remaining = ticks;
-                break;
-            }
-            case MovementInstruction.Swim(int ticks, double speed): {
-                this.current_operation_ticks_remaining = ticks;
-                Vec3d target = this.getPos().add(this.getRotationVector().multiply(20));
-                this.getNavigation().startMovingTo(target.x, target.y, target.z, speed);
+            case MovementInstruction.Swim(PositionData pos, double speed): {
                 this.setSwimming(true);
+                this.current_operation_ticks_remaining = 1;
+                Vec3d target = pos.getPos();
+                this.setAngles(pos.yaw(), pos.pitch());
+                this.getNavigation().startMovingTo(target.x, target.y, target.z, speed);
+                break;
+            }
+            case MovementInstruction.Turn(int ticks, float degrees): {
+                this.current_operation_ticks_remaining = ticks;
                 break;
             }
             case MovementInstruction.Stop(int ticks): {
@@ -60,12 +62,29 @@ public class MovingNPC extends BaseNPC implements InstructionReader<MovementInst
 
     public void tickInstruction(MovementInstruction instruction) {
         switch (instruction) {
-            case MovementInstruction.Turn(int ticks, double degrees): {
-                float rotation_rate = (float)degrees / ticks;
+            case MovementInstruction.Walk(PositionData pos, double speed): {
+                if (this.getNavigation().isFollowingPath()) {
+                    this.current_operation_ticks_remaining = 1;
+                }
+                break;
+            }
+            case MovementInstruction.Swim(PositionData pos, double speed): {
+                if (this.getNavigation().isFollowingPath()) {
+                    this.current_operation_ticks_remaining = 1;
+                }
+                break;
+            }
+            case MovementInstruction.Turn(int ticks, float target_degrees): {
+                float rotation_rate = (target_degrees - this.getYaw()) / ticks;
                 this.setYaw(this.getYaw() + rotation_rate);
                 
                 Vec3d target = this.getEyePos().add(this.getRotationVector().multiply(2));
                 this.lookAt(EntityAnchor.EYES, target);
+                break;
+            }
+            case MovementInstruction.Jump(): {
+                this.current_operation_ticks_remaining = 20;
+                this.jumpControl.tick();
                 break;
             }
             default:
@@ -75,7 +94,7 @@ public class MovingNPC extends BaseNPC implements InstructionReader<MovementInst
 
     @Override
     public boolean shouldRepeat() {
-        return true;
+        return false;
     }
 
     @Override
