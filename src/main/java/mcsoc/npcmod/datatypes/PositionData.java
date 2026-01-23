@@ -35,8 +35,8 @@ public record PositionData(double x, double y, double z, float yaw, float pitch)
         json.addProperty("x", this.x());
         json.addProperty("y", this.y());
         json.addProperty("z", this.z());
-        json.addProperty("pitch", this.pitch());
         json.addProperty("yaw", this.yaw());
+        json.addProperty("pitch", this.pitch());
         return json;
     }
 
