@@ -8,9 +8,9 @@ import java.util.Queue;
 
 import mcsoc.npcmod.NpcMod;
 import mcsoc.npcmod.dataloader.datastorage.NpcModServerDataStorage;
+import mcsoc.npcmod.datatypes.PositionData;
 import mcsoc.npcmod.datatypes.cutscenes.CameraMode;
 import mcsoc.npcmod.datatypes.cutscenes.CutsceneInstruction;
-import mcsoc.npcmod.datatypes.cutscenes.PositionData;
 import mcsoc.npcmod.entities.EntityRegistration;
 import mcsoc.npcmod.entities.npc.BaseNPC;
 import mcsoc.npcmod.entities.npc.BasicNPC;

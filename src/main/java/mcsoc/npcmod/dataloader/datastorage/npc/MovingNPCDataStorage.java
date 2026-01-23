@@ -3,7 +3,7 @@ package mcsoc.npcmod.dataloader.datastorage.npc;
 import java.util.List;
 import java.util.Map;
 
-import mcsoc.npcmod.datatypes.MovementData;
+import mcsoc.npcmod.datatypes.npcs.MovementData;
 import mcsoc.npcmod.datatypes.npcs.NPCMode;
 import mcsoc.npcmod.datatypes.npcs.MovementInstruction;
 import mcsoc.npcmod.datatypes.npcs.MovingNPCData;
@@ -11,13 +11,14 @@ import mcsoc.npcmod.datatypes.npcs.NPCData;
 import mcsoc.npcmod.entities.npc.BaseNPC;
 import mcsoc.npcmod.entities.npc.MovingNPC;
 
+
 public interface MovingNPCDataStorage {
 
     static final MovementData MOVEMENTS_NOT_FOUND = new MovementData(List.of(new MovementInstruction.Jump()));
     static final MovingNPCData MOVING_NPC_NOT_FOUND = new MovingNPCData(NPCDataStorage.NPC_NOT_FOUND, NPCDataStorage.MISSING_KEY);
 
     abstract Map<String, MovingNPCData> getMovingNPCMap();
-    abstract Map<String, MovementData> getMovementMap();
+    abstract Map<String, mcsoc.npcmod.datatypes.npcs.MovementData> getMovementMap();
 
     abstract NPCData getNPCData(BaseNPC npc);
 

@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import mcsoc.npcmod.dataloader.jsonparser.JsonDataParser;
-import mcsoc.npcmod.datatypes.MovementData;
+import mcsoc.npcmod.datatypes.npcs.MovementData;
 import mcsoc.npcmod.datatypes.npcs.MovementInstruction;
 import mcsoc.npcmod.datatypes.npcs.MovingNPCData;
 

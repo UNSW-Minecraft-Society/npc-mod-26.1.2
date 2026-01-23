@@ -1,7 +1,7 @@
 package mcsoc.npcmod.camera;
 
+import mcsoc.npcmod.datatypes.PositionData;
 import mcsoc.npcmod.datatypes.cutscenes.CameraMode;
-import mcsoc.npcmod.datatypes.cutscenes.PositionData;
 import mcsoc.npcmod.entities.ClientEntityRegistration;
 import mcsoc.npcmod.entities.camera.CameraClientEntity;
 import net.minecraft.client.MinecraftClient;

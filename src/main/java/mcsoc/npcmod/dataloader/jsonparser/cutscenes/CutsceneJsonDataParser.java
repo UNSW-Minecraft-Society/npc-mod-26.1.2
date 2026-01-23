@@ -4,9 +4,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import mcsoc.npcmod.dataloader.jsonparser.JsonDataParser;
+import mcsoc.npcmod.datatypes.PositionData;
 import mcsoc.npcmod.datatypes.cutscenes.CutsceneData;
 import mcsoc.npcmod.datatypes.cutscenes.CutsceneInstruction;
-import mcsoc.npcmod.datatypes.cutscenes.PositionData;
 
 import java.lang.reflect.Type;
 import java.util.Map;

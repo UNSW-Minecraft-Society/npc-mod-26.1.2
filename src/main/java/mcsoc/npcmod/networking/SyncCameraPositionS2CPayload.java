@@ -1,6 +1,6 @@
 package mcsoc.npcmod.networking;
 
-import mcsoc.npcmod.datatypes.cutscenes.PositionData;
+import mcsoc.npcmod.datatypes.PositionData;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;

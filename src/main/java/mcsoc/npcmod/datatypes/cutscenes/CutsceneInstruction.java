@@ -10,7 +10,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import net.minecraft.text.Text;
-
+import mcsoc.npcmod.datatypes.PositionData;
 import mcsoc.npcmod.util.Instruction;
 
 

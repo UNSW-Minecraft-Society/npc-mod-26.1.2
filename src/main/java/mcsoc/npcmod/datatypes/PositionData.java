@@ -1,4 +1,4 @@
-package mcsoc.npcmod.datatypes.cutscenes;
+package mcsoc.npcmod.datatypes;
 
 import java.lang.reflect.Type;
 
