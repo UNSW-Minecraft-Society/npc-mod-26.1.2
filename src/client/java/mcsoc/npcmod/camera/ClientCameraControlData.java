@@ -8,6 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 
+
 public interface ClientCameraControlData {
 
     void setCameraModeRaw(CameraMode mode);

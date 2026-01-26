@@ -9,5 +9,6 @@ public class PacketHandlers {
         SyncMovingNPCDataPacketEvent.registerHandler();
 
         SyncCameraPositionPacketEvent.registerHandler();
+        SyncCameraModePacketEvent.registerHandler();
     }
 }

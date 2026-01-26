@@ -17,6 +17,7 @@ public abstract class NetworkingIdentifiers {
         PayloadTypeRegistry.playS2C().register(SyncModelDataS2CPayload.ID, SyncModelDataS2CPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SyncDialogueDataS2CPayload.ID, SyncDialogueDataS2CPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SyncNPCDataS2CPayload.ID, SyncNPCDataS2CPayload.CODEC);
+        
         PayloadTypeRegistry.playS2C().register(SyncMovingNPCDataS2CPayload.ID, SyncMovingNPCDataS2CPayload.CODEC);
 
         PayloadTypeRegistry.playS2C().register(SyncCameraPositionS2CPayload.ID, SyncCameraPositionS2CPayload.CODEC);
