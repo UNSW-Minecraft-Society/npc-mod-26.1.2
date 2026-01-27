@@ -20,7 +20,10 @@ import mcsoc.npcmod.networking.SyncCameraPositionS2CPayload;
 import mcsoc.npcmod.util.InstructionReader;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
 
@@ -31,8 +34,8 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
     private Queue<CutsceneInstruction> actions_queue = new ArrayDeque<>();
     private int current_operation_ticks_remaining = 0;
     private boolean should_play = false;
-    private Optional<String> cutscene_id;
-    private Optional<ServerWorld> world;
+    private Optional<String> cutscene_id = Optional.empty();
+    private Optional<ServerWorld> world = Optional.empty();
     private Vec3d call_position;
 
 
@@ -102,6 +105,14 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
                 loaded_world.getPlayers().forEach(player -> {
                     ServerPlayNetworking.send(player, new SyncCameraModeS2CPayload(mode));
                 });
+            }
+            case CutsceneInstruction.PlaySound(Identifier sound_id, int x, int y, int z) -> {
+                loaded_world.playSound(null, x, y, z, SoundEvent.of(sound_id), SoundCategory.PLAYERS, 1, 1);
+            }
+            case CutsceneInstruction.PlaySoundPlayers(Identifier sound_id) -> {
+                loaded_world.getPlayers().forEach(player -> 
+                    loaded_world.playSound(player, player.getBlockPos(), SoundEvent.of(sound_id, 20), SoundCategory.PLAYERS, 1, 1)
+                );
             }
             default -> {}
         }

@@ -10,6 +10,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import mcsoc.npcmod.datatypes.PositionData;
 import mcsoc.npcmod.util.Instruction;
 
@@ -22,6 +23,8 @@ public sealed interface CutsceneInstruction extends Instruction {
     static final String SPAWN_NPC_TYPE_NAME = "spawn_npc";
     static final String SPAWN_MOVING_NPC_TYPE_NAME = "spawn_moving_npc";
     static final String DIALOGUE_TYPE_NAME = "dialogue";
+    static final String PLAYSOUND_TYPE_NAME = "play_sound";
+    static final String PLAYSOUND_PLAYER_TYPE_NAME = "play_sound_at_players";
     static final String DELAY_TYPE_NAME = "wait";
     static final String CAMERA_POSITION_TYPE_NAME = "position_camera";
     static final String CAMERA_MODE_TYPE_NAME = "modify_camera";
@@ -30,9 +33,11 @@ public sealed interface CutsceneInstruction extends Instruction {
     static final String NPC_ID_PROPERTY_KEY = "npc_id";
     static final String POSITION_PROPERTY_KEY = "position";
     static final String TEXT_PROPERTY_KEY = "text";
+    static final String IDENTIFIER_PROPERTY_KEY = "identifier";
     static final String TICKS_PROPERTY_KEY = "ticks";
     static final String SPEED_PROPERTY_KEY = "speed";
     static final String MODE_PROPERTY_KEY = "mode";
+
 
     record ParseError() implements CutsceneInstruction {
         @Override
@@ -81,6 +86,40 @@ public sealed interface CutsceneInstruction extends Instruction {
 
             JsonObject properties = new JsonObject();
             properties.addProperty(TEXT_PROPERTY_KEY, text.getString());
+            json.add(PROPERTIES_KEY, properties);
+
+            return json;
+        }
+    }
+    record PlaySound(Identifier sound_id, int x, int y, int z) implements CutsceneInstruction {
+        @Override
+        public JsonObject toJson() {
+            JsonObject json = new JsonObject();
+            json.addProperty(TYPE_KEY, PLAYSOUND_TYPE_NAME);
+
+            JsonObject properties = new JsonObject();
+
+            properties.addProperty(IDENTIFIER_PROPERTY_KEY, sound_id.toString());
+
+            JsonObject position_json = new JsonObject();
+            position_json.addProperty("x", this.x());
+            position_json.addProperty("y", this.y());
+            position_json.addProperty("z", this.z());
+            properties.add(POSITION_PROPERTY_KEY, position_json);
+
+            json.add(PROPERTIES_KEY, properties);
+
+            return json;
+        }
+    }
+    record PlaySoundPlayers(Identifier sound_id) implements CutsceneInstruction {
+        @Override
+        public JsonObject toJson() {
+            JsonObject json = new JsonObject();
+            json.addProperty(TYPE_KEY, PLAYSOUND_PLAYER_TYPE_NAME);
+
+            JsonObject properties = new JsonObject();
+            properties.addProperty(IDENTIFIER_PROPERTY_KEY, sound_id.toString());
             json.add(PROPERTIES_KEY, properties);
 
             return json;
@@ -146,6 +185,15 @@ public sealed interface CutsceneInstruction extends Instruction {
                     case DIALOGUE_TYPE_NAME -> new CutsceneInstruction.Dialogue(
                         Text.of(properties.get(TEXT_PROPERTY_KEY).getAsString())
                     );
+                    case PLAYSOUND_TYPE_NAME -> new CutsceneInstruction.PlaySound(
+                        Identifier.of(properties.get(IDENTIFIER_PROPERTY_KEY).getAsString()),
+                        properties.get("x").getAsInt(),
+                        properties.get("y").getAsInt(),
+                        properties.get("z").getAsInt()
+                    );
+                    case PLAYSOUND_PLAYER_TYPE_NAME -> new CutsceneInstruction.PlaySoundPlayers(
+                        Identifier.of(properties.get(IDENTIFIER_PROPERTY_KEY).getAsString())
+                    );
                     case DELAY_TYPE_NAME -> new CutsceneInstruction.Delay(
                         properties.get(TICKS_PROPERTY_KEY).getAsInt()
                     );
@@ -156,7 +204,7 @@ public sealed interface CutsceneInstruction extends Instruction {
                         CameraMode.fromString(properties.get(MODE_PROPERTY_KEY).getAsString()).orElseThrow()
                     );
                     case ERROR_TYPE_NAME -> new CutsceneInstruction.ParseError();
-                    default -> throw new JsonParseException(String.format("\"%s\" is not valid for MovementInstruction type name", type_name));
+                    default -> throw new JsonParseException(String.format("\"%s\" is not valid for CutsceneInstruction type name", type_name));
                 }
             );
         } catch (Exception e) {
