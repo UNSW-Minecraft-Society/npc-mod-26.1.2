@@ -21,7 +21,7 @@ public class ClientCameraUtils {
 
     public static void registerDismountKeybind() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            if (ClientData.getInstance().getCameraMode() == CameraMode.UNLOCKED && client.options.sneakKey.isPressed()) {
+            if (!ClientData.getInstance().getCameraMode().locked() && client.options.sneakKey.isPressed()) {
                 ClientData.getInstance().setCameraMode(CameraMode.NORMAL);
             }
         });

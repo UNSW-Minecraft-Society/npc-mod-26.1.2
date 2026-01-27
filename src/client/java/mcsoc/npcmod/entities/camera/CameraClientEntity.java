@@ -10,16 +10,4 @@ public class CameraClientEntity extends MarkerEntity {
         super(type, world);
     }
 
-    @Override
-    public void tick() {
-        this.prevX = this.getX();
-        this.prevY = this.getY();
-        this.prevZ = this.getZ();
-        this.prevYaw = this.getYaw();
-        this.prevPitch = this.getPitch();
-
-        this.lastRenderX = this.getX();
-        this.lastRenderY = this.getY();
-        this.lastRenderZ = this.getZ();
-    }
 }

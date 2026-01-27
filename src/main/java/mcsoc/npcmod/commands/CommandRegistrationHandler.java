@@ -8,6 +8,8 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
+import mcsoc.npcmod.dataloader.datastorage.NpcModServerDataStorage;
+import mcsoc.npcmod.dataloader.datastorage.npc.NPCDataStorage;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
@@ -23,6 +25,12 @@ public abstract class CommandRegistrationHandler {
         private CommandSuggestionProviders() { /* delete */ }
     
         public static class OnlinePlayerSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
+            
+            public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
+                return CommandSource.suggestMatching(NpcModServerDataStorage.getInstance().getCutsceneMap().keySet(), builder);
+            }
+        }
+        public static class LoadedCutsceneSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
             
             public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
                 MinecraftServer server = ctx.getSource().getServer();
@@ -43,6 +51,7 @@ public abstract class CommandRegistrationHandler {
                 //.requires(source -> source.hasPermissionLevel(2))
                 .then(CommandManager.literal("trigger")
                     .then(CommandManager.argument("cutscene_id", StringArgumentType.string())
+                        .suggests(new CommandSuggestionProviders.LoadedCutsceneSuggestionProvider())
                         .executes(CommandActions::triggerCutscene)
                     )
                 )

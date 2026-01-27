@@ -27,6 +27,7 @@ public sealed interface CutsceneInstruction extends Instruction {
     static final String PLAYSOUND_PLAYER_TYPE_NAME = "play_sound_at_players";
     static final String DELAY_TYPE_NAME = "wait";
     static final String CAMERA_POSITION_TYPE_NAME = "position_camera";
+    static final String CAMERA_PAN_TYPE_NAME = "pan_camera";
     static final String CAMERA_MODE_TYPE_NAME = "modify_camera";
 
     static final String PROPERTIES_KEY = "properties";
@@ -151,6 +152,21 @@ public sealed interface CutsceneInstruction extends Instruction {
             return json;
         }
     }
+    record PanCamera(PositionData from, PositionData to, int ticks) implements CutsceneInstruction {
+        @Override
+        public JsonObject toJson() {
+            JsonObject json = new JsonObject();
+            json.addProperty(TYPE_KEY, CAMERA_PAN_TYPE_NAME);
+
+            JsonObject properties_json = new JsonObject();
+            properties_json.add("from", from.toJson());
+            properties_json.add("to", to.toJson());
+            properties_json.addProperty(TICKS_PROPERTY_KEY, ticks);
+            json.add(PROPERTIES_KEY, properties_json);
+
+            return json;
+        }
+    }
     record SetCameraMode(CameraMode mode) implements CutsceneInstruction {
         @Override
         public JsonObject toJson() {
@@ -199,6 +215,11 @@ public sealed interface CutsceneInstruction extends Instruction {
                     );
                     case CAMERA_POSITION_TYPE_NAME -> new CutsceneInstruction.PositionCamera(
                         PositionData.fromJson(properties.get(POSITION_PROPERTY_KEY).getAsJsonObject())
+                    );
+                    case CAMERA_PAN_TYPE_NAME -> new CutsceneInstruction.PanCamera(
+                        PositionData.fromJson(properties.get("from").getAsJsonObject()),
+                        PositionData.fromJson(properties.get("to").getAsJsonObject()),
+                        properties.get(TICKS_PROPERTY_KEY).getAsInt()
                     );
                     case CAMERA_MODE_TYPE_NAME -> new CutsceneInstruction.SetCameraMode(
                         CameraMode.fromString(properties.get(MODE_PROPERTY_KEY).getAsString()).orElseThrow()

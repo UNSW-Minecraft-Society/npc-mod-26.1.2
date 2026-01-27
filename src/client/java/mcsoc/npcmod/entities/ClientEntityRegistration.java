@@ -20,6 +20,6 @@ public class ClientEntityRegistration {
     );
 
     public static void registerEntities() {
-        
+        // init statics
     }
 }

@@ -15,6 +15,7 @@ import mcsoc.npcmod.entities.EntityRegistration;
 import mcsoc.npcmod.entities.npc.BaseNPC;
 import mcsoc.npcmod.entities.npc.BasicNPC;
 import mcsoc.npcmod.entities.npc.MovingNPC;
+import mcsoc.npcmod.networking.CameraPanS2CPayload;
 import mcsoc.npcmod.networking.SyncCameraModeS2CPayload;
 import mcsoc.npcmod.networking.SyncCameraPositionS2CPayload;
 import mcsoc.npcmod.util.InstructionReader;
@@ -24,6 +25,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
 
@@ -36,7 +38,7 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
     private boolean should_play = false;
     private Optional<String> cutscene_id = Optional.empty();
     private Optional<ServerWorld> world = Optional.empty();
-    private Vec3d call_position;
+    private PositionData call_position;
 
 
     private CutsceneHandler() {}
@@ -44,13 +46,13 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
         return INSTANCE;
     }
 
-    public void loadCutscene(String cutscene_id, Vec3d call_position) {
+    public void loadCutscene(String cutscene_id, Vec3d call_position, Vec2f call_rotation) {
         if (world.isEmpty()) throw new NoSuchElementException("world was not initialised");
 
         this.cutscene_id = Optional.of(cutscene_id);
         this.actions_queue.clear();
         this.actions_queue.addAll(this.getNewInstructions());
-        this.call_position = call_position;
+        this.call_position = PositionData.fromPosAndAngles(call_position, call_rotation.y, call_rotation.x);
     }
 
     public void setWorld(ServerWorld world) {
@@ -82,12 +84,12 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
         switch (instruction) {
             case CutsceneInstruction.SpawnNPC(String npc_id, PositionData position_data) -> {
                 BasicNPC npc = new BasicNPC(EntityRegistration.BASIC_NPC, loaded_world);
-                applyNPCAttributes(npc, npc_id, position_data);
+                applyNPCAttributes(npc, npc_id, call_position.add(position_data));
                 loaded_world.spawnEntity(npc);
             }
             case CutsceneInstruction.SpawnMovingNPC(String npc_id, PositionData position_data) -> {
                 MovingNPC npc = new MovingNPC(EntityRegistration.MOVING_NPC, loaded_world);
-                applyNPCAttributes(npc, npc_id, position_data);
+                applyNPCAttributes(npc, npc_id, call_position.add(position_data));
                 loaded_world.spawnEntity(npc);
             }
             case CutsceneInstruction.Dialogue(Text text) -> {
@@ -97,14 +99,20 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
                 this.current_operation_ticks_remaining = ticks;
             }
             case CutsceneInstruction.PositionCamera(PositionData position_data) -> {
-                loaded_world.getPlayers().forEach(player -> {
-                    ServerPlayNetworking.send(player, new SyncCameraPositionS2CPayload(position_data.addPos(call_position)));
-                });
+                loaded_world.getPlayers().forEach(player -> 
+                    ServerPlayNetworking.send(player, new SyncCameraPositionS2CPayload(call_position.add(position_data)))
+                );
             }
             case CutsceneInstruction.SetCameraMode(CameraMode mode) -> {
                 loaded_world.getPlayers().forEach(player -> {
                     ServerPlayNetworking.send(player, new SyncCameraModeS2CPayload(mode));
                 });
+            }
+            case CutsceneInstruction.PanCamera(PositionData from, PositionData to, int ticks) -> {
+                loaded_world.getPlayers().forEach(player -> {
+                    ServerPlayNetworking.send(player, new CameraPanS2CPayload(call_position.add(from), call_position.add(to), ticks));
+                });
+                this.current_operation_ticks_remaining = ticks;
             }
             case CutsceneInstruction.PlaySound(Identifier sound_id, int x, int y, int z) -> {
                 loaded_world.playSound(null, x, y, z, SoundEvent.of(sound_id), SoundCategory.PLAYERS, 1, 1);

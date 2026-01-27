@@ -10,5 +10,6 @@ public class PacketHandlers {
 
         SyncCameraPositionPacketEvent.registerHandler();
         SyncCameraModePacketEvent.registerHandler();
+        CameraPanTriggerPacketEvent.registerHandler();
     }
 }

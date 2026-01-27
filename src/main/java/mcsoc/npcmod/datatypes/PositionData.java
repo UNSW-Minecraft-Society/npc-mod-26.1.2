@@ -19,6 +19,24 @@ import net.minecraft.util.math.Vec3d;
 
 public record PositionData(double x, double y, double z, float yaw, float pitch) {
 
+    public static PositionData fromPosAndAngles(Vec3d pos, float yaw, float pitch) {
+        return new PositionData(pos.x, pos.y, pos.z, yaw, pitch);
+    }
+
+    public PositionData add(PositionData other) {
+        return new PositionData(x + other.x, y + other.y, z + other.z, yaw + other.yaw, pitch + other.pitch);
+    }
+    public PositionData subtract(PositionData other) {
+        return new PositionData(x - other.x, y - other.y, z - other.z, yaw - other.yaw, pitch - other.pitch);
+    }
+
+    public PositionData multiply(float f) {
+        return new PositionData(x * f, y * f, z * f, yaw * f, pitch * f);
+    }
+    public PositionData divide(float f) {
+        return new PositionData(x / f, y / f, z / f, yaw / f, pitch / f);
+    }
+
     public Vec3d getPos() {
         return new Vec3d(x, y, z);
     }
@@ -28,6 +46,9 @@ public record PositionData(double x, double y, double z, float yaw, float pitch)
 
     public PositionData addPos(Vec3d offset) {
         return new PositionData(x + offset.x, y + offset.y, z + offset.z, yaw, pitch);
+    }
+    public PositionData addAngles(float off_yaw, float off_pitch) {
+        return new PositionData(x, y, z, yaw + off_yaw, pitch + off_pitch);
     }
 
     public JsonObject toJson() {

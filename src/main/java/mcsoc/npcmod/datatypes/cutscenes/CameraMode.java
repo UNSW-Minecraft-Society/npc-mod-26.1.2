@@ -16,11 +16,21 @@ public enum CameraMode implements StringIdentifiable {
         public String toString() {
             return "normal";
         }
+
+        @Override
+        public boolean locked() {
+            return false;
+        }
     },
     UNLOCKED {
         @Override
         public String toString() {
             return "unlocked";
+        }
+
+        @Override
+        public boolean locked() {
+            return false;
         }
     },
     LOCKED {
@@ -28,10 +38,28 @@ public enum CameraMode implements StringIdentifiable {
         public String toString() {
             return "locked";
         }
+        
+        @Override
+        public boolean locked() {
+            return true;
+        }
+    },
+    PANNING {
+        @Override
+        public String toString() {
+            return "pan_to";
+        }
+
+        @Override
+        public boolean locked() {
+            return true;
+        }
     };
 
     @Override
     public abstract String toString();
+
+    public abstract boolean locked();
 
     @Override
     public String asString() {
