@@ -9,7 +9,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import mcsoc.npcmod.dataloader.datastorage.NpcModServerDataStorage;
-import mcsoc.npcmod.dataloader.datastorage.npc.NPCDataStorage;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
