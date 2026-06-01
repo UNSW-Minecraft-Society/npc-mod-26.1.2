@@ -38,6 +38,9 @@ public sealed interface CutsceneInstruction extends Instruction {
     static final String TICKS_PROPERTY_KEY = "ticks";
     static final String SPEED_PROPERTY_KEY = "speed";
     static final String MODE_PROPERTY_KEY = "mode";
+    static final String SOUND_ID_KEY = "sound_id";
+    static final String NAMESPACE_KEY = "namespace";
+    static final String PATH_KEY = "path";
 
 
     record ParseError() implements CutsceneInstruction {
@@ -100,7 +103,10 @@ public sealed interface CutsceneInstruction extends Instruction {
 
             JsonObject properties = new JsonObject();
 
-            properties.addProperty(IDENTIFIER_PROPERTY_KEY, sound_id.toString());
+            JsonObject sound_json = new JsonObject();
+            sound_json.addProperty(NAMESPACE_KEY, sound_id.getNamespace());
+            sound_json.addProperty(PATH_KEY, sound_id.getPath());
+            properties.add(SOUND_ID_KEY, sound_json);
 
             JsonObject position_json = new JsonObject();
             position_json.addProperty("x", this.x());
@@ -120,9 +126,12 @@ public sealed interface CutsceneInstruction extends Instruction {
             json.addProperty(TYPE_KEY, PLAYSOUND_PLAYER_TYPE_NAME);
 
             JsonObject properties = new JsonObject();
-            properties.addProperty(IDENTIFIER_PROPERTY_KEY, sound_id.toString());
-            json.add(PROPERTIES_KEY, properties);
+            JsonObject sound_json = new JsonObject();
+            sound_json.addProperty(NAMESPACE_KEY, sound_id.getNamespace());
+            sound_json.addProperty(PATH_KEY, sound_id.getPath());
+            properties.add(SOUND_ID_KEY, sound_json);
 
+            json.add(PROPERTIES_KEY, properties);
             return json;
         }
     }
@@ -183,7 +192,6 @@ public sealed interface CutsceneInstruction extends Instruction {
 
     public abstract JsonObject toJson();
 
-
     public static CutsceneInstruction fromJson(JsonObject json) throws JsonParseException {
         String type_name = json.get(TYPE_KEY).getAsString();
         JsonObject properties = json.get(PROPERTIES_KEY).getAsJsonObject();
@@ -201,15 +209,21 @@ public sealed interface CutsceneInstruction extends Instruction {
                     case DIALOGUE_TYPE_NAME -> new CutsceneInstruction.Dialogue(
                         Text.of(properties.get(TEXT_PROPERTY_KEY).getAsString())
                     );
-                    case PLAYSOUND_TYPE_NAME -> new CutsceneInstruction.PlaySound(
-                        Identifier.of(properties.get(IDENTIFIER_PROPERTY_KEY).getAsString()),
-                        properties.get("x").getAsInt(),
-                        properties.get("y").getAsInt(),
-                        properties.get("z").getAsInt()
-                    );
-                    case PLAYSOUND_PLAYER_TYPE_NAME -> new CutsceneInstruction.PlaySoundPlayers(
-                        Identifier.of(properties.get(IDENTIFIER_PROPERTY_KEY).getAsString())
-                    );
+                    case PLAYSOUND_TYPE_NAME -> {
+                        JsonObject voice_json = json.get(SOUND_ID_KEY).getAsJsonObject();
+                        yield new CutsceneInstruction.PlaySound(
+                            Identifier.of(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString()),
+                            properties.get("x").getAsInt(),
+                            properties.get("y").getAsInt(),
+                            properties.get("z").getAsInt()
+                        );
+                    }
+                    case PLAYSOUND_PLAYER_TYPE_NAME -> {
+                        JsonObject voice_json = json.get(SOUND_ID_KEY).getAsJsonObject();
+                        yield new CutsceneInstruction.PlaySoundPlayers(
+                            Identifier.of(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString())
+                        );
+                    }
                     case DELAY_TYPE_NAME -> new CutsceneInstruction.Delay(
                         properties.get(TICKS_PROPERTY_KEY).getAsInt()
                     );
