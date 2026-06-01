@@ -2,7 +2,6 @@ package mcsoc.npcmod.dataloader.datastorage.npc;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import mcsoc.npcmod.datatypes.npcs.DialogueData;
 import mcsoc.npcmod.datatypes.npcs.NPCMode;
@@ -16,7 +15,7 @@ import net.minecraft.util.Identifier;
 
 public interface NPCDataStorage {
 
-    static final ModelData MODEL_NOT_FOUND = new ModelData(UUID.fromString("e2d03233-e72a-4389-9b41-12a9ff98bf3d"));
+    static final ModelData MODEL_NOT_FOUND = new ModelData(Identifier.ofVanilla("textures/entity/player/wide/noor.png"), true);
     static final DialogueData DIALOGUE_NOT_FOUND = new DialogueData(Text.of("DEFAULT"), List.of(Text.of("Dialogue not found.")), Identifier.ofVanilla("music_disc.far"));
     static final String MISSING_KEY = "mssngn";
     static final NPCData NPC_NOT_FOUND = new NPCData(MISSING_KEY, MISSING_KEY, NPCMode.BACKGROUND);
@@ -40,8 +39,8 @@ public interface NPCDataStorage {
         return this.getModelMap().getOrDefault(npc_data.model_id(), MODEL_NOT_FOUND);
     }
 
-    public default void registerModelData(String id, UUID uuid) {
-        this.getModelMap().put(id, new ModelData(uuid));
+    public default void registerModelData(String id, Identifier texture, boolean is_slim) {
+        this.getModelMap().put(id, new ModelData(texture, is_slim));
     }
     public default void registerDialogueData(String id, Text display_name, List<Text> dialogue, Identifier voice) {
         this.getDialogueMap().put(id, new DialogueData(display_name, dialogue, voice));

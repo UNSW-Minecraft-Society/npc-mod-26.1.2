@@ -116,7 +116,7 @@ public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataSto
 
         parser.saveMovementData(MOVEMENT_DATA_PATH, this.getMovementMap());
         parser.saveMovingNPCData(MOVING_NPC_DATA_PATH, this.getMovingNPCMap());
-
+        
         parser.saveCutsceneData(CUTSCENE_DATA_PATH, this.getCutsceneMap());
     }
 

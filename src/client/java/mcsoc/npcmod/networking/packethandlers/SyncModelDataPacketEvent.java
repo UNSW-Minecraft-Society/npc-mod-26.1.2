@@ -10,7 +10,7 @@ public class SyncModelDataPacketEvent {
     public static void registerHandler() {
         ClientPlayNetworking.registerGlobalReceiver(SyncModelDataS2CPayload.ID, (payload, context) -> {
             ModelData data = payload.data();
-            NPCClientDataLoader.getInstance().registerModelData(payload.id(), data.uuid());
+            NPCClientDataLoader.getInstance().registerModelData(payload.id(), data.texture(), data.is_slim());
         });
     }
 }

@@ -3,17 +3,19 @@ package mcsoc.npcmod.entities.npc;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
-import com.mojang.authlib.yggdrasil.ProfileResult;
-
+import mcsoc.npcmod.NpcMod;
 import mcsoc.npcmod.dataloader.datastorage.npc.NPCDataStorage;
 import mcsoc.npcmod.datatypes.npcs.DialogueData;
 import mcsoc.npcmod.datatypes.npcs.ModelData;
 import mcsoc.npcmod.datatypes.npcs.NPCData;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.texture.AbstractTexture;
+import net.minecraft.client.texture.ResourceTexture;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.SkinTextures;
+import net.minecraft.client.util.SkinTextures.Model;
+import net.minecraft.util.Identifier;
 
 
 public class NPCClientDataLoader implements NPCDataStorage {
@@ -22,7 +24,7 @@ public class NPCClientDataLoader implements NPCDataStorage {
     private final Map<String, ModelData> model_data_map = new HashMap<>();
     private final Map<String, DialogueData> dialogue_data_map = new HashMap<>();
 
-    private final Map<UUID, SkinTextures> skin_data = new HashMap<>();
+    private final Map<Identifier, SkinTextures> skin_data = new HashMap<>();
     private static final NPCClientDataLoader INSTANCE = new NPCClientDataLoader();
 
     private NPCClientDataLoader() {}
@@ -30,21 +32,36 @@ public class NPCClientDataLoader implements NPCDataStorage {
         return INSTANCE;
     }
 
-    private void fetchSkin(UUID uuid) {
-        if (this.skin_data.containsKey(uuid)) return;
-        this.skin_data.put(uuid, DefaultSkinHelper.getSkinTextures(UUID.randomUUID()));
-        
-        CompletableFuture.runAsync(() -> {
-            ProfileResult result = MinecraftClient.getInstance().getSessionService().fetchProfile(uuid, true);
-    
-            MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(result.profile())
-                    .thenAccept(skin -> this.skin_data.put(uuid, skin));
-        });
+    public void buildSkin(ModelData model_data) {
+        if (this.skin_data.containsKey(model_data.texture())) return;
+
+        Identifier texture_id = model_data.texture();
+
+        try {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client.getTextureManager().getOrDefault(texture_id, null) == null) {
+                AbstractTexture texture = new ResourceTexture(texture_id);
+                client.getTextureManager().registerTexture(texture_id, texture);
+            }
+        } catch (Exception e) {
+            NpcMod.LOGGER.error("Failed to bind custom NPC texture: " + texture_id + " -> ", e);
+        }
+
+        this.skin_data.put(texture_id, 
+            new SkinTextures(
+                model_data.texture(), 
+                null, 
+                null, 
+                null, 
+                model_data.is_slim() ? Model.SLIM : Model.WIDE, 
+                true
+            )
+        );
     }
 
-    public SkinTextures getSkin(UUID uuid) {
-        this.fetchSkin(uuid);
-        return this.skin_data.get(uuid);
+    public SkinTextures getSkin(ModelData model_data) {
+        this.buildSkin(model_data);
+        return this.skin_data.getOrDefault(model_data.texture(), DefaultSkinHelper.getSkinTextures(UUID.randomUUID()));
     }
 
     @Override
