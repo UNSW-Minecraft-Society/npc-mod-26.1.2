@@ -1,6 +1,8 @@
 package mcsoc.npcmod.dataloader.jsonparser;
 
 import com.google.gson.Gson;
+
+import mcsoc.npcmod.NpcMod;
 import net.fabricmc.loader.api.FabricLoader;
 import java.io.File;
 import java.io.FileReader;
@@ -39,6 +41,11 @@ public interface JsonDataParser {
     }
     default <K, V> Map<K, V> readFromFileToMap(String filename, Type data_type) {
         File file = openFileChecked(filename);
+
+        if (file == null || !file.exists() || file.isDirectory()) {
+            NpcMod.LOGGER.error("[" + filename + "] File does not exist. Skipping read.");
+            return new HashMap<>(); 
+        }
         
         Map<K, V> map = new HashMap<>();
         try (FileReader reader = new FileReader(file)) {
@@ -47,6 +54,6 @@ public interface JsonDataParser {
             e.printStackTrace();
         }
 
-        return map;
+        return map != null ? map : new HashMap<>();
     }
 }

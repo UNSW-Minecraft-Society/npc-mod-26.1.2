@@ -10,10 +10,12 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import mcsoc.npcmod.NpcMod;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.Identifier;
+
 
 public record ModelData(Identifier texture, boolean is_slim) {
     private static final String TEXTURE_KEY = "texture";
@@ -36,9 +38,15 @@ public record ModelData(Identifier texture, boolean is_slim) {
     }
 
     public static ModelData fromJson(JsonObject json) {
-        JsonObject texture_json = json.get(TEXTURE_KEY).getAsJsonObject();
-        Identifier texture = Identifier.of(texture_json.get(NAMESPACE_KEY).getAsString(), texture_json.get(PATH_KEY).getAsString());
-        Boolean is_slim = json.get(SLIM_KEY).getAsBoolean();
+        Identifier texture = Identifier.ofVanilla("textures/entity/player/slim/alex.png");
+        Boolean is_slim = true;
+        try {
+            JsonObject texture_json = json.get(TEXTURE_KEY).getAsJsonObject();
+            texture = Identifier.of(texture_json.get(NAMESPACE_KEY).getAsString(), texture_json.get(PATH_KEY).getAsString());
+            is_slim = json.get(SLIM_KEY).getAsBoolean();
+        } catch (NullPointerException e) {
+            NpcMod.LOGGER.error("Failed to read from model file: ", e);
+        }
         return new ModelData(texture, is_slim);
     }
 

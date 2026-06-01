@@ -50,13 +50,20 @@ public record DialogueData(Text display_name, List<Text> dialogue, Identifier vo
         return json;
     }
     public static DialogueData fromJson(JsonObject json) {
-        Text name = Text.literal(json.get(DISPLAY_NAME_KEY).getAsString());
-        List<Text> dialogue = json.get(DIALOGUE_KEY).getAsJsonArray().asList().stream()
-                .map(JsonElement::getAsString)
-                .map(Text::literal)
-                .collect(Collectors.toUnmodifiableList());
-        JsonObject voice_json = json.get(VOICE_KEY).getAsJsonObject();
-        Identifier voice = Identifier.of(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString());
+        Text name = Text.literal("");
+        List<Text> dialogue = new ArrayList<>(1);
+        Identifier voice = Identifier.ofVanilla("block.anvil.break");
+        try {
+            name = Text.literal(json.get(DISPLAY_NAME_KEY).getAsString());
+            dialogue = json.get(DIALOGUE_KEY).getAsJsonArray().asList().stream()
+                    .map(JsonElement::getAsString)
+                    .map(Text::literal)
+                    .collect(Collectors.toUnmodifiableList());
+            JsonObject voice_json = json.get(VOICE_KEY).getAsJsonObject();
+            voice = Identifier.of(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString());
+        } catch (NullPointerException e) {
+            NpcMod.LOGGER.error("Failed to read from dialogue file: ", e);
+        }
         return new DialogueData(name, dialogue, voice);
     }
 

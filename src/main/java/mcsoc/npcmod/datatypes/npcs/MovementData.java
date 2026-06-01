@@ -1,6 +1,7 @@
 package mcsoc.npcmod.datatypes.npcs;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -10,6 +11,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+
+import mcsoc.npcmod.NpcMod;
 
 
 public record MovementData(List<MovementInstruction> movements) {
@@ -24,10 +27,15 @@ public record MovementData(List<MovementInstruction> movements) {
     }
 
     public static MovementData fromJson(JsonObject json) {
-        List<MovementInstruction> movements = json.get(MOVEMENTS_KEY).getAsJsonArray().asList().stream()
-                .map(JsonElement::getAsJsonObject)
-                .map(MovementInstruction::fromJson)
-                .toList();
+        List<MovementInstruction> movements = new ArrayList<>(1);
+        try {
+            movements = json.get(MOVEMENTS_KEY).getAsJsonArray().asList().stream()
+                    .map(JsonElement::getAsJsonObject)
+                    .map(MovementInstruction::fromJson)
+                    .toList();
+        } catch (NullPointerException e) {
+            NpcMod.LOGGER.error("Failed to read from movements file: ", e);
+        }
         return new MovementData(movements);
     }
 
