@@ -23,13 +23,13 @@ public abstract class CommandRegistrationHandler {
     public abstract static class CommandSuggestionProviders {
         private CommandSuggestionProviders() { /* delete */ }
     
-        public static class OnlinePlayerSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
+        public static class LoadedCutsceneSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
             
             public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
                 return CommandSource.suggestMatching(NpcModServerDataStorage.getInstance().getCutsceneMap().keySet(), builder);
             }
         }
-        public static class LoadedCutsceneSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
+        public static class OnlinePlayerSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
             
             public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
                 MinecraftServer server = ctx.getSource().getServer();
