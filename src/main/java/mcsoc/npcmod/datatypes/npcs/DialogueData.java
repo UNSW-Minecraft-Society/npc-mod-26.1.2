@@ -31,7 +31,7 @@ public record DialogueData(Text display_name, List<Text> dialogue, Identifier vo
     
 
     public Text getFormattedMessage() {
-        return display_name.copy().append(": ").append(dialogue.get(NpcMod.rand.nextInt(dialogue.size())));
+        return Text.literal("<").append(display_name.copy()).append("> ").append(dialogue.get(NpcMod.rand.nextInt(dialogue.size())));
     }
 
     public JsonObject toJson() {
