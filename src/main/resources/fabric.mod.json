@@ -2,24 +2,30 @@
 	"schemaVersion": 1,
 	"id": "npc-mod",
 	"version": "${version}",
-	"name": "Veveddo's NPCs and Cutscene mod",
-	"description": "A simple mod that implements NPCs and Cutscenes w/ camera control.",
+	"name": "Veveddo's NPC Mod",
+	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"veveddo"
+		"Me!"
 	],
 	"contact": {
-		"homepage": "https://mc.unswminecraft.com",
-		"sources": ""
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/npc-mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"veveddo.npcmod.NpcMod"
+			{
+				"value": "veveddo.npcmod.VeveddoSNPCMod",
+				"adapter": "kotlin"
+			}
 		],
 		"client": [
-			"veveddo.npcmod.NpcModClient"
+			{
+				"value": "veveddo.npcmod.client.VeveddoSNPCModClient",
+				"adapter": "kotlin"
+			}
 		]
 	},
 	"mixins": [
@@ -30,15 +36,10 @@
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.16.14",
-		"minecraft": "~26.1",
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.1.2",
 		"java": ">=25",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
-	},
-	"custom": {
-  		"mixin.debug": true
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
 	}
 }
