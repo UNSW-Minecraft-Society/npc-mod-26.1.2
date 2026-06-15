@@ -35,7 +35,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"planet-game" {
+		"npc-mod" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
