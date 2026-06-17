@@ -5,9 +5,12 @@ import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.phys.Vec3;
+
 import veveddo.npcmod.NpcMod;
+import veveddo.npcmod.NpcModClient.ClientData;
 import veveddo.npcmod.camera.ClientCameraControlData;
 import veveddo.npcmod.camera.ClientCameraUtils;
 import veveddo.npcmod.datatypes.PositionData;
@@ -55,12 +58,13 @@ public class NpcModClient implements ClientModInitializer {
 		public void tickMovement(float tick_delta) {
 			if (this.camera_mode != CameraMode.PANNING || this.ticks_left == 0) return;
 
-			if (MinecraftClient.getInstance().getCameraEntity() instanceof CameraClientEntity camera) {
+			if (Minecraft.getInstance().getCameraEntity() instanceof CameraClientEntity camera) {
 				PositionData to_shift = this.per_tick_pan_shift.multiply(tick_delta);
-				camera.refreshPositionAndAngles(
-					camera.getPos().add(to_shift.getPos()), 
-					camera.getYaw() + to_shift.yaw(), 
-					camera.getPitch() + to_shift.pitch()
+				Vec3 shift_pos = camera.getEyePosition().add(to_shift.getPos());
+				camera.absSnapTo(
+					shift_pos.x, shift_pos.y, shift_pos.z, 
+					camera.getYRot() + to_shift.yaw(), 
+					camera.getXRot() + to_shift.pitch()
 				);
 			}
 			
@@ -77,14 +81,14 @@ public class NpcModClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
 		ClientEntityRegistration.registerEntities();
-        EntityRendererRegistry.register(EntityRegistration.BASIC_NPC, BaseNPCRendererPlayer::new);
-		EntityRendererRegistry.register(EntityRegistration.MOVING_NPC, BaseNPCRendererPlayer::new);
+        EntityRenderers.register(EntityRegistration.BASIC_NPC, BaseNPCRendererPlayer::new);
+		EntityRenderers.register(EntityRegistration.MOVING_NPC, BaseNPCRendererPlayer::new);
 
 		ClientCameraUtils.registerDismountKeybind();
 
 		NPCClientDataLoader.getInstance();
 		PacketHandlers.registerHandlers();
 
-		WorldRenderEvents.START.register(ctx -> ClientData.getInstance().tickMovement(ctx.tickCounter().getLastFrameDuration()));
+		// WorldRenderEvents.START.register(ctx -> ClientData.getInstance().tickMovement(ctx.tickCounter().getLastFrameDuration()));
 	}
 }

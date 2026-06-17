@@ -3,8 +3,8 @@ package veveddo.npcmod.dataloader.datastorage.npc;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import veveddo.npcmod.datatypes.npcs.DialogueData;
 import veveddo.npcmod.datatypes.npcs.ModelData;
 import veveddo.npcmod.datatypes.npcs.NPCData;
@@ -15,8 +15,8 @@ import veveddo.npcmod.entities.npc.BasicNPC;
 
 public interface NPCDataStorage {
 
-    static final ModelData MODEL_NOT_FOUND = new ModelData(Identifier.ofVanilla("textures/entity/player/wide/noor.png"), true);
-    static final DialogueData DIALOGUE_NOT_FOUND = new DialogueData(Text.of("DEFAULT"), List.of(Text.of("Dialogue not found.")), Identifier.ofVanilla("music_disc.far"));
+    static final ModelData MODEL_NOT_FOUND = new ModelData(Identifier.withDefaultNamespace("textures/entity/player/wide/noor.png"), true);
+    static final DialogueData DIALOGUE_NOT_FOUND = new DialogueData(Component.literal("DEFAULT"), List.of(Component.literal("Dialogue not found.")), Identifier.withDefaultNamespace("music_disc.far"));
     static final String MISSING_KEY = "mssngn";
     static final NPCData NPC_NOT_FOUND = new NPCData(MISSING_KEY, MISSING_KEY, NPCMode.BACKGROUND);
 
@@ -42,7 +42,7 @@ public interface NPCDataStorage {
     public default void registerModelData(String id, Identifier texture, boolean is_slim) {
         this.getModelMap().put(id, new ModelData(texture, is_slim));
     }
-    public default void registerDialogueData(String id, Text display_name, List<Text> dialogue, Identifier voice) {
+    public default void registerDialogueData(String id, Component display_name, List<Component> dialogue, Identifier voice) {
         this.getDialogueMap().put(id, new DialogueData(display_name, dialogue, voice));
     }
     public default void registerBackgroundNPC(String id, String model_id, String dialogue_id) {

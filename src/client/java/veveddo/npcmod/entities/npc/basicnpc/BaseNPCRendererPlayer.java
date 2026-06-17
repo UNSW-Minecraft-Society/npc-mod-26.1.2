@@ -1,45 +1,66 @@
 package veveddo.npcmod.entities.npc.basicnpc;
 
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
-import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer;
-import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
-import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
-import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
-import net.minecraft.client.render.entity.feature.StuckStingersFeatureRenderer;
-import net.minecraft.client.render.entity.feature.TridentRiptideFeatureRenderer;
-import net.minecraft.client.render.entity.model.ArmorEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.util.SkinTextures;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.client.renderer.entity.layers.WingsLayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.PlayerSkin;
 import veveddo.npcmod.datatypes.npcs.ModelData;
 import veveddo.npcmod.entities.npc.BaseNPC;
 import veveddo.npcmod.entities.npc.NPCClientDataLoader;
 
 
-public class BaseNPCRendererPlayer extends LivingEntityRenderer<BaseNPC, PlayerEntityModel<BaseNPC>> {
+public class BaseNPCRendererPlayer extends LivingEntityRenderer<BaseNPC, BaseNPCRenderState, HumanoidModel<BaseNPCRenderState>> {
 
-    public BaseNPCRendererPlayer(EntityRendererFactory.Context ctx, boolean slim) {
-        super(ctx, new PlayerEntityModel<>(ctx.getPart(slim ? EntityModelLayers.PLAYER_SLIM : EntityModelLayers.PLAYER), slim), 0.5F);
-        this.addFeature(new ArmorFeatureRenderer<>(this, new ArmorEntityModel<>(ctx.getPart(slim ? EntityModelLayers.PLAYER_SLIM_INNER_ARMOR : EntityModelLayers.PLAYER_INNER_ARMOR)), new ArmorEntityModel<>(ctx.getPart(slim ? EntityModelLayers.PLAYER_SLIM_OUTER_ARMOR : EntityModelLayers.PLAYER_OUTER_ARMOR)), ctx.getModelManager()));
-        this.addFeature(new HeldItemFeatureRenderer<>(this, ctx.getHeldItemRenderer()));
-        this.addFeature(new StuckArrowsFeatureRenderer<>(ctx, this));
-        this.addFeature(new HeadFeatureRenderer<>(this, ctx.getModelLoader(), ctx.getHeldItemRenderer()));
-        this.addFeature(new ElytraFeatureRenderer<>(this, ctx.getModelLoader()));
-        this.addFeature(new TridentRiptideFeatureRenderer<>(this, ctx.getModelLoader()));
-        this.addFeature(new StuckStingersFeatureRenderer<>(this));
+    public BaseNPCRendererPlayer(EntityRendererProvider.Context ctx, boolean slim) {
+        super(ctx, new HumanoidModel<>(ctx.bakeLayer(slim ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER)), 0.5F);   
+        
+        this.addLayer(new HumanoidArmorLayer<BaseNPCRenderState, HumanoidModel<BaseNPCRenderState>, HumanoidModel<BaseNPCRenderState>>(
+            this, 
+            ArmorModelSet.bake(
+                slim ? ModelLayers.PLAYER_SLIM_ARMOR : ModelLayers.PLAYER_ARMOR,
+                ctx.getModelSet(),
+                HumanoidModel::new
+            ), 
+            ctx.getEquipmentRenderer()
+        ));
+        this.addLayer(new ItemInHandLayer<>(this));
+        this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet(), Minecraft.getInstance().playerSkinRenderCache()));
+        this.addLayer(new WingsLayer<>(this, ctx.getModelSet(), ctx.getEquipmentRenderer()));
+
     }
 
-    public BaseNPCRendererPlayer(EntityRendererFactory.Context ctx) {
+    public BaseNPCRendererPlayer(EntityRendererProvider.Context ctx) {
         this(ctx, false);
     }
 
-    public Identifier getTexture(BaseNPC npc_entity) {
+    @Override
+    public BaseNPCRenderState createRenderState() {
+        return new BaseNPCRenderState();
+    }
+
+    @Override
+    public void extractRenderState(BaseNPC npc_entity, BaseNPCRenderState state, float delta_tick) {
+        super.extractRenderState(npc_entity, state, delta_tick);
+        
         NPCClientDataLoader npc_data_loader = NPCClientDataLoader.getInstance();
         ModelData npc_model = npc_data_loader.getModel(npc_entity);
-        SkinTextures skin_to_render = npc_data_loader.getSkin(npc_model);
-        return skin_to_render.texture();
+        PlayerSkin skin_to_render = npc_data_loader.getSkin(npc_model);
+        state.textureLocation = skin_to_render.body().texturePath();
+    }
+
+    @Override
+    public Identifier getTextureLocation(BaseNPCRenderState state) {
+        return state.textureLocation;
     }
 }
+
+
+

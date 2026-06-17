@@ -9,8 +9,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import veveddo.npcmod.datatypes.PositionData;
 import veveddo.npcmod.util.Instruction;
 
@@ -82,7 +82,7 @@ public sealed interface CutsceneInstruction extends Instruction {
             return json;
         }
     }
-    record Dialogue(Text text) implements CutsceneInstruction {
+    record Dialogue(Component text) implements CutsceneInstruction {
         @Override
         public JsonObject toJson() {
             JsonObject json = new JsonObject();
@@ -183,7 +183,7 @@ public sealed interface CutsceneInstruction extends Instruction {
             json.addProperty(TYPE_KEY, CAMERA_MODE_TYPE_NAME);
 
             JsonObject properties_json = new JsonObject();
-            properties_json.addProperty(MODE_PROPERTY_KEY, mode.asString());
+            properties_json.addProperty(MODE_PROPERTY_KEY, mode.getSerializedName());
             json.add(PROPERTIES_KEY, properties_json);
 
             return json;
@@ -207,12 +207,12 @@ public sealed interface CutsceneInstruction extends Instruction {
                         PositionData.fromJson(properties.get(POSITION_PROPERTY_KEY).getAsJsonObject())
                     );
                     case DIALOGUE_TYPE_NAME -> new CutsceneInstruction.Dialogue(
-                        Text.of(properties.get(TEXT_PROPERTY_KEY).getAsString())
+                        Component.literal(properties.get(TEXT_PROPERTY_KEY).getAsString())
                     );
                     case PLAYSOUND_TYPE_NAME -> {
                         JsonObject voice_json = json.get(SOUND_ID_KEY).getAsJsonObject();
                         yield new CutsceneInstruction.PlaySound(
-                            Identifier.of(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString()),
+                            Identifier.fromNamespaceAndPath(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString()),
                             properties.get("x").getAsInt(),
                             properties.get("y").getAsInt(),
                             properties.get("z").getAsInt()
@@ -221,7 +221,7 @@ public sealed interface CutsceneInstruction extends Instruction {
                     case PLAYSOUND_PLAYER_TYPE_NAME -> {
                         JsonObject voice_json = json.get(SOUND_ID_KEY).getAsJsonObject();
                         yield new CutsceneInstruction.PlaySoundPlayers(
-                            Identifier.of(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString())
+                            Identifier.fromNamespaceAndPath(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString())
                         );
                     }
                     case DELAY_TYPE_NAME -> new CutsceneInstruction.Delay(

@@ -2,10 +2,10 @@
 	"schemaVersion": 1,
 	"id": "npc-mod",
 	"version": "${version}",
-	"name": "Veveddo's NPC mod",
-	"description": "A simple mod that implements NPCs",
+	"name": "Veveddo's NPCs and Cutscene mod",
+	"description": "A simple mod that implements NPCs and Cutscenes w/ camera control.",
 	"authors": [
-		"Veveddo"
+		"veveddo"
 	],
 	"contact": {
 		"homepage": "https://mc.unswminecraft.com",
@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"mcsoc.npcmod.NpcMod"
+			"veveddo.npcmod.NpcMod"
 		],
 		"client": [
-			"mcsoc.npcmod.NpcModClient"
+			"veveddo.npcmod.NpcModClient"
 		]
 	},
 	"mixins": [
@@ -31,8 +31,8 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
-		"minecraft": "~1.21.1",
-		"java": ">=21",
+		"minecraft": "~26.1",
+		"java": ">=25",
 		"fabric-api": "*"
 	},
 	"suggests": {

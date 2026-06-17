@@ -1,7 +1,7 @@
 package veveddo.npcmod.camera;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import veveddo.npcmod.NpcModClient.ClientData;
 import veveddo.npcmod.datatypes.cutscenes.CameraMode;
 import veveddo.npcmod.entities.camera.CameraClientEntity;
@@ -10,10 +10,10 @@ import veveddo.npcmod.entities.camera.CameraClientEntity;
 public class ClientCameraUtils {
 
     public static void detachClientFromCamera() {
-        MinecraftClient client = MinecraftClient.getInstance();
+        Minecraft client = Minecraft.getInstance();
         if (client.player == null) return;
 
-        if (client.cameraEntity instanceof CameraClientEntity camera) {
+        if (client.getCameraEntity() instanceof CameraClientEntity camera) {
             camera.discard();
         }
         client.setCameraEntity(client.player);
@@ -21,7 +21,7 @@ public class ClientCameraUtils {
 
     public static void registerDismountKeybind() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            if (!ClientData.getInstance().getCameraMode().locked() && client.options.sneakKey.isPressed()) {
+            if (!ClientData.getInstance().getCameraMode().locked() && client.options.keyShift.isDown()) {
                 ClientData.getInstance().setCameraMode(CameraMode.NORMAL);
             }
         });

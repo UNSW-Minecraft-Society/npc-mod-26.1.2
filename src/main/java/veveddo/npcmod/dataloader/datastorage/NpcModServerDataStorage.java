@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+
 import veveddo.npcmod.NpcMod;
 import veveddo.npcmod.dataloader.datastorage.cutscenes.CutsceneDataStorage;
 import veveddo.npcmod.dataloader.datastorage.npc.MovingNPCDataStorage;
@@ -119,7 +120,7 @@ public class NpcModServerDataStorage implements NPCDataStorage, MovingNPCDataSto
         parser.saveCutsceneData(CUTSCENE_DATA_PATH, this.getCutsceneMap());
     }
 
-    public void syncClientData(ServerPlayerEntity player) {
+    public void syncClientData(ServerPlayer player) {
         this.getModelMap().forEach((id, data) -> 
             ServerPlayNetworking.send(player, new SyncModelDataS2CPayload(id, data))
         );

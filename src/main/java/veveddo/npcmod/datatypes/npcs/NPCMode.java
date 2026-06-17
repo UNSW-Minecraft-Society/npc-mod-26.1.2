@@ -5,11 +5,12 @@ import java.util.Optional;
 import com.mojang.serialization.Codec;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.StringRepresentable;
 
-public enum NPCMode implements StringIdentifiable {
+
+public enum NPCMode implements StringRepresentable {
     BACKGROUND {
         @Override
         public String toString() {
@@ -30,20 +31,17 @@ public enum NPCMode implements StringIdentifiable {
     };
 
     @Override
-    public abstract String toString();
-
-    @Override
-    public String asString() {
+    public String getSerializedName() {
         return this.toString();
     }
 
     public static Optional<NPCMode> fromString(String string) {
         for (NPCMode mode: NPCMode.values()) {
-            if (mode.asString().equals(string)) return Optional.of(mode);
+            if (mode.getSerializedName().equals(string)) return Optional.of(mode);
         }
         return Optional.empty();
     }
 
-    public static final Codec<NPCMode> CODEC = StringIdentifiable.createCodec(NPCMode::values);
-    public static final PacketCodec<ByteBuf, NPCMode> PACKET_CODEC = PacketCodecs.codec(NPCMode.CODEC);
+    public static final Codec<NPCMode> CODEC = StringRepresentable.fromEnum(NPCMode::values);
+    public static final StreamCodec<ByteBuf, NPCMode> PACKET_CODEC = ByteBufCodecs.fromCodec(NPCMode.CODEC);
 }

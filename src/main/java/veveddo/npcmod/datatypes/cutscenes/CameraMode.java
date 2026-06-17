@@ -4,13 +4,12 @@ import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.StringRepresentable;
 
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.StringIdentifiable;
 
-
-public enum CameraMode implements StringIdentifiable {
+public enum CameraMode implements StringRepresentable {
     NORMAL {
         @Override
         public String toString() {
@@ -56,23 +55,20 @@ public enum CameraMode implements StringIdentifiable {
         }
     };
 
-    @Override
-    public abstract String toString();
-
     public abstract boolean locked();
 
     @Override
-    public String asString() {
+    public String getSerializedName() {
         return this.toString();
     }
 
     public static Optional<CameraMode> fromString(String string) {
         for (CameraMode mode: CameraMode.values()) {
-            if (mode.asString().equals(string)) return Optional.of(mode);
+            if (mode.getSerializedName().equals(string)) return Optional.of(mode);
         }
         return Optional.empty();
     }
 
-    public static final Codec<CameraMode> CODEC = StringIdentifiable.createCodec(CameraMode::values);
-    public static final PacketCodec<ByteBuf, CameraMode> PACKET_CODEC = PacketCodecs.codec(CameraMode.CODEC);
+    public static final Codec<CameraMode> CODEC = StringRepresentable.fromValues(CameraMode::values);
+    public static final StreamCodec<ByteBuf, CameraMode> PACKET_CODEC = ByteBufCodecs.fromCodec(CameraMode.CODEC);
 }

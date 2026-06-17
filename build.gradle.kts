@@ -1,10 +1,11 @@
 plugins {
-	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
-	id 'maven-publish'
+	id("net.fabricmc.fabric-loom")
+	`maven-publish`
+	id("org.jetbrains.kotlin.jvm") version "2.4.0"
 }
 
-version = project.mod_version
-group = project.maven_group
+version = providers.gradleProperty("mod_version").get()
+group = providers.gradleProperty("maven_group").get()
 
 base {
 	archivesName = project.archives_base_name
@@ -35,35 +36,41 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"npc-mod" {
-			sourceSet sourceSets.main
-			sourceSet sourceSets.client
+		register("template-mod") {
+			sourceSet(sourceSets.main.get())
+			sourceSet(sourceSets.getByName("client"))
 		}
 	}
-
 }
 
 dependencies {
 	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-	// Fabric API. This is techxnically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	minecraft("com.mojang:minecraft:${providers.gradleProperty("minecraft_version").get()}")
 	
+	implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("loader_version").get()}")
+
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	implementation("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}")
+	implementation("net.fabricmc:fabric-language-kotlin:${providers.gradleProperty("fabric_kotlin_version").get()}")
 }
 
-processResources {
-	inputs.property "version", project.version
+tasks.processResources {
+	val version = version
+	inputs.property("version", version)
 
 	filesMatching("fabric.mod.json") {
-		expand "version": inputs.properties.version
+		expand("version" to version)
 	}
 }
 
-tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+tasks.withType<JavaCompile>().configureEach {
+	options.release = 25
+}
+
+kotlin {
+	compilerOptions {
+		jvmTarget = JvmTarget.JVM_25
+	}
 }
 
 java {
@@ -72,24 +79,29 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
-}
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 
-jar {
-	inputs.property "archivesName", project.base.archivesName
-
-	from("LICENSE") {
-		rename { "${it}_${inputs.properties.archivesName}"}
+	toolchain {
+		languageVersion.set(JavaLanguageVersion.of(25))
 	}
 }
+
+tasks.jar {
+	val projectName = project.name
+	inputs.property("projectName", projectName)
+
+	from("LICENSE") {
+		rename { "${it}_$projectName" }
+	}
+}
+
 
 // configure the maven publication
 publishing {
 	publications {
-		create("mavenJava", MavenPublication) {
-			artifactId = project.archives_base_name
-			from components.java
+		register<MavenPublication>("mavenJava") {
+			from(components["java"])
 		}
 	}
 

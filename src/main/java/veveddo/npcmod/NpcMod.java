@@ -50,7 +50,7 @@ public class NpcMod implements ModInitializer {
 		CutsceneHandler.getInstance();
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			CutsceneHandler.getInstance().setWorld(server.getOverworld());
+			CutsceneHandler.getInstance().setWorld(server.overworld());
 		});
 	}
 }
