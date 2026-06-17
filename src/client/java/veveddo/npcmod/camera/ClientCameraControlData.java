@@ -1,8 +1,9 @@
 package veveddo.npcmod.camera;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+
 import veveddo.npcmod.datatypes.PositionData;
 import veveddo.npcmod.datatypes.cutscenes.CameraMode;
 import veveddo.npcmod.entities.ClientEntityRegistration;
@@ -24,19 +25,19 @@ public interface ClientCameraControlData {
     public CameraMode getCameraMode();
 
     public default void setCameraPosition(PositionData pos) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        ClientWorld world = client.world;
+        Minecraft client = Minecraft.getInstance();
+        ClientLevel world = client.level;
         if (world == null) return;
 
         CameraClientEntity camera = new CameraClientEntity(ClientEntityRegistration.CAMERA, world);
-        camera.refreshPositionAndAngles(pos.getPos(), pos.yaw(), pos.pitch());
-        world.spawnEntity(camera);
+        camera.snapTo(pos.getPos(), pos.yaw(), pos.pitch());
+        world.addFreshEntity(camera);
         client.setCameraEntity(camera);
     }
 
     public default PositionData getCameraPosition() {
-        Entity camera_entity = MinecraftClient.getInstance().getCameraEntity();
-        if (camera_entity == null) camera_entity = MinecraftClient.getInstance().player;
+        Entity camera_entity = Minecraft.getInstance().getCameraEntity();
+        if (camera_entity == null) camera_entity = Minecraft.getInstance().player;
         
         return PositionData.fromEntity(camera_entity);
     }

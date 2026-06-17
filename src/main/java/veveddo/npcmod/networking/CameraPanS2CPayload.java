@@ -1,24 +1,24 @@
 package veveddo.npcmod.networking;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import veveddo.npcmod.datatypes.PositionData;
 
 
-public record CameraPanS2CPayload(PositionData from, PositionData to, int ticks) implements CustomPayload {
+public record CameraPanS2CPayload(PositionData from, PositionData to, int ticks) implements CustomPacketPayload {
     
-    public static final CustomPayload.Id<CameraPanS2CPayload> ID = new CustomPayload.Id<>(NetworkingIdentifiers.CAMERA_PAN_TRIGGER_ID);
-    public static final PacketCodec<RegistryByteBuf, CameraPanS2CPayload> CODEC = PacketCodec.tuple(
+    public static final CustomPacketPayload.Type<CameraPanS2CPayload> ID = new CustomPacketPayload.Type<>(NetworkingIdentifiers.CAMERA_PAN_TRIGGER_ID);
+    public static final StreamCodec<RegistryFriendlyByteBuf, CameraPanS2CPayload> CODEC = StreamCodec.composite(
         PositionData.PACKET_CODEC, CameraPanS2CPayload::from,
         PositionData.PACKET_CODEC, CameraPanS2CPayload::to,
-        PacketCodecs.INTEGER, CameraPanS2CPayload::ticks,
+        ByteBufCodecs.INT, CameraPanS2CPayload::ticks,
         CameraPanS2CPayload::new
     );
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 }

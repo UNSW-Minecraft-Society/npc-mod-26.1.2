@@ -11,15 +11,15 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public record PositionData(double x, double y, double z, float yaw, float pitch) {
 
-    public static PositionData fromPosAndAngles(Vec3d pos, float yaw, float pitch) {
+    public static PositionData fromPosAndAngles(Vec3 pos, float yaw, float pitch) {
         return new PositionData(pos.x, pos.y, pos.z, yaw, pitch);
     }
 
@@ -37,14 +37,14 @@ public record PositionData(double x, double y, double z, float yaw, float pitch)
         return new PositionData(x / f, y / f, z / f, yaw / f, pitch / f);
     }
 
-    public Vec3d getPos() {
-        return new Vec3d(x, y, z);
+    public Vec3 getPos() {
+        return new Vec3(x, y, z);
     }
     public BlockPos getBlockPos() {
-        return BlockPos.ofFloored(getPos());
+        return BlockPos.containing(getPos());
     }
 
-    public PositionData addPos(Vec3d offset) {
+    public PositionData addPos(Vec3 offset) {
         return new PositionData(x + offset.x, y + offset.y, z + offset.z, yaw, pitch);
     }
     public PositionData addAngles(float off_yaw, float off_pitch) {
@@ -63,7 +63,7 @@ public record PositionData(double x, double y, double z, float yaw, float pitch)
 
 
     public static PositionData fromEntity(Entity e) {
-        return new PositionData(e.getX(), e.getY(), e.getZ(), e.getYaw(), e.getPitch());
+        return new PositionData(e.getX(), e.getY(), e.getZ(), e.getYRot(), e.getXRot());
     }
 
     public static PositionData fromJson(JsonObject json) {
@@ -88,12 +88,12 @@ public record PositionData(double x, double y, double z, float yaw, float pitch)
         }
     }
 
-    public static final PacketCodec<ByteBuf, PositionData> PACKET_CODEC = PacketCodec.tuple(
-        PacketCodecs.DOUBLE, PositionData::x,
-        PacketCodecs.DOUBLE, PositionData::y,
-        PacketCodecs.DOUBLE, PositionData::z,
-        PacketCodecs.FLOAT, PositionData::yaw,
-        PacketCodecs.FLOAT, PositionData::pitch,
+    public static final StreamCodec<ByteBuf, PositionData> PACKET_CODEC = StreamCodec.composite(
+        ByteBufCodecs.DOUBLE, PositionData::x,
+        ByteBufCodecs.DOUBLE, PositionData::y,
+        ByteBufCodecs.DOUBLE, PositionData::z,
+        ByteBufCodecs.FLOAT, PositionData::yaw,
+        ByteBufCodecs.FLOAT, PositionData::pitch,
         PositionData::new
     );
 }

@@ -1,23 +1,24 @@
 package veveddo.npcmod.networking;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+
 import veveddo.npcmod.datatypes.npcs.ModelData;
 
 
-public record SyncModelDataS2CPayload(String id, ModelData data) implements CustomPayload {
+public record SyncModelDataS2CPayload(String id, ModelData data) implements CustomPacketPayload {
     
-    public static final CustomPayload.Id<SyncModelDataS2CPayload> ID = new CustomPayload.Id<>(NetworkingIdentifiers.MODEL_DATA_REGISTER_ID);
-    public static final PacketCodec<RegistryByteBuf, SyncModelDataS2CPayload> CODEC = PacketCodec.tuple(
-        PacketCodecs.STRING, SyncModelDataS2CPayload::id,
+    public static final CustomPacketPayload.Type<SyncModelDataS2CPayload> ID = new CustomPacketPayload.Type<>(NetworkingIdentifiers.MODEL_DATA_REGISTER_ID);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncModelDataS2CPayload> CODEC = StreamCodec.composite(
+        ByteBufCodecs.STRING_UTF8, SyncModelDataS2CPayload::id,
         ModelData.PACKET_CODEC, SyncModelDataS2CPayload::data,
         SyncModelDataS2CPayload::new
     );
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 }

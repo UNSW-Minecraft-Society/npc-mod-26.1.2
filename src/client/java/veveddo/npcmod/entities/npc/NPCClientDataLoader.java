@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.AbstractTexture;
-import net.minecraft.client.texture.ResourceTexture;
-import net.minecraft.client.util.DefaultSkinHelper;
-import net.minecraft.client.util.SkinTextures;
-import net.minecraft.client.util.SkinTextures.Model;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.core.ClientAsset.ResourceTexture;
+import net.minecraft.core.ClientAsset.Texture;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.world.entity.player.PlayerSkin;
 import veveddo.npcmod.NpcMod;
 import veveddo.npcmod.dataloader.datastorage.npc.NPCDataStorage;
 import veveddo.npcmod.datatypes.npcs.DialogueData;
@@ -25,7 +27,7 @@ public class NPCClientDataLoader implements NPCDataStorage {
     private final Map<String, ModelData> model_data_map = new HashMap<>();
     private final Map<String, DialogueData> dialogue_data_map = new HashMap<>();
 
-    private final Map<Identifier, SkinTextures> skin_data = new HashMap<>();
+    private final Map<Identifier, PlayerSkin> skin_data = new HashMap<>();
     private static final NPCClientDataLoader INSTANCE = new NPCClientDataLoader();
 
     private NPCClientDataLoader() {}
@@ -37,32 +39,26 @@ public class NPCClientDataLoader implements NPCDataStorage {
         if (this.skin_data.containsKey(model_data.texture())) return;
 
         Identifier texture_id = model_data.texture();
-
         try {
-            MinecraftClient client = MinecraftClient.getInstance();
-            if (client.getTextureManager().getOrDefault(texture_id, null) == null) {
-                AbstractTexture texture = new ResourceTexture(texture_id);
-                client.getTextureManager().registerTexture(texture_id, texture);
-            }
+            Minecraft client = Minecraft.getInstance();
+            client.getTextureManager().getTexture(texture_id.withPath((path) -> "textures/" + path + ".png"));
         } catch (Exception e) {
             NpcMod.LOGGER.error("Failed to bind custom NPC texture: " + texture_id + " -> ", e);
         }
 
         this.skin_data.put(texture_id, 
-            new SkinTextures(
-                model_data.texture(), 
-                null, 
-                null, 
-                null, 
-                model_data.is_slim() ? Model.SLIM : Model.WIDE, 
+            new PlayerSkin(
+                new ResourceTexture(model_data.texture()),
+                null, null, 
+                model_data.is_slim() ? PlayerModelType.SLIM : PlayerModelType.WIDE, 
                 true
             )
         );
     }
 
-    public SkinTextures getSkin(ModelData model_data) {
+    public PlayerSkin getSkin(ModelData model_data) {
         this.buildSkin(model_data);
-        return this.skin_data.getOrDefault(model_data.texture(), DefaultSkinHelper.getSkinTextures(UUID.randomUUID()));
+        return this.skin_data.getOrDefault(model_data.texture(), DefaultPlayerSkin.get(UUID.randomUUID()));
     }
 
     @Override

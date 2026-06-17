@@ -4,10 +4,10 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
-import net.minecraft.command.argument.EntityAnchorArgumentType.EntityAnchor;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import veveddo.npcmod.dataloader.datastorage.NpcModServerDataStorage;
 import veveddo.npcmod.datatypes.PositionData;
 import veveddo.npcmod.datatypes.npcs.MovementInstruction;
@@ -19,7 +19,7 @@ public class MovingNPC extends BaseNPC implements InstructionReader<MovementInst
     private Queue<MovementInstruction> movements_queue = new ArrayDeque<>();
     private int current_operation_ticks_remaining = 0;
 
-    public MovingNPC(EntityType<? extends MovingNPC> entityType, World world) {
+    public MovingNPC(EntityType<? extends MovingNPC> entityType, Level world) {
         super(entityType, world);
     }
 
@@ -28,17 +28,17 @@ public class MovingNPC extends BaseNPC implements InstructionReader<MovementInst
         switch (instruction) {
             case MovementInstruction.Walk(PositionData pos, double speed): {
                 this.current_operation_ticks_remaining = 1;
-                Vec3d target = pos.getPos();
-                this.setAngles(pos.yaw(), pos.pitch());
-                this.getNavigation().startMovingTo(target.x, target.y, target.z, speed);
+                Vec3 target = pos.getPos();
+                this.absSnapRotationTo(pos.yaw(), pos.pitch());
+                this.getNavigation().moveTo(target.x, target.y, target.z, speed);
                 break;
             }
             case MovementInstruction.Swim(PositionData pos, double speed): {
                 this.setSwimming(true);
                 this.current_operation_ticks_remaining = 1;
-                Vec3d target = pos.getPos();
-                this.setAngles(pos.yaw(), pos.pitch());
-                this.getNavigation().startMovingTo(target.x, target.y, target.z, speed);
+                Vec3 target = pos.getPos();
+                this.absSnapRotationTo(pos.yaw(), pos.pitch());
+                this.getNavigation().moveTo(target.x, target.y, target.z, speed);
                 break;
             }
             case MovementInstruction.Turn(int ticks, float degrees): {
@@ -53,7 +53,7 @@ public class MovingNPC extends BaseNPC implements InstructionReader<MovementInst
             }
             case MovementInstruction.Jump(): {
                 this.current_operation_ticks_remaining = 20;
-                this.jumpControl.setActive();
+                this.jumpControl.jump();
                 break;
             }
             default:
@@ -63,23 +63,23 @@ public class MovingNPC extends BaseNPC implements InstructionReader<MovementInst
     public void tickInstruction(MovementInstruction instruction) {
         switch (instruction) {
             case MovementInstruction.Walk(PositionData pos, double speed): {
-                if (this.getNavigation().isFollowingPath()) {
+                if (this.getNavigation().isInProgress()) {
                     this.current_operation_ticks_remaining = 1;
                 }
                 break;
             }
             case MovementInstruction.Swim(PositionData pos, double speed): {
-                if (this.getNavigation().isFollowingPath()) {
+                if (this.getNavigation().isInProgress()) {
                     this.current_operation_ticks_remaining = 1;
                 }
                 break;
             }
             case MovementInstruction.Turn(int ticks, float target_degrees): {
-                float rotation_rate = (target_degrees - this.getYaw()) / ticks;
-                this.setYaw(this.getYaw() + rotation_rate);
+                float rotation_rate = (target_degrees - this.getYRot()) / ticks;
+                this.setYRot(this.getYRot() + rotation_rate);
                 
-                Vec3d target = this.getEyePos().add(this.getRotationVector().multiply(2));
-                this.lookAt(EntityAnchor.EYES, target);
+                Vec3 target = this.getEyePosition().add(this.getLookAngle().scale(2));
+                this.lookAt(Anchor.EYES, target);
                 break;
             }
             case MovementInstruction.Jump(): {
@@ -100,14 +100,14 @@ public class MovingNPC extends BaseNPC implements InstructionReader<MovementInst
     @Override
     public void tick() {
         super.tick();
-        if (this.getWorld().isClient) return;
+        if (this.level().isClientSide()) return;
 
         this.tickReader();
     }
 
 
     @Override
-    protected void initGoals() {
+    protected void registerGoals() {
         // don't init goals
     }
 

@@ -7,13 +7,13 @@ import java.util.Optional;
 import java.util.Queue;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import veveddo.npcmod.NpcMod;
 import veveddo.npcmod.dataloader.datastorage.NpcModServerDataStorage;
 import veveddo.npcmod.datatypes.PositionData;
@@ -37,7 +37,7 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
     private int current_operation_ticks_remaining = 0;
     private boolean should_play = false;
     private Optional<String> cutscene_id = Optional.empty();
-    private Optional<ServerWorld> world = Optional.empty();
+    private Optional<ServerLevel> world = Optional.empty();
     private PositionData call_position;
 
 
@@ -46,7 +46,7 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
         return INSTANCE;
     }
 
-    public void loadCutscene(String cutscene_id, Vec3d call_position, Vec2f call_rotation) {
+    public void loadCutscene(String cutscene_id, Vec3 call_position, Vec2 call_rotation) {
         if (world.isEmpty()) throw new NoSuchElementException("world was not initialised");
 
         this.cutscene_id = Optional.of(cutscene_id);
@@ -55,7 +55,7 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
         this.call_position = PositionData.fromPosAndAngles(call_position, call_rotation.y, call_rotation.x);
     }
 
-    public void setWorld(ServerWorld world) {
+    public void setWorld(ServerLevel world) {
         this.world = Optional.of(world);
     }
 
@@ -71,55 +71,56 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
 
 
     private static BaseNPC applyNPCAttributes(BaseNPC npc, String npc_id, PositionData position_data) {
-        npc.setPosition(position_data.x(), position_data.y(), position_data.z());
-        npc.setRotation(position_data.yaw(), position_data.pitch());
-        npc.getDataTracker().set(BaseNPC.NPC_ID, npc_id);
+        npc.setPos(position_data.x(), position_data.y(), position_data.z());
+        npc.setYRot(position_data.yaw());
+        npc.setXRot(position_data.pitch());
+        npc.getEntityData().set(BaseNPC.NPC_ID, npc_id);
         return npc;
     }
 
 
     public void loadInstruction(CutsceneInstruction instruction) {
-        ServerWorld loaded_world = this.world.orElseThrow();
+        ServerLevel loaded_world = this.world.orElseThrow();
 
         switch (instruction) {
             case CutsceneInstruction.SpawnNPC(String npc_id, PositionData position_data) -> {
                 BasicNPC npc = new BasicNPC(EntityRegistration.BASIC_NPC, loaded_world);
                 applyNPCAttributes(npc, npc_id, call_position.add(position_data));
-                loaded_world.spawnEntity(npc);
+                loaded_world.addFreshEntity(npc);
             }
             case CutsceneInstruction.SpawnMovingNPC(String npc_id, PositionData position_data) -> {
                 MovingNPC npc = new MovingNPC(EntityRegistration.MOVING_NPC, loaded_world);
                 applyNPCAttributes(npc, npc_id, call_position.add(position_data));
-                loaded_world.spawnEntity(npc);
+                loaded_world.addFreshEntity(npc);
             }
-            case CutsceneInstruction.Dialogue(Text text) -> {
-                loaded_world.getPlayers().forEach(player -> player.sendMessage(text));
+            case CutsceneInstruction.Dialogue(Component text) -> {
+                loaded_world.players().forEach(player -> player.sendSystemMessage(text));
             }
             case CutsceneInstruction.Delay(int ticks) -> {
                 this.current_operation_ticks_remaining = ticks;
             }
             case CutsceneInstruction.PositionCamera(PositionData position_data) -> {
-                loaded_world.getPlayers().forEach(player -> 
+                loaded_world.players().forEach(player -> 
                     ServerPlayNetworking.send(player, new SyncCameraPositionS2CPayload(call_position.add(position_data)))
                 );
             }
             case CutsceneInstruction.SetCameraMode(CameraMode mode) -> {
-                loaded_world.getPlayers().forEach(player -> {
+                loaded_world.players().forEach(player -> {
                     ServerPlayNetworking.send(player, new SyncCameraModeS2CPayload(mode));
                 });
             }
             case CutsceneInstruction.PanCamera(PositionData from, PositionData to, int ticks) -> {
-                loaded_world.getPlayers().forEach(player -> {
+                loaded_world.players().forEach(player -> {
                     ServerPlayNetworking.send(player, new CameraPanS2CPayload(call_position.add(from), call_position.add(to), ticks));
                 });
                 this.current_operation_ticks_remaining = ticks;
             }
             case CutsceneInstruction.PlaySound(Identifier sound_id, int x, int y, int z) -> {
-                loaded_world.playSound(null, x, y, z, SoundEvent.of(sound_id), SoundCategory.PLAYERS, 1, 1);
+                loaded_world.playSound(null, x, y, z, SoundEvent.createVariableRangeEvent(sound_id), SoundSource.PLAYERS, 1, 1);
             }
             case CutsceneInstruction.PlaySoundPlayers(Identifier sound_id) -> {
-                loaded_world.getPlayers().forEach(player -> 
-                    loaded_world.playSound(player, player.getBlockPos(), SoundEvent.of(sound_id, 20), SoundCategory.PLAYERS, 1, 1)
+                loaded_world.players().forEach(player -> 
+                    loaded_world.playSound(player, player.blockPosition(), SoundEvent.createFixedRangeEvent(sound_id, 20), SoundSource.PLAYERS, 1, 1)
                 );
             }
             default -> {}

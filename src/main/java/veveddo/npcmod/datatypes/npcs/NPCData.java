@@ -11,8 +11,9 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+
 
 public record NPCData(String model_id, String dialogue_id, NPCMode mode) {
     private static final String MODEL_ID_KEY = "model_id";
@@ -23,7 +24,7 @@ public record NPCData(String model_id, String dialogue_id, NPCMode mode) {
         JsonObject json = new JsonObject();
         json.addProperty(MODEL_ID_KEY, model_id);
         json.addProperty(DIALOGUE_ID_KEY, dialogue_id);
-        json.addProperty(MODE_KEY, mode.asString());
+        json.addProperty(MODE_KEY, mode.getSerializedName());
         return json;
     }
 
@@ -47,9 +48,9 @@ public record NPCData(String model_id, String dialogue_id, NPCMode mode) {
         }
     }
 
-    public static final PacketCodec<ByteBuf, NPCData> PACKET_CODEC = PacketCodec.tuple(
-        PacketCodecs.STRING, NPCData::model_id,
-        PacketCodecs.STRING, NPCData::dialogue_id,
+    public static final StreamCodec<ByteBuf, NPCData> PACKET_CODEC = StreamCodec.composite(
+        ByteBufCodecs.STRING_UTF8, NPCData::model_id,
+        ByteBufCodecs.STRING_UTF8, NPCData::dialogue_id,
         NPCMode.PACKET_CODEC, NPCData::mode,
         NPCData::new
     );

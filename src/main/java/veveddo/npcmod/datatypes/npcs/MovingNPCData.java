@@ -11,8 +11,8 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 
 public record MovingNPCData(NPCData base_data, String movement_id) {
@@ -41,9 +41,9 @@ public record MovingNPCData(NPCData base_data, String movement_id) {
         }
     }
 
-    public static final PacketCodec<ByteBuf, MovingNPCData> PACKET_CODEC = PacketCodec.tuple(
+    public static final StreamCodec<ByteBuf, MovingNPCData> PACKET_CODEC = StreamCodec.composite(
         NPCData.PACKET_CODEC, MovingNPCData::base_data,
-        PacketCodecs.STRING, MovingNPCData::movement_id,
+        ByteBufCodecs.STRING_UTF8, MovingNPCData::movement_id,
         MovingNPCData::new
     );
 }

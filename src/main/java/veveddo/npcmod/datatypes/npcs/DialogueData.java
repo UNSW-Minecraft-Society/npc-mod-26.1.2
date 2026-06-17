@@ -14,15 +14,15 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import veveddo.npcmod.NpcMod;
 
-public record DialogueData(Text display_name, List<Text> dialogue, Identifier voice) {
+public record DialogueData(Component display_name, List<Component> dialogue, Identifier voice) {
     private static final String DISPLAY_NAME_KEY = "display_name";
     private static final String DIALOGUE_KEY = "dialogue";
     private static final String VOICE_KEY = "voice";
@@ -30,8 +30,8 @@ public record DialogueData(Text display_name, List<Text> dialogue, Identifier vo
     private static final String PATH_KEY = "path";
     
 
-    public Text getFormattedMessage() {
-        return Text.literal("<").append(display_name.copy()).append("> ").append(dialogue.get(NpcMod.rand.nextInt(dialogue.size())));
+    public Component getFormattedMessage() {
+        return Component.literal("<").append(display_name.copy()).append("> ").append(dialogue.get(NpcMod.rand.nextInt(dialogue.size())));
     }
 
     public JsonObject toJson() {
@@ -50,17 +50,17 @@ public record DialogueData(Text display_name, List<Text> dialogue, Identifier vo
         return json;
     }
     public static DialogueData fromJson(JsonObject json) {
-        Text name = Text.literal("");
-        List<Text> dialogue = new ArrayList<>(1);
-        Identifier voice = Identifier.ofVanilla("block.anvil.break");
+        Component name = Component.literal("");
+        List<Component> dialogue = new ArrayList<>(1);
+        Identifier voice = Identifier.withDefaultNamespace("block.anvil.break");
         try {
-            name = Text.literal(json.get(DISPLAY_NAME_KEY).getAsString());
+            name = Component.literal(json.get(DISPLAY_NAME_KEY).getAsString());
             dialogue = json.get(DIALOGUE_KEY).getAsJsonArray().asList().stream()
                     .map(JsonElement::getAsString)
-                    .map(Text::literal)
+                    .map(Component::literal)
                     .collect(Collectors.toUnmodifiableList());
             JsonObject voice_json = json.get(VOICE_KEY).getAsJsonObject();
-            voice = Identifier.of(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString());
+            voice = Identifier.fromNamespaceAndPath(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString());
         } catch (NullPointerException e) {
             NpcMod.LOGGER.error("Failed to read from dialogue file: ", e);
         }
@@ -78,10 +78,10 @@ public record DialogueData(Text display_name, List<Text> dialogue, Identifier vo
         }
     }
 
-    public static final PacketCodec<RegistryByteBuf, DialogueData> PACKET_CODEC = PacketCodec.tuple(
-        TextCodecs.UNLIMITED_REGISTRY_PACKET_CODEC, DialogueData::display_name,
-        PacketCodecs.collection(ArrayList::new, TextCodecs.UNLIMITED_REGISTRY_PACKET_CODEC), DialogueData::dialogue,
-        Identifier.PACKET_CODEC, DialogueData::voice,
+    public static final StreamCodec<RegistryFriendlyByteBuf, DialogueData> PACKET_CODEC = StreamCodec.composite(
+        ComponentSerialization.TRUSTED_STREAM_CODEC, DialogueData::display_name,
+        ByteBufCodecs.collection(ArrayList::new, ComponentSerialization.TRUSTED_STREAM_CODEC), DialogueData::dialogue,
+        Identifier.STREAM_CODEC, DialogueData::voice,
         DialogueData::new
     );
 }

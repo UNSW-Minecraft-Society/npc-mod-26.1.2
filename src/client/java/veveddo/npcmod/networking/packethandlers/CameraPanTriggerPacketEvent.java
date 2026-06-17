@@ -1,7 +1,6 @@
 package veveddo.npcmod.networking.packethandlers;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.entity.mob.WardenEntity;
 import veveddo.npcmod.NpcModClient.ClientData;
 import veveddo.npcmod.datatypes.PositionData;
 import veveddo.npcmod.networking.CameraPanS2CPayload;

@@ -1,41 +1,41 @@
 package veveddo.npcmod.entities.npc;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.data.DataTracker.Builder;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.village.VillagerData;
-import net.minecraft.village.VillagerDataContainer;
-import net.minecraft.village.VillagerProfession;
-import net.minecraft.village.VillagerType;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.npc.villager.VillagerData;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import veveddo.npcmod.dataloader.datastorage.NpcModServerDataStorage;
 
-public abstract class BaseNPC extends PathAwareEntity implements VillagerDataContainer {
+public abstract class BaseNPC extends PathfinderMob {
 
-    public static final TrackedData<String> NPC_ID = DataTracker.registerData(BaseNPC.class, TrackedDataHandlerRegistry.STRING);
+    public static final EntityDataAccessor<String> NPC_ID = SynchedEntityData.defineId(BaseNPC.class, EntityDataSerializers.STRING);
     private boolean has_set_name = false;
 
-    protected BaseNPC(EntityType<? extends BaseNPC> entityType, World world) {
+    protected BaseNPC(EntityType<? extends BaseNPC> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
-    public void setRotation(float yaw, float pitch) {
-        super.setRotation(yaw, pitch);
-    }
-
-    @Override
-    protected void initDataTracker(Builder builder) {
-        super.initDataTracker(builder);
-        builder.add(NPC_ID, "");
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(NPC_ID, "");
     }
 
     public String getID() {
-        return this.dataTracker.get(NPC_ID);
+        return this.getEntityData().get(NPC_ID);
+    }
+
+    private void setID(String s) {
+        this.getEntityData().set(NPC_ID, s);
     }
 
     @Override
@@ -44,20 +44,20 @@ public abstract class BaseNPC extends PathAwareEntity implements VillagerDataCon
     }
 
     @Override
-    public boolean isPersistent() {
+    public boolean isPersistenceRequired() {
         return true;
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putString("npc_id", this.dataTracker.get(NPC_ID));
+    public void addAdditionalSaveData(ValueOutput nbt) {
+        super.addAdditionalSaveData(nbt);
+        nbt.putString("npc_id", this.getID());
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.dataTracker.set(NPC_ID, nbt.getString("npc_id"));
+    public void readAdditionalSaveData(ValueInput nbt) {
+        super.readAdditionalSaveData(nbt);
+        this.setID(nbt.getString("npc_id").orElseThrow());
     }
 
     @Override
@@ -72,7 +72,7 @@ public abstract class BaseNPC extends PathAwareEntity implements VillagerDataCon
     }
 
     @Override
-    public boolean isCollidable() {
+    public boolean canBeCollidedWith(Entity e) {
         return false;
     }
     @Override
@@ -80,21 +80,11 @@ public abstract class BaseNPC extends PathAwareEntity implements VillagerDataCon
         return false;
     }
     @Override
-    public boolean isPushedByFluids() {
+    public boolean isPushedByFluid() {
         return false;
     }
     @Override
     public boolean isAttackable() {
         return false;
-    }
-    
-    @Override
-    public VillagerData getVillagerData() {
-        return new VillagerData(VillagerType.DESERT, VillagerProfession.CLERIC, 1);
-    }
-
-    @Override
-    public void setVillagerData(VillagerData villagerData) {
-        // no-op
     }
 }

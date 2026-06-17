@@ -10,10 +10,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import veveddo.npcmod.NpcMod;
 
 
@@ -22,7 +22,6 @@ public record ModelData(Identifier texture, boolean is_slim) {
     private static final String NAMESPACE_KEY = "namespace";
     private static final String PATH_KEY = "path";
     private static final String SLIM_KEY = "is_slim";
-
 
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
@@ -38,14 +37,14 @@ public record ModelData(Identifier texture, boolean is_slim) {
     }
 
     public static ModelData fromJson(JsonObject json) {
-        Identifier texture = Identifier.ofVanilla("textures/entity/player/slim/alex.png");
+        Identifier texture = Identifier.withDefaultNamespace("textures/entity/player/slim/alex");
         Boolean is_slim = true;
         try {
             JsonObject texture_json = json.get(TEXTURE_KEY).getAsJsonObject();
-            texture = Identifier.of(texture_json.get(NAMESPACE_KEY).getAsString(), texture_json.get(PATH_KEY).getAsString());
+            texture = Identifier.fromNamespaceAndPath(texture_json.get(NAMESPACE_KEY).getAsString(), texture_json.get(PATH_KEY).getAsString());
             is_slim = json.get(SLIM_KEY).getAsBoolean();
         } catch (NullPointerException e) {
-            NpcMod.LOGGER.error("Failed to read from model file: ", e);
+            NpcMod.LOGGER.error("Failed to read from model_data.json: ", e);
         }
         return new ModelData(texture, is_slim);
     }
@@ -63,9 +62,10 @@ public record ModelData(Identifier texture, boolean is_slim) {
         }
     }
 
-    public static final PacketCodec<RegistryByteBuf, ModelData> PACKET_CODEC = PacketCodec.tuple(
-        PacketCodecs.STRING.xmap(Identifier::of, Identifier::toString), ModelData::texture,
-        PacketCodecs.BOOL, ModelData::is_slim,
+    public static final StreamCodec<RegistryFriendlyByteBuf, ModelData> PACKET_CODEC = StreamCodec.composite(
+        
+        ByteBufCodecs.STRING_UTF8.map(Identifier::parse, Identifier::toString), ModelData::texture,
+        ByteBufCodecs.BOOL, ModelData::is_slim,
         ModelData::new
     );
 }   
