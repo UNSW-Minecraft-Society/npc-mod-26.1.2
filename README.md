@@ -1,9 +1,18 @@
-# Template Mod
+# Veveddo's NPCs and Cutscenes Mod
 
-## Setup
+## NPCs
 
-For setup instructions, please see the [Fabric Documentation page](https://docs.fabricmc.net/develop/getting-started/creating-a-project#setting-up) related to the IDE that you are using.
+### Commands
+- `/summon npc-mod:basic_npc <x> <y> <z> {npc_id: "<ID>"}`
 
-## License
+### Configuration
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+## Cutscenes
+
+### Commands
+- `/cutscene`
+  - `trigger`
+  - `resume`
+  - `stop`
+
+### Configuration
