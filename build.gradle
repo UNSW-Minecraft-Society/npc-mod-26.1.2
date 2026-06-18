@@ -35,7 +35,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"npc-mod" {
+		"npc-mod_1-21-1" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
