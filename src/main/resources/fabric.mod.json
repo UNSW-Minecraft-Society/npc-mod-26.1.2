@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"veveddo.npcmod.NpcMod"
+			"mcsoc.npcmod.NpcMod"
 		],
 		"client": [
-			"veveddo.npcmod.NpcModClient"
+			"mcsoc.npcmod.NpcModClient"
 		]
 	},
 	"mixins": [
