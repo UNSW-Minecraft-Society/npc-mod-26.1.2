@@ -15,7 +15,7 @@ public class BasicNPC extends BaseNPC {
     }
 
     public static AttributeSupplier.Builder createNPCAttributes() {
-      return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0);
+        return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0);
     }
 
     @Override

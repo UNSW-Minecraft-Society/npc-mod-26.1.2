@@ -19,10 +19,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import veveddo.npcmod.NpcMod;
 
-public record DialogueData(Component display_name, List<Component> dialogue, Identifier voice) {
+public record DialogueData(Component display_name, List<Component> dialogue, ResourceLocation voice) {
     private static final String DISPLAY_NAME_KEY = "display_name";
     private static final String DIALOGUE_KEY = "dialogue";
     private static final String VOICE_KEY = "voice";
@@ -52,7 +52,7 @@ public record DialogueData(Component display_name, List<Component> dialogue, Ide
     public static DialogueData fromJson(JsonObject json) {
         Component name = Component.literal("");
         List<Component> dialogue = new ArrayList<>(1);
-        Identifier voice = Identifier.withDefaultNamespace("block.anvil.break");
+        ResourceLocation voice = ResourceLocation.withDefaultNamespace("block.anvil.break");
         try {
             name = Component.literal(json.get(DISPLAY_NAME_KEY).getAsString());
             dialogue = json.get(DIALOGUE_KEY).getAsJsonArray().asList().stream()
@@ -60,7 +60,7 @@ public record DialogueData(Component display_name, List<Component> dialogue, Ide
                     .map(Component::literal)
                     .collect(Collectors.toUnmodifiableList());
             JsonObject voice_json = json.get(VOICE_KEY).getAsJsonObject();
-            voice = Identifier.fromNamespaceAndPath(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString());
+            voice = ResourceLocation.fromNamespaceAndPath(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString());
         } catch (NullPointerException e) {
             NpcMod.LOGGER.error("Failed to read from dialogue file: ", e);
         }
@@ -81,7 +81,7 @@ public record DialogueData(Component display_name, List<Component> dialogue, Ide
     public static final StreamCodec<RegistryFriendlyByteBuf, DialogueData> PACKET_CODEC = StreamCodec.composite(
         ComponentSerialization.TRUSTED_STREAM_CODEC, DialogueData::display_name,
         ByteBufCodecs.collection(ArrayList::new, ComponentSerialization.TRUSTED_STREAM_CODEC), DialogueData::dialogue,
-        Identifier.STREAM_CODEC, DialogueData::voice,
+        ResourceLocation.STREAM_CODEC, DialogueData::voice,
         DialogueData::new
     );
 }

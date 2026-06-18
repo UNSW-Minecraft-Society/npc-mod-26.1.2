@@ -13,11 +13,11 @@ import com.google.gson.JsonSerializer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import veveddo.npcmod.NpcMod;
 
 
-public record ModelData(Identifier texture, boolean is_slim) {
+public record ModelData(ResourceLocation texture, boolean is_slim) {
     private static final String TEXTURE_KEY = "texture";
     private static final String NAMESPACE_KEY = "namespace";
     private static final String PATH_KEY = "path";
@@ -37,11 +37,11 @@ public record ModelData(Identifier texture, boolean is_slim) {
     }
 
     public static ModelData fromJson(JsonObject json) {
-        Identifier texture = Identifier.withDefaultNamespace("textures/entity/player/slim/alex");
+        ResourceLocation texture = ResourceLocation.withDefaultNamespace("textures/entity/player/slim/alex");
         Boolean is_slim = true;
         try {
             JsonObject texture_json = json.get(TEXTURE_KEY).getAsJsonObject();
-            texture = Identifier.fromNamespaceAndPath(texture_json.get(NAMESPACE_KEY).getAsString(), texture_json.get(PATH_KEY).getAsString());
+            texture = ResourceLocation.fromNamespaceAndPath(texture_json.get(NAMESPACE_KEY).getAsString(), texture_json.get(PATH_KEY).getAsString());
             is_slim = json.get(SLIM_KEY).getAsBoolean();
         } catch (NullPointerException e) {
             NpcMod.LOGGER.error("Failed to read from model_data.json: ", e);
@@ -64,7 +64,7 @@ public record ModelData(Identifier texture, boolean is_slim) {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ModelData> PACKET_CODEC = StreamCodec.composite(
         
-        ByteBufCodecs.STRING_UTF8.map(Identifier::parse, Identifier::toString), ModelData::texture,
+        ByteBufCodecs.STRING_UTF8.map(ResourceLocation::parse, ResourceLocation::toString), ModelData::texture,
         ByteBufCodecs.BOOL, ModelData::is_slim,
         ModelData::new
     );

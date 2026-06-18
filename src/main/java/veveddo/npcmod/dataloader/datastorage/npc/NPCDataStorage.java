@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import veveddo.npcmod.datatypes.npcs.DialogueData;
 import veveddo.npcmod.datatypes.npcs.ModelData;
 import veveddo.npcmod.datatypes.npcs.NPCData;
@@ -15,8 +15,8 @@ import veveddo.npcmod.entities.npc.BasicNPC;
 
 public interface NPCDataStorage {
 
-    static final ModelData MODEL_NOT_FOUND = new ModelData(Identifier.withDefaultNamespace("textures/entity/player/wide/noor.png"), true);
-    static final DialogueData DIALOGUE_NOT_FOUND = new DialogueData(Component.literal("DEFAULT"), List.of(Component.literal("Dialogue not found.")), Identifier.withDefaultNamespace("music_disc.far"));
+    static final ModelData MODEL_NOT_FOUND = new ModelData(ResourceLocation.withDefaultNamespace("textures/entity/player/wide/noor.png"), true);
+    static final DialogueData DIALOGUE_NOT_FOUND = new DialogueData(Component.literal("DEFAULT"), List.of(Component.literal("Dialogue not found.")), ResourceLocation.withDefaultNamespace("music_disc.far"));
     static final String MISSING_KEY = "mssngn";
     static final NPCData NPC_NOT_FOUND = new NPCData(MISSING_KEY, MISSING_KEY, NPCMode.BACKGROUND);
 
@@ -39,10 +39,10 @@ public interface NPCDataStorage {
         return this.getModelMap().getOrDefault(npc_data.model_id(), MODEL_NOT_FOUND);
     }
 
-    public default void registerModelData(String id, Identifier texture, boolean is_slim) {
+    public default void registerModelData(String id, ResourceLocation texture, boolean is_slim) {
         this.getModelMap().put(id, new ModelData(texture, is_slim));
     }
-    public default void registerDialogueData(String id, Component display_name, List<Component> dialogue, Identifier voice) {
+    public default void registerDialogueData(String id, Component display_name, List<Component> dialogue, ResourceLocation voice) {
         this.getDialogueMap().put(id, new DialogueData(display_name, dialogue, voice));
     }
     public default void registerBackgroundNPC(String id, String model_id, String dialogue_id) {

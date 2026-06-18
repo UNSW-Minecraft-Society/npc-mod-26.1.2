@@ -13,7 +13,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.permissions.Permissions;
+
 
 import veveddo.npcmod.dataloader.datastorage.NpcModServerDataStorage;
 
@@ -43,7 +43,7 @@ public abstract class CommandRegistrationHandler {
     public static void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(Commands.literal("reload_npc_data")
-                    .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_MODERATOR))
+                    .requires(source -> source.hasPermission(2))
                     .executes(CommandActions::reloadNPCData)
             );
 

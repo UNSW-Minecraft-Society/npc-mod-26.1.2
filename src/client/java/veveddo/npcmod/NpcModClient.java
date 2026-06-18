@@ -5,12 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 
-import veveddo.npcmod.NpcMod;
-import veveddo.npcmod.NpcModClient.ClientData;
 import veveddo.npcmod.camera.ClientCameraControlData;
 import veveddo.npcmod.camera.ClientCameraUtils;
 import veveddo.npcmod.datatypes.PositionData;
@@ -61,7 +58,7 @@ public class NpcModClient implements ClientModInitializer {
 			if (Minecraft.getInstance().getCameraEntity() instanceof CameraClientEntity camera) {
 				PositionData to_shift = this.per_tick_pan_shift.multiply(tick_delta);
 				Vec3 shift_pos = camera.getEyePosition().add(to_shift.getPos());
-				camera.absSnapTo(
+				camera.absMoveTo(
 					shift_pos.x, shift_pos.y, shift_pos.z, 
 					camera.getYRot() + to_shift.yaw(), 
 					camera.getXRot() + to_shift.pitch()
@@ -81,8 +78,8 @@ public class NpcModClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
 		ClientEntityRegistration.registerEntities();
-        EntityRenderers.register(EntityRegistration.BASIC_NPC, BaseNPCRendererPlayer::new);
-		EntityRenderers.register(EntityRegistration.MOVING_NPC, BaseNPCRendererPlayer::new);
+		EntityRendererRegistry.register(EntityRegistration.BASIC_NPC, BaseNPCRendererPlayer::new);
+		EntityRendererRegistry.register(EntityRegistration.MOVING_NPC, BaseNPCRendererPlayer::new);
 
 		ClientCameraUtils.registerDismountKeybind();
 

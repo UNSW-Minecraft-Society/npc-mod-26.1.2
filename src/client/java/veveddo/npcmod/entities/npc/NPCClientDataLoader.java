@@ -5,20 +5,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.core.ClientAsset.ResourceTexture;
-import net.minecraft.core.ClientAsset.Texture;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.PlayerModelType;
-import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.resources.ResourceLocation;
 import veveddo.npcmod.NpcMod;
 import veveddo.npcmod.dataloader.datastorage.npc.NPCDataStorage;
 import veveddo.npcmod.datatypes.npcs.DialogueData;
 import veveddo.npcmod.datatypes.npcs.ModelData;
 import veveddo.npcmod.datatypes.npcs.NPCData;
-import veveddo.npcmod.entities.npc.BaseNPC;
 
 
 public class NPCClientDataLoader implements NPCDataStorage {
@@ -27,7 +21,7 @@ public class NPCClientDataLoader implements NPCDataStorage {
     private final Map<String, ModelData> model_data_map = new HashMap<>();
     private final Map<String, DialogueData> dialogue_data_map = new HashMap<>();
 
-    private final Map<Identifier, PlayerSkin> skin_data = new HashMap<>();
+    private final Map<ResourceLocation, PlayerSkin> skin_data = new HashMap<>();
     private static final NPCClientDataLoader INSTANCE = new NPCClientDataLoader();
 
     private NPCClientDataLoader() {}
@@ -38,7 +32,7 @@ public class NPCClientDataLoader implements NPCDataStorage {
     public void buildSkin(ModelData model_data) {
         if (this.skin_data.containsKey(model_data.texture())) return;
 
-        Identifier texture_id = model_data.texture();
+        ResourceLocation texture_id = model_data.texture();
         try {
             Minecraft client = Minecraft.getInstance();
             client.getTextureManager().getTexture(texture_id.withPath((path) -> "textures/" + path + ".png"));
@@ -48,9 +42,9 @@ public class NPCClientDataLoader implements NPCDataStorage {
 
         this.skin_data.put(texture_id, 
             new PlayerSkin(
-                new ResourceTexture(model_data.texture()),
-                null, null, 
-                model_data.is_slim() ? PlayerModelType.SLIM : PlayerModelType.WIDE, 
+                model_data.texture(),
+                null, null, null,
+                model_data.is_slim() ? PlayerSkin.Model.SLIM : PlayerSkin.Model.WIDE, 
                 true
             )
         );

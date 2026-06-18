@@ -29,7 +29,7 @@ public class MovingNPC extends BaseNPC implements InstructionReader<MovementInst
             case MovementInstruction.Walk(PositionData pos, double speed): {
                 this.current_operation_ticks_remaining = 1;
                 Vec3 target = pos.getPos();
-                this.absSnapRotationTo(pos.yaw(), pos.pitch());
+                this.absRotateTo(pos.yaw(), pos.pitch());
                 this.getNavigation().moveTo(target.x, target.y, target.z, speed);
                 break;
             }
@@ -37,7 +37,7 @@ public class MovingNPC extends BaseNPC implements InstructionReader<MovementInst
                 this.setSwimming(true);
                 this.current_operation_ticks_remaining = 1;
                 Vec3 target = pos.getPos();
-                this.absSnapRotationTo(pos.yaw(), pos.pitch());
+                this.absRotateTo(pos.yaw(), pos.pitch());
                 this.getNavigation().moveTo(target.x, target.y, target.z, speed);
                 break;
             }

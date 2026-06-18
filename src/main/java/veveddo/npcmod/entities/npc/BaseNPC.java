@@ -7,12 +7,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.npc.villager.VillagerData;
-import net.minecraft.world.entity.npc.villager.VillagerProfession;
-import net.minecraft.world.entity.npc.villager.VillagerType;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import veveddo.npcmod.dataloader.datastorage.NpcModServerDataStorage;
 
 public abstract class BaseNPC extends PathfinderMob {
@@ -49,15 +45,15 @@ public abstract class BaseNPC extends PathfinderMob {
     }
 
     @Override
-    public void addAdditionalSaveData(ValueOutput nbt) {
+    public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putString("npc_id", this.getID());
     }
 
     @Override
-    public void readAdditionalSaveData(ValueInput nbt) {
+    public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        this.setID(nbt.getString("npc_id").orElseThrow());
+        this.setID(nbt.getString("npc_id"));
     }
 
     @Override
@@ -72,9 +68,10 @@ public abstract class BaseNPC extends PathfinderMob {
     }
 
     @Override
-    public boolean canBeCollidedWith(Entity e) {
+    public boolean canBeCollidedWith() {
         return false;
     }
+
     @Override
     public boolean isPushable() {
         return false;

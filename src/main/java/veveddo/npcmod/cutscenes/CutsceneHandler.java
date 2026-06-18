@@ -8,7 +8,7 @@ import java.util.Queue;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -115,10 +115,10 @@ public class CutsceneHandler implements InstructionReader<CutsceneInstruction> {
                 });
                 this.current_operation_ticks_remaining = ticks;
             }
-            case CutsceneInstruction.PlaySound(Identifier sound_id, int x, int y, int z) -> {
+            case CutsceneInstruction.PlaySound(ResourceLocation sound_id, int x, int y, int z) -> {
                 loaded_world.playSound(null, x, y, z, SoundEvent.createVariableRangeEvent(sound_id), SoundSource.PLAYERS, 1, 1);
             }
-            case CutsceneInstruction.PlaySoundPlayers(Identifier sound_id) -> {
+            case CutsceneInstruction.PlaySoundPlayers(ResourceLocation sound_id) -> {
                 loaded_world.players().forEach(player -> 
                     loaded_world.playSound(player, player.blockPosition(), SoundEvent.createFixedRangeEvent(sound_id, 20), SoundSource.PLAYERS, 1, 1)
                 );

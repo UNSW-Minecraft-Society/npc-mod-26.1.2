@@ -10,7 +10,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import veveddo.npcmod.datatypes.PositionData;
 import veveddo.npcmod.util.Instruction;
 
@@ -95,7 +95,7 @@ public sealed interface CutsceneInstruction extends Instruction {
             return json;
         }
     }
-    record PlaySound(Identifier sound_id, int x, int y, int z) implements CutsceneInstruction {
+    record PlaySound(ResourceLocation sound_id, int x, int y, int z) implements CutsceneInstruction {
         @Override
         public JsonObject toJson() {
             JsonObject json = new JsonObject();
@@ -119,7 +119,7 @@ public sealed interface CutsceneInstruction extends Instruction {
             return json;
         }
     }
-    record PlaySoundPlayers(Identifier sound_id) implements CutsceneInstruction {
+    record PlaySoundPlayers(ResourceLocation sound_id) implements CutsceneInstruction {
         @Override
         public JsonObject toJson() {
             JsonObject json = new JsonObject();
@@ -212,7 +212,7 @@ public sealed interface CutsceneInstruction extends Instruction {
                     case PLAYSOUND_TYPE_NAME -> {
                         JsonObject voice_json = json.get(SOUND_ID_KEY).getAsJsonObject();
                         yield new CutsceneInstruction.PlaySound(
-                            Identifier.fromNamespaceAndPath(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString()),
+                            ResourceLocation.fromNamespaceAndPath(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString()),
                             properties.get("x").getAsInt(),
                             properties.get("y").getAsInt(),
                             properties.get("z").getAsInt()
@@ -221,7 +221,7 @@ public sealed interface CutsceneInstruction extends Instruction {
                     case PLAYSOUND_PLAYER_TYPE_NAME -> {
                         JsonObject voice_json = json.get(SOUND_ID_KEY).getAsJsonObject();
                         yield new CutsceneInstruction.PlaySoundPlayers(
-                            Identifier.fromNamespaceAndPath(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString())
+                            ResourceLocation.fromNamespaceAndPath(voice_json.get(NAMESPACE_KEY).getAsString(), voice_json.get(PATH_KEY).getAsString())
                         );
                     }
                     case DELAY_TYPE_NAME -> new CutsceneInstruction.Delay(

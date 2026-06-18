@@ -30,7 +30,7 @@ public interface ClientCameraControlData {
         if (world == null) return;
 
         CameraClientEntity camera = new CameraClientEntity(ClientEntityRegistration.CAMERA, world);
-        camera.snapTo(pos.getPos(), pos.yaw(), pos.pitch());
+        camera.moveTo(pos.getPos(), pos.yaw(), pos.pitch());
         world.addFreshEntity(camera);
         client.setCameraEntity(camera);
     }
