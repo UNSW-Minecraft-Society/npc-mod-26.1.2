@@ -5,20 +5,17 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.core.ClientAsset.ResourceTexture;
-import net.minecraft.core.ClientAsset.Texture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.entity.player.PlayerSkin;
+
 import veveddo.npcmod.NpcMod;
 import veveddo.npcmod.dataloader.datastorage.npc.NPCDataStorage;
 import veveddo.npcmod.datatypes.npcs.DialogueData;
 import veveddo.npcmod.datatypes.npcs.ModelData;
 import veveddo.npcmod.datatypes.npcs.NPCData;
-import veveddo.npcmod.entities.npc.BaseNPC;
 
 
 public class NPCClientDataLoader implements NPCDataStorage {
@@ -54,6 +51,12 @@ public class NPCClientDataLoader implements NPCDataStorage {
                 true
             )
         );
+    }
+
+    public PlayerSkin getSkin(BaseNPC npc_entity) {
+        ModelData model_data = this.getModel(npc_entity);
+        this.buildSkin(model_data);
+        return this.skin_data.getOrDefault(model_data.texture(), DefaultPlayerSkin.get(UUID.randomUUID()));
     }
 
     public PlayerSkin getSkin(ModelData model_data) {
